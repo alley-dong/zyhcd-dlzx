@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TRouteMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.TRoute" id="TRouteResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="name"    column="name"    />
+        <result property="minInspect"    column="min_inspect"    />
+        <result property="origin"    column="origin"    />
+        <result property="destination"    column="destination"    />
+        <result property="mileage"    column="mileage"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTRouteVo">
+        select id, type, name, min_inspect, origin, destination,mileage, delete_flag, create_by, create_time, update_by, update_time from t_route
+    </sql>
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+    <select id="selectTRouteList" parameterType="com.dlzx.pfservercar.domain.TRoute" resultMap="TRouteResult">
+        <include refid="selectTRouteVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="minInspect != null "> and min_inspect = #{minInspect}</if>
+            <if test="origin != null  and origin != ''"> and origin = #{origin}</if>
+            <if test="destination != null  and destination != ''"> and destination = #{destination}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectTRouteById" parameterType="String" resultMap="TRouteResult">
+        <include refid="selectTRouteVo"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+        
+    <insert id="insertTRoute" parameterType="com.dlzx.pfservercar.domain.TRoute">
+        insert into t_route
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="name != null">name,</if>
+            <if test="minInspect != null">min_inspect,</if>
+            <if test="origin != null">origin,</if>
+            <if test="destination != null">destination,</if>
+            <if test="mileage != null">mileage,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="name != null">#{name},</if>
+            <if test="minInspect != null">#{minInspect},</if>
+            <if test="origin != null">#{origin},</if>
+            <if test="destination != null">#{destination},</if>
+            <if test="mileage != null">#{mileage},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <!--    批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into t_route (
+        id, name, origin,destination,mileage,delete_flag,create_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.X_LANE_XID,jdbcType=VARCHAR},
+            #{item.X_LANE_NAME,jdbcType=VARCHAR},
+            #{item.SOURCE_LOCATION_NAME,jdbcType=VARCHAR},
+            #{item.DEST_LOCATION_NAME,jdbcType=VARCHAR},
+            #{item.DISTANCE,jdbcType=VARCHAR},
+            1,
+            now()
+            )
+        </foreach>
+
+    </insert>
+
+
+    <update id="updateTRoute" parameterType="com.dlzx.pfservercar.domain.TRoute">
+        update t_route
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="minInspect != null">min_inspect = #{minInspect},</if>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="destination != null">destination = #{destination},</if>
+            <if test="mileage != null">mileage = #{mileage},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTRouteById" parameterType="String">
+        delete from t_route where id = #{id}
+    </delete>
+
+    <update id="deleteTRouteByIds" parameterType="String">
+        update t_route set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DLeaveTypeMapper">
+    
+    <resultMap type="DLeaveType" id="DLeaveTypeResult">
+        <result property="id"    column="id"    />
+        <result property="staffType"    column="staff_type"    />
+        <result property="name"    column="name"    />
+        <result property="isSalary"    column="is_salary"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDLeaveTypeVo">
+        select id, staff_type, name, is_salary, delete_flag, create_by, create_time, update_by, update_time from d_leave_type
+    </sql>
+
+    <select id="selectDLeaveTypeList" parameterType="DLeaveType" resultMap="DLeaveTypeResult">
+        <include refid="selectDLeaveTypeVo"/>
+        <where>  
+            <if test="staffType != null "> and staff_type = #{staffType}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="isSalary != null "> and is_salary = #{isSalary}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY
+        CONVERT(name USING gbk) COLLATE gbk_chinese_ci ASC
+    </select>
+    
+    <select id="selectDLeaveTypeById" parameterType="String" resultMap="DLeaveTypeResult">
+        <include refid="selectDLeaveTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDLeaveType" parameterType="DLeaveType">
+        insert into d_leave_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="staffType != null">staff_type,</if>
+            <if test="name != null">name,</if>
+            <if test="isSalary != null">is_salary,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="staffType != null">#{staffType},</if>
+            <if test="name != null">#{name},</if>
+            <if test="isSalary != null">#{isSalary},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDLeaveType" parameterType="DLeaveType">
+        update d_leave_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="staffType != null">staff_type = #{staffType},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="isSalary != null">is_salary = #{isSalary},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDLeaveTypeById" parameterType="String">
+        delete from d_leave_type where id = #{id}
+    </delete>
+
+    <delete id="deleteDLeaveTypeByIds" parameterType="String">
+        delete from d_leave_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DRecruitPlanMapper">
+
+    <resultMap type="DRecruitPlan" id="DRecruitPlanResult">
+        <result property="id"    column="id"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="number"    column="number"    />
+        <result property="education"    column="education"    />
+        <result property="age"    column="age"    />
+        <result property="drivingRequirements"    column="driving_requirements"    />
+        <result property="entryTime"    column="entry_time"    />
+        <result property="wage"    column="wage"    />
+        <result property="reason"    column="reason"    />
+        <result property="duty"    column="duty"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDRecruitPlanVo">
+        select id, route_id, route_name, number, education, age, driving_requirements, entry_time, wage, reason, duty, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time from d_recruit_plan
+    </sql>
+
+    <select id="selectDRecruitPlanList" parameterType="DRecruitPlan" resultMap="DRecruitPlanResult">
+        <include refid="selectDRecruitPlanVo"/>
+        <where>  
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY field(`status`,1,3,2), create_time desc
+    </select>
+    
+    <select id="selectDRecruitPlanById" parameterType="String" resultMap="DRecruitPlanResult">
+        <include refid="selectDRecruitPlanVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDRecruitPlan" parameterType="DRecruitPlan">
+        insert into d_recruit_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="number != null">number,</if>
+            <if test="education != null">education,</if>
+            <if test="age != null">age,</if>
+            <if test="drivingRequirements != null">driving_requirements,</if>
+            <if test="entryTime != null">entry_time,</if>
+            <if test="wage != null">wage,</if>
+            <if test="reason != null">reason,</if>
+            <if test="duty != null">duty,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="number != null">#{number},</if>
+            <if test="education != null">#{education},</if>
+            <if test="age != null">#{age},</if>
+            <if test="drivingRequirements != null">#{drivingRequirements},</if>
+            <if test="entryTime != null">#{entryTime},</if>
+            <if test="wage != null">#{wage},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="duty != null">#{duty},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDRecruitPlan" parameterType="DRecruitPlan">
+        update d_recruit_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="drivingRequirements != null">driving_requirements = #{drivingRequirements},</if>
+            <if test="entryTime != null">entry_time = #{entryTime},</if>
+            <if test="wage != null">wage = #{wage},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="duty != null">duty = #{duty},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteDRecruitPlanById" parameterType="String">
+        update d_recruit_plan set delete_flag = 2 where id = #{id}
+    </update>
+
+    <delete id="deleteDRecruitPlanByIds" parameterType="String">
+        delete from d_recruit_plan where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+<!--    查询被删除的记录 -->
+    <select id="dRecruitPlanMapper" resultMap="DRecruitPlanResult">
+        <include refid="selectDRecruitPlanVo"/>
+        where delete_flag = 2 and id in
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+
+</mapper>

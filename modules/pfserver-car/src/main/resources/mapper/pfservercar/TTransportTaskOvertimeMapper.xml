@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskOvertimeMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskOvertimeVm" id="TTransportTaskOvertimeResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="arteryShipmentXid"    column="artery_shipment_xid"    />
+        <result property="mainVehicleId"    column="main_vehicle_id"    />
+        <result property="mainLicensePlate"    column="main_license_plate"    />
+        <result property="hangVehicleId"    column="hang_vehicle_id"    />
+        <result property="hangLicensePlate"    column="hang_license_plate"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="oilAmount"    column="oil_amount"    />
+        <result property="overtimeAmount"    column="overtime_amount"    />
+        <result property="origin"    column="origin"    />
+        <result property="destination"    column="destination"    />
+        <result property="taskStartTime"    column="task_start_time"    />
+        <result property="taskEndTime"    column="task_end_time"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskOvertimeVo">
+        select id, shipment_xid, artery_shipment_xid, main_vehicle_id, main_license_plate, hang_vehicle_id, hang_license_plate, driver_id, driver_name, oil_amount, overtime_amount, origin, destination, delete_flag, create_by, create_time, update_by, update_time, task_start_time, task_end_time from t_transport_task_overtime
+    </sql>
+
+    <sql id="selectTTransportTaskOvertimeDetail">
+        select over.id, over.shipment_xid, over.artery_shipment_xid, over.main_vehicle_id
+        , over.main_license_plate, over.hang_vehicle_id, over.hang_license_plate, over.driver_id
+        , over.driver_name, over.oil_amount, over.overtime_amount, over.origin, over.destination
+        , over.delete_flag, over.create_by, over.create_time, over.update_by, over.update_time
+        , over.task_start_time, over.task_end_time,task.status , sysStatus.dict_label as statusEnum
+        from t_transport_task_overtime over
+        LEFT JOIN t_transport_task task
+        ON over.shipment_xid = task.shipment_xid
+        LEFT JOIN sys_dict_data sysStatus
+        on task.status = sysStatus.dict_value and sysStatus.dict_type = 't_transport_task_status'
+    </sql>
+
+    <select id="selectTTransportTaskOvertimeList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOvertimeModel" resultMap="TTransportTaskOvertimeResult">
+        <include refid="selectTTransportTaskOvertimeDetail"/>
+        <where>  
+            <if test="shipmentXid != null  and shipmentXid != ''"> and over.shipment_xid like concat('%', #{shipmentXid}, '%')</if>
+            <if test="arteryShipmentXid != null  and arteryShipmentXid != ''"> and over.artery_shipment_xid like concat('%', #{arteryShipmentXid}, '%')</if>
+            <if test="driverName != null  and driverName != ''"> and over.driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="taskStartTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(over.task_start_time, '%Y-%m-%d') >= DATE_FORMAT(#{taskStartTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="taskEndTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(over.task_end_time, '%Y-%m-%d') <= DATE_FORMAT(#{taskEndTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="status != null  and status != ''"> and task.status = #{status}</if>
+            and over.delete_flag = 1
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskOvertimeById" parameterType="String" resultMap="TTransportTaskOvertimeResult">
+        <include refid="selectTTransportTaskOvertimeDetail"/>
+        where over.id = #{id} and over.delete_flag = 1
+    </select>
+
+    <insert id="insertTTransportTaskOvertime" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOvertimeModel">
+        insert into t_transport_task_overtime
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="arteryShipmentXid != null">artery_shipment_xid,</if>
+            <if test="mainVehicleId != null">main_vehicle_id,</if>
+            <if test="mainLicensePlate != null">main_license_plate,</if>
+            <if test="hangVehicleId != null">hang_vehicle_id,</if>
+            <if test="hangLicensePlate != null">hang_license_plate,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="oilAmount != null">oil_amount,</if>
+            <if test="overtimeAmount != null">overtime_amount,</if>
+            <if test="origin != null">origin,</if>
+            <if test="destination != null">destination,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="taskStartTime != null">task_start_time,</if>
+            <if test="taskEndTime != null">task_end_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="arteryShipmentXid != null">#{arteryShipmentXid},</if>
+            <if test="mainVehicleId != null">#{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">#{mainLicensePlate},</if>
+            <if test="hangVehicleId != null">#{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">#{hangLicensePlate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="oilAmount != null">#{oilAmount},</if>
+            <if test="overtimeAmount != null">#{overtimeAmount},</if>
+            <if test="origin != null">#{origin},</if>
+            <if test="destination != null">#{destination},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="taskStartTime != null">#{taskStartTime},</if>
+            <if test="taskEndTime != null">#{taskEndTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskOvertime" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOvertimeModel">
+        update t_transport_task_overtime
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="arteryShipmentXid != null">artery_shipment_xid = #{arteryShipmentXid},</if>
+            <if test="mainVehicleId != null">main_vehicle_id = #{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">main_license_plate = #{mainLicensePlate},</if>
+            <if test="hangVehicleId != null">hang_vehicle_id = #{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">hang_license_plate = #{hangLicensePlate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="oilAmount != null">oil_amount = #{oilAmount},</if>
+            <if test="overtimeAmount != null">overtime_amount = #{overtimeAmount},</if>
+            <if test="origin != null">origin = #{origin},</if>
+            <if test="destination != null">destination = #{destination},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="taskStartTime != null">task_start_time = #{taskStartTime},</if>
+            <if test="taskEndTime != null">task_end_time = #{taskEndTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskOvertimeById" parameterType="String">
+        delete from t_transport_task_overtime where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskOvertimeByIds" parameterType="String">
+        delete from t_transport_task_overtime where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+<!--    任务加班列表 -->
+    <select id="queryTTransportTaskOvertimeList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOvertimeModel" resultMap="TTransportTaskOvertimeResult">
+        <include refid="selectTTransportTaskOvertimeDetail"/>
+        where
+        over.delete_flag = 1
+        and (over.driver_id = #{driverId} OR over.driver_id = #{driverId} )
+
+        <if test="status != null and status != '' ">
+            and task.status = #{status}
+        </if>
+      <!--<if test="status != null and status==1 ">
+            and over.task_end_time is null
+            order by over.task_start_time desc
+        </if>
+        <if test="status != null and status==2 ">
+            and over.task_end_time is not null
+            order by over.task_end_time desc
+        </if>
+        <if test="status == null">
+            order by over.task_start_time desc
+        </if>-->
+    </select>
+
+<!--    更新任务x时间-->
+    <update id="UpdateOTMCarTransportTask" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOvertimeModel">
+        update t_transport_task_overtime
+        <trim prefix="SET" suffixOverrides=",">
+            update_time = now(),
+            <if test="taskStartTime != null">task_start_time = #{taskStartTime},</if>
+            <if test="taskEndTime != null">task_end_time = #{taskEndTime},</if>
+        </trim>
+        where shipment_xid = #{shipmentXid}
+    </update>
+
+</mapper>

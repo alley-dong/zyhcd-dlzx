@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CInsuranceTypeItemMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.CInsuranceTypeItem" id="CInsuranceTypeItemResult">
+        <result property="id"    column="id"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="name"    column="name"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCInsuranceTypeItemVo">
+        select id, type_id, name, delete_flag, create_by, create_time, update_by, update_time from c_insurance_type_item
+    </sql>
+
+    <sql id="selectCInsuranceTypeItemVo1">
+        select citi.id, citi.type_id, citi.name, citi.delete_flag, citi.create_by, citi.create_time,
+        citi.update_by, citi.update_time, cit.name as type_name
+        from c_insurance_type_item as citi
+    </sql>
+
+    <select id="selectCInsuranceTypeItemList" parameterType="com.dlzx.pfservercar.domain.CInsuranceTypeItem" resultMap="CInsuranceTypeItemResult">
+        <include refid="selectCInsuranceTypeItemVo1"/>
+        left join c_insurance_type as cit
+        on citi.type_id=cit.id where citi.delete_flag = '1' and cit.delete_flag= '1'
+        AND citi.type_id = #{id}
+        <if test="typeId != null and typeId != ''"> and citi.type_id = #{typeId}</if>
+        <if test="name != null and name != ''"> and citi.name like concat('%', #{name}, '%')</if>
+        <if test="typeName != null and typeName != ''"> and cit.name = #{typeName}</if>
+    </select>
+
+    <select id="selectRepeatTypeItem" parameterType="com.dlzx.pfservercar.domain.CInsuranceTypeItem" resultMap="CInsuranceTypeItemResult">
+        <include refid="selectCInsuranceTypeItemVo"/>
+        where name = #{name} and delete_flag = '1' and type_id = #{typeId}
+    </select>
+
+    <select id="selectTypeList" parameterType="com.dlzx.pfservercar.domain.CInsuranceTypeItem" resultMap="CInsuranceTypeItemResult">
+        <include refid="selectCInsuranceTypeItemVo1"/>
+        left join c_insurance_type as cit
+        on citi.type_id=cit.id where citi.delete_flag = '1' and cit.delete_flag= '1'
+        <if test="typeId != null and typeId != ''"> and citi.type_id = #{typeId}</if>
+        <if test="name != null and name != ''"> and citi.name like concat('%', #{name}, '%')</if>
+        <if test="typeName != null and typeName != ''"> and cit.name = #{typeName}</if>
+    </select>
+
+    <select id="selectCInsuranceTypeItemById" parameterType="String" resultMap="CInsuranceTypeItemResult">
+        <include refid="selectCInsuranceTypeItemVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertCInsuranceTypeItem" parameterType="com.dlzx.pfservercar.domain.CInsuranceTypeItem">
+        insert into c_insurance_type_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="name != null">name,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCInsuranceTypeItem" parameterType="com.dlzx.pfservercar.domain.CInsuranceTypeItem">
+        update c_insurance_type_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCInsuranceTypeItemById" parameterType="String">
+        delete from c_insurance_type_item where id = #{id}
+    </delete>
+
+    <delete id="deleteCInsuranceTypeItemByIds" parameterType="String">
+        delete from c_insurance_type_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--
+
+    <select id="selectCInsuranceTypeItemList1" parameterType="com.dlzx.pfservercar.domain.CInsuranceTypeItem" resultMap="CInsuranceTypeItemResult">
+        <include refid="selectCInsuranceTypeItemVo"/>
+        <where>
+            <if test="typeId != null  and typeId != ''"> and type_id = #{typeId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            and delete_flag = '1'
+        </where>
+    </select>-->
+
+</mapper>

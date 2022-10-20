@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CVehicleMapper">
+    
+    <resultMap type="CVehicle" id="CVehicleResult">
+        <result property="id"    column="id"    />
+        <result property="identifier"    column="identifier"    />
+        <result property="vehicleTypeName"  column="vehicle_type_name" />
+        <result property="vehicleModelName" column="vehicle_model_name"  />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="brand"    column="brand"    />
+        <result property="driveForm"    column="drive_form"    />
+        <result property="horsepower"    column="horsepower"    />
+        <result property="engineNumber"    column="engine_number"    />
+        <result property="frameNumber"    column="frame_number"    />
+        <result property="gearbox"    column="gearbox"    />
+        <result property="engine"    column="engine"    />
+        <result property="fuelType"    column="fuel_type"    />
+        <result property="rearAxle"    column="rear_axle"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="mainTankVolume"    column="main_tank_volume"    />
+        <result property="viceTankVolume"    column="vice_tank_volume"    />
+        <result property="totalMass"    column="total_mass"    />
+        <result property="approvedLoad"    column="approved_load"    />
+        <result property="curbWeight"    column="curb_weight"    />
+        <result property="distributor"    column="distributor"    />
+        <result property="purchaseDate"    column="purchase_date"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="purchaseTax"    column="purchase_tax"    />
+        <result property="originalPrice"    column="original_price"    />
+        <result property="gpsCost"    column="gps_cost"    />
+        <result property="inspectCost"    column="inspect_cost"    />
+        <result property="scrapDate"    column="scrap_date"    />
+        <result property="registerDate"    column="register_date"    />
+        <result property="isInspect"    column="is_inspect"    />
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="nextInspectDate"    column="next_inspect_date"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="vehicleType"  column="vehicle_type" />
+        <result property="vehicleModel"  column="vehicle_model" />
+        <result property="vehicleStatus" column="vehicle_status" />
+        <result property="insuranceStartDate" column="insurance_start_date" />
+        <result property="insuranceEndDate" column="insurance_end_date" />
+        <result property="insuranceHandleTime" column="insurance_handle_time" />
+        <result property="color"    column="color"    />
+        <result property="conductor"    column="conductor"    />
+        <result property="permit"    column="permit"    />
+        <result property="cardNumber"    column="card_number"    />
+        <result property="lasting"    column="lasting"    />
+        <result property="wide"    column="wide"    />
+        <result property="high"    column="high"    />
+
+        <result property="typeId"  column="type_id" />
+        <result property="name"  column="name" />
+        <result property="type"  column="type" />
+        <result property="disable" column="disable" />
+    </resultMap>
+
+    <sql id="selectCVehicleVo">
+        select id, identifier, vehicle_model_name,license_plate, brand, drive_form, horsepower, engine_number, frame_number, gearbox, engine, fuel_type, rear_axle, manufacturer, main_tank_volume, vice_tank_volume, total_mass, approved_load, curb_weight, distributor, purchase_date, purchase_price, purchase_tax, original_price, gps_cost, inspect_cost, scrap_date, register_date, is_inspect, inspect_date, next_inspect_date, delete_flag, create_by, create_time,update_by,update_time,vehicle_type,vehicle_model,vehicle_status,vehicle_type_name,color,conductor,permit,card_number,lasting,wide,high,insurance_start_date,insurance_end_date,insurance_handle_time,disable from c_vehicle
+    </sql>
+
+    <sql id="selectCVehicle">
+        c.id, identifier, vehicle_model_name,license_plate, brand, drive_form, horsepower, engine_number, frame_number, gearbox, engine, fuel_type, rear_axle, manufacturer, main_tank_volume, vice_tank_volume, total_mass, approved_load, curb_weight, distributor, purchase_date, purchase_price, purchase_tax, original_price, gps_cost, inspect_cost, scrap_date, register_date, is_inspect, inspect_date, next_inspect_date, c.delete_flag, c.create_by, c.create_time,c.update_by,c.update_time,vehicle_type,vehicle_model,vehicle_status,vehicle_type_name,color,conductor,permit,card_number,lasting,wide,high
+    </sql>
+
+    <sql id="selectCVehicleVoAndCIV">
+        select cv.id, cv.identifier, cv.license_plate, cv.brand, cv.drive_form, cv.horsepower,
+        cv.engine_number, cv.frame_number, cv.gearbox, cv.engine, cv.fuel_type, cv.rear_axle,
+        cv.manufacturer, cv.main_tank_volume, cv.vice_tank_volume, cv.total_mass, cv.approved_load,
+        cv.curb_weight, cv.distributor, cv.purchase_date, cv.purchase_price, cv.purchase_tax,
+        cv.original_price, cv.gps_cost, cv.inspect_cost, cv.scrap_date, cv.register_date,
+        cv.is_inspect, cv.inspect_date, cv.next_inspect_date, cv.delete_flag, cv.create_by,
+        cv.create_time,cv.update_by,cv.update_time,cv.vehicle_type,cv.vehicle_model, civg.insurance_id,
+        civg.vehicle_id, civ.type, civ.frame_number, civ.license_plate, civ.remarks, civ.total_premium,
+        civ.status, civ.review_time, civ.review_user, civ.review_remarks, civ.delete_flag, civ.create_by,
+        civ.create_time, civ.update_by, civ.update_time, civi.insurance_type_id, civi.insurance_type_name,
+        civi.insurance_item_id, civi.insurance_item_name, civi.insurance_quota, civi.insurance_cost
+        from c_vehicle as cv
+    </sql>
+
+    <sql id="selectCVehicleVoAndCIV1">
+        select cv.id, civg.insurance_id, civg.vehicle_id,
+        civ.type, civ.remarks, civ.total_premium,
+        civ.status, civ.review_time, civ.review_user, civ.review_remarks, civ.delete_flag,
+        civ.create_by, civ.create_time, civ.update_by, civ.update_time, civi.insurance_type_id,
+        civi.insurance_type_name, civi.insurance_item_id, civi.insurance_item_name, civi.insurance_quota,
+        civi.insurance_cost, civg.insurance_start_date, civg.insurance_end_date, civg.insurance_handle_time,
+        civg.frame_number, civg.license_plate
+        from c_vehicle as cv
+    </sql>
+
+    <select id="selectCVehicleAndCIV" parameterType="CVehicle" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVoAndCIV1" />
+        left join c_insurance_vehicle_googds as civg
+        on civg.vehicle_id=cv.id
+        left join c_insurance_vehicle as civ
+        on civ.id=civg.insurance_id
+        join c_insurance_vehicle_item as civi
+        on civi.insurance_id=civ.id
+        where civi.delete_flag= '1' and civ.delete_flag= '1' and cv.delete_flag = '1'
+        <if test="id != null and id != ''"> and cv.id=#{id}</if>
+        <if test="type != null and type != ''"> and civ.type=#{type}</if>
+        <if test="insuranceStartDate != null"> and civg.insurance_start_date &gt;=
+         DATE_FORMAT(#{insuranceStartDate},'%Y-%m-%d')
+        </if>
+        <if test="insuranceEndDate != null"> and civg.insurance_end_date &lt;=
+         DATE_FORMAT(#{insuranceEndDate},'%Y-%m-%d')
+        </if>
+        ORDER BY civg.insurance_handle_time desc
+    </select>
+
+
+    <select id="selectCVehicleList" parameterType="CVehicle" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        <where>
+            <if test="vehicleTypeName != null and vehicleTypeName != null">and vehicle_type_name like concat('%',#{vehicleTypeName},'%')</if>
+            <if test="identifier != null  and identifier != ''"> and identifier like concat('%',#{identifier},'%')</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="brand != null  and brand != ''"> and brand like concat('%',#{brand},'%')</if>
+            <if test="isInspect != null "> and is_inspect = #{isInspect}</if>
+            <if test="frameNumber != null "> and frame_number like concat('%',#{frameNumber},'%')</if>
+            <if test="cardNumber != null "> and card_number like concat('%',#{cardNumber},'%')</if>
+            <if test="vehicleType != null and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            and delete_flag = '1' and disable = '1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectCVehicleIdByLicensePlate" parameterType="string" resultType="string">
+        select id from c_vehicle
+        where
+            license_plate like concat('%',#{licensePlate},'%')
+            and delete_flag = '1'
+    </select>
+
+    <select id="selectCVehicleListAll"  resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        <where>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectCVehicleListCarNum" parameterType="CVehicle" resultMap="CVehicleResult">
+        select id, license_plate, frame_number from c_vehicle
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            and delete_flag = '1' and disable = '1'
+        </where>
+    </select>
+
+    <select id="selectCVehicleListCarZhuNum" parameterType="CVehicle" resultMap="CVehicleResult">
+        select id, license_plate from c_vehicle
+        <where>
+            and vehicle_type = 'a'
+            and delete_flag = '1'
+            and disable = '1'
+        </where>
+    </select>
+
+    <select id="selectCVehicleIsInspect" resultMap="CVehicleResult">
+        select id, license_plate
+        from c_vehicle
+        where delete_flag = '1' and is_inspect = '1'
+    </select>
+
+    <select id="selectCVehicleStatusList" parameterType="CVehicle" resultMap="CVehicleResult">
+    SELECT id,license_plate,vehicle_status from c_vehicle
+    <where>
+        <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+        <if test="vehicleStatus != null and vehicleStatus != ''">and vehicle_status = #{vehicleStatus}</if>
+        and delete_flag = '1'
+    </where>
+    </select>
+
+    <select id="selectCVehicleRecordList" parameterType="CVehicle" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+    <where>
+        <if test="licensePlate != null and licensePlate != ''">and license_plate like concat('%',#{licensePlate},'%')</if>
+        <if test="inspectDate != null">
+            <![CDATA[
+				    and	DATE_FORMAT(inspect_date, '%Y-%m-%d') = DATE_FORMAT(#{inspectDate}, '%Y-%m-%d')
+			    ]]>
+        </if>
+        and delete_flag = '1'
+    </where>
+        order by next_inspect_date is null, next_inspect_date ASC
+    </select>
+
+    <select id="selectCVehicleAll" resultMap="CVehicleResult">
+    <include refid="selectCVehicleVo"/>
+        where delete_flag = '1'
+    </select>
+    
+    <select id="selectCVehicleById" parameterType="String" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        where id = #{id} and delete_flag = '1'
+    </select>
+
+    <select id="selectCVehicleByLicensePlate" parameterType="String" resultType="int">
+        select count(license_plate) from c_vehicle where license_plate = #{licensePlate} and delete_flag = '1'
+    </select>
+
+    <select id="queryCVehicleByLicensePlate" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+         where license_plate = #{licensePlate} and delete_flag = '1'
+    </select>
+
+    <!--查询充电卡车辆列表-->
+    <select id="selectCVehicleRechargeList" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        <where>
+            <if test="vehicleTypeName != null and vehicleTypeName != null">and vehicle_type_name like concat('%',#{vehicleTypeName},'%')</if>
+            <if test="identifier != null  and identifier != ''"> and identifier like concat('%',#{identifier},'%')</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="brand != null  and brand != ''"> and brand like concat('%',#{brand},'%')</if>
+            <if test="isInspect != null "> and is_inspect = #{isInspect}</if>
+            <if test="frameNumber != null "> and frame_number like concat('%',#{frameNumber},'%')</if>
+            <if test="cardNumber != null "> and card_number like concat('%',#{cardNumber},'%')</if>
+            and delete_flag = '1' AND (card_number is not null and card_number <![CDATA[ <> ]]> '')
+        </where>
+        order by update_time desc
+    </select>
+
+
+    <select id="selectOTMVehicleListAll" resultType="com.dlzx.pfservercar.domain.model.OTMVehicleModel">
+        SELECT
+	c.license_plate AS CAR_NUMBER,
+	c.frame_number AS VIN,
+	c.register_date AS REGISTER_DATE,
+	c.vehicle_type_name AS CLASS_OF_VEHICLE,
+	c.vehicle_model AS TRUCK_TYPE_CODE,
+	c.color AS VEHICLE_PLATE_COLOR_CODE,
+	c.total_mass AS GROSS_MASS,
+	c.permit AS ROAD_TRANSPORT_CERTIFICATE_NUMBER,
+	c.brand AS DEVICE_BRAND,
+	c.conductor AS EQUIPMENT_GROUP,
+	c.lasting AS LENGTH,
+	c.wide AS WIDTH,
+	c.high AS HEIGHT,
+	c.approved_load AS EFFECTIVE_WEIGHT,
+	sys.dict_label AS VEHICLE_ENERGY_TYPE
+FROM
+	c_vehicle c
+	LEFT JOIN sys_dict_data sys ON c.fuel_type = sys.dict_value
+	AND sys.dict_type = 'c_vehicle_drive_fuel_type'
+WHERE
+	delete_flag = '1'
+    </select>
+
+
+    <select id="queryCVehicleByOTMLicensePlate" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        where license_plate in
+        <foreach collection="list" item="licensePlate" open="(" separator="," close=")">
+            #{licensePlate}
+        </foreach>
+    </select>
+
+    <select id="queryCDriverByOTMPhone" resultType="com.dlzx.pfservercar.domain.DDriver">
+        select * from d_driver
+        where contact = #{driverNumber}
+    </select>
+
+<!--    首页统计-->
+    <select id="queryIndexStatistics" resultType="java.util.Map">
+SELECT
+(SELECT COUNT(0) FROM d_driver WHERE status = 3 and delete_flag = 1) as driverCount,
+(SELECT COUNT(0) FROM c_vehicle WHERE delete_flag = 1) as vehicleTotalCount,
+(SELECT COUNT(0) FROM c_vehicle c LEFT JOIN sys_dictionary sys ON c.vehicle_type = sys.id WHERE sys.name = '主车' and sys.parent_id =1 and c.delete_flag = 1) as mainCount,
+(SELECT COUNT(0) FROM c_vehicle c LEFT JOIN sys_dictionary sys ON c.vehicle_type = sys.id WHERE sys.name = '挂车' and sys.parent_id =1 and c.delete_flag = 1) as hangCount,
+(SELECT COUNT(0) FROM t_route WHERE delete_flag = 1) as routeCount
+    </select>
+
+    <select id="selectIBookList" parameterType="CVehicle" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        <where>
+            <if test="licensePlate != null and licensePlate != ''">and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="sTime != null">and insurance_start_date &gt;= DATE_FORMAT(#{sTime},'%Y-%m-%d')</if>
+            <if test="fTime != null">and insurance_end_date &lt;=  DATE_FORMAT(#{fTime},'%Y-%m-%d')</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY (UNIX_TIMESTAMP(now()) - UNIX_TIMESTAMP(insurance_end_date)) DESC,insurance_handle_time desc
+    </select>
+
+<!--    查询所有主车车辆-->
+    <select id="selectMainCVehicleAll" resultMap="CVehicleResult">
+        select
+        <include refid="selectCVehicle"/>
+        from c_vehicle c
+        LEFT JOIN sys_dictionary sys
+        ON c.vehicle_type = sys.id WHERE sys.name = '主车' and sys.parent_id =1 and c.delete_flag = 1
+    </select>
+
+    <insert id="insertCVehicle" parameterType="CVehicle">
+        insert into c_vehicle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="identifier != null">identifier,</if>
+            <if test="vehicleTypeName != null">vehicle_type_name,</if>
+            <if test="vehicleModelName != null">vehicle_model_name,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="brand != null">brand,</if>
+            <if test="driveForm != null">drive_form,</if>
+            <if test="horsepower != null">horsepower,</if>
+            <if test="engineNumber != null">engine_number,</if>
+            <if test="frameNumber != null">frame_number,</if>
+            <if test="gearbox != null">gearbox,</if>
+            <if test="engine != null">engine,</if>
+            <if test="fuelType != null">fuel_type,</if>
+            <if test="rearAxle != null">rear_axle,</if>
+            <if test="manufacturer != null">manufacturer,</if>
+            <if test="mainTankVolume != null">main_tank_volume,</if>
+            <if test="viceTankVolume != null">vice_tank_volume,</if>
+            <if test="totalMass != null">total_mass,</if>
+            <if test="approvedLoad != null">approved_load,</if>
+            <if test="curbWeight != null">curb_weight,</if>
+            <if test="distributor != null">distributor,</if>
+            <if test="purchaseDate != null">purchase_date,</if>
+            <if test="purchasePrice != null">purchase_price,</if>
+            <if test="purchaseTax != null">purchase_tax,</if>
+            <if test="originalPrice != null">original_price,</if>
+            <if test="gpsCost != null">gps_cost,</if>
+            <if test="inspectCost != null">inspect_cost,</if>
+            <if test="scrapDate != null">scrap_date,</if>
+            <if test="registerDate != null">register_date,</if>
+            <if test="isInspect != null">is_inspect,</if>
+            <if test="inspectDate != null">inspect_date,</if>
+            <if test="nextInspectDate != null">next_inspect_date,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="vehicleModel != null">vehicle_model,</if>
+            <if test="vehicleType != null">vehicle_type,</if>
+            <if test="vehicleStatus != null">vehicle_status,</if>
+            <if test="color != null">color,</if>
+            <if test="conductor != null">conductor,</if>
+            <if test="permit != null">permit,</if>
+            <if test="cardNumber != null">card_number,</if>
+            <if test="lasting != null">lasting,</if>
+            <if test="wide != null">wide,</if>
+            <if test="high != null">high,</if>
+            <if test="disable != null">disable,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="identifier != null">#{identifier},</if>
+            <if test="vehicleTypeName != null">#{vehicleTypeName},</if>
+            <if test="vehicleModelName != null">#{vehicleModelName},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="brand != null">#{brand},</if>
+            <if test="driveForm != null">#{driveForm},</if>
+            <if test="horsepower != null">#{horsepower},</if>
+            <if test="engineNumber != null">#{engineNumber},</if>
+            <if test="frameNumber != null">#{frameNumber},</if>
+            <if test="gearbox != null">#{gearbox},</if>
+            <if test="engine != null">#{engine},</if>
+            <if test="fuelType != null">#{fuelType},</if>
+            <if test="rearAxle != null">#{rearAxle},</if>
+            <if test="manufacturer != null">#{manufacturer},</if>
+            <if test="mainTankVolume != null">#{mainTankVolume},</if>
+            <if test="viceTankVolume != null">#{viceTankVolume},</if>
+            <if test="totalMass != null">#{totalMass},</if>
+            <if test="approvedLoad != null">#{approvedLoad},</if>
+            <if test="curbWeight != null">#{curbWeight},</if>
+            <if test="distributor != null">#{distributor},</if>
+            <if test="purchaseDate != null">#{purchaseDate},</if>
+            <if test="purchasePrice != null">#{purchasePrice},</if>
+            <if test="purchaseTax != null">#{purchaseTax},</if>
+            <if test="originalPrice != null">#{originalPrice},</if>
+            <if test="gpsCost != null">#{gpsCost},</if>
+            <if test="inspectCost != null">#{inspectCost},</if>
+            <if test="scrapDate != null">#{scrapDate},</if>
+            <if test="registerDate != null">#{registerDate},</if>
+            <if test="isInspect != null">#{isInspect},</if>
+            <if test="inspectDate != null">#{inspectDate},</if>
+            <if test="nextInspectDate != null">#{nextInspectDate},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="vehicleModel != null">#{vehicleModel},</if>
+            <if test="vehicleType != null">#{vehicleType},</if>
+            <if test="vehicleStatus != null">#{vehicleStatus},</if>
+            <if test="color != null">#{color},</if>
+            <if test="conductor != null">#{conductor},</if>
+            <if test="permit != null">#{permit},</if>
+            <if test="cardNumber != null">#{cardNumber},</if>
+            <if test="lasting != null">#{lasting},</if>
+            <if test="wide != null">#{wide},</if>
+            <if test="high != null">#{high},</if>
+            <if test="disable != null">#{disable},</if>
+        </trim>
+    </insert>
+
+    <update id="updateCVehicle" parameterType="CVehicle">
+        update c_vehicle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="identifier != null">identifier = #{identifier},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="vehicleTypeName != null">vehicle_type_name = #{vehicleTypeName},</if>
+            <if test="vehicleModelName != null">vehicle_model_name = #{vehicleModelName},</if>
+            <if test="brand != null">brand = #{brand},</if>
+            <if test="driveForm != null">drive_form = #{driveForm},</if>
+            <if test="horsepower != null">horsepower = #{horsepower},</if>
+            <if test="engineNumber != null">engine_number = #{engineNumber},</if>
+            <if test="frameNumber != null">frame_number = #{frameNumber},</if>
+            <if test="gearbox != null">gearbox = #{gearbox},</if>
+            <if test="engine != null">engine = #{engine},</if>
+            <if test="fuelType != null">fuel_type = #{fuelType},</if>
+            <if test="rearAxle != null">rear_axle = #{rearAxle},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="mainTankVolume != null">main_tank_volume = #{mainTankVolume},</if>
+            <if test="viceTankVolume != null">vice_tank_volume = #{viceTankVolume},</if>
+            <if test="totalMass != null">total_mass = #{totalMass},</if>
+            <if test="approvedLoad != null">approved_load = #{approvedLoad},</if>
+            <if test="curbWeight != null">curb_weight = #{curbWeight},</if>
+            <if test="distributor != null">distributor = #{distributor},</if>
+            <if test="purchaseDate != null">purchase_date = #{purchaseDate},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="purchaseTax != null">purchase_tax = #{purchaseTax},</if>
+            <if test="originalPrice != null">original_price = #{originalPrice},</if>
+            <if test="gpsCost != null">gps_cost = #{gpsCost},</if>
+            <if test="inspectCost != null">inspect_cost = #{inspectCost},</if>
+            <if test="scrapDate != null">scrap_date = #{scrapDate},</if>
+            <if test="registerDate != null">register_date = #{registerDate},</if>
+            <if test="isInspect != null">is_inspect = #{isInspect},</if>
+            <if test="inspectDate != null">inspect_date = #{inspectDate},</if>
+            next_inspect_date = #{nextInspectDate},
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="vehicleModel != null">vehicle_model = #{vehicleModel},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="vehicleStatus != null">vehicle_status = #{vehicleStatus},</if>
+            <if test="color != null">color = #{color},</if>
+            <if test="conductor != null">conductor = #{conductor},</if>
+            <if test="permit != null">permit = #{permit},</if>
+            <if test="cardNumber != null">card_number = #{cardNumber},</if>
+            <if test="lasting != null">lasting = #{lasting},</if>
+            <if test="wide != null">wide = #{wide},</if>
+            <if test="high != null">high = #{high},</if>
+            <if test="disable != null">disable = #{disable},</if>
+            <if test="insuranceStartDate != null">insurance_start_date = #{insuranceStartDate},</if>
+            <if test="insuranceEndDate != null">insurance_end_date = #{insuranceEndDate},</if>
+            <if test="insuranceHandleTime != null">insurance_handle_time = #{insuranceHandleTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateCardCVehicle" parameterType="CVehicle">
+        update c_vehicle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="identifier != null">identifier = #{identifier},</if>
+            <if test="vehicleTypeName != null">vehicle_type_name = #{vehicleTypeName},</if>
+            <if test="vehicleModelName != null">vehicle_model_name = #{vehicleModelName},</if>
+            <if test="brand != null">brand = #{brand},</if>
+            <if test="driveForm != null">drive_form = #{driveForm},</if>
+            <if test="horsepower != null">horsepower = #{horsepower},</if>
+            <if test="engineNumber != null">engine_number = #{engineNumber},</if>
+            <if test="frameNumber != null">frame_number = #{frameNumber},</if>
+            <if test="gearbox != null">gearbox = #{gearbox},</if>
+            <if test="engine != null">engine = #{engine},</if>
+            <if test="fuelType != null">fuel_type = #{fuelType},</if>
+            <if test="rearAxle != null">rear_axle = #{rearAxle},</if>
+            <if test="manufacturer != null">manufacturer = #{manufacturer},</if>
+            <if test="mainTankVolume != null">main_tank_volume = #{mainTankVolume},</if>
+            <if test="viceTankVolume != null">vice_tank_volume = #{viceTankVolume},</if>
+            <if test="totalMass != null">total_mass = #{totalMass},</if>
+            <if test="approvedLoad != null">approved_load = #{approvedLoad},</if>
+            <if test="curbWeight != null">curb_weight = #{curbWeight},</if>
+            <if test="distributor != null">distributor = #{distributor},</if>
+            <if test="purchaseDate != null">purchase_date = #{purchaseDate},</if>
+            <if test="purchasePrice != null">purchase_price = #{purchasePrice},</if>
+            <if test="purchaseTax != null">purchase_tax = #{purchaseTax},</if>
+            <if test="originalPrice != null">original_price = #{originalPrice},</if>
+            <if test="gpsCost != null">gps_cost = #{gpsCost},</if>
+            <if test="inspectCost != null">inspect_cost = #{inspectCost},</if>
+            <if test="scrapDate != null">scrap_date = #{scrapDate},</if>
+            <if test="registerDate != null">register_date = #{registerDate},</if>
+            <if test="isInspect != null">is_inspect = #{isInspect},</if>
+            <if test="inspectDate != null">inspect_date = #{inspectDate},</if>
+            next_inspect_date = #{nextInspectDate},
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="vehicleModel != null">vehicle_model = #{vehicleModel},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="vehicleStatus != null">vehicle_status = #{vehicleStatus},</if>
+            <if test="color != null">color = #{color},</if>
+            <if test="conductor != null">conductor = #{conductor},</if>
+            <if test="permit != null">permit = #{permit},</if>
+            <if test="cardNumber != null">card_number = #{cardNumber},</if>
+            <if test="lasting != null">lasting = #{lasting},</if>
+            <if test="wide != null">wide = #{wide},</if>
+            <if test="high != null">high = #{high},</if>
+            <if test="disable != null">disable = #{disable},</if>
+            <if test="insuranceStartDate != null">insurance_start_date = #{insuranceStartDate},</if>
+            <if test="insuranceEndDate != null">insurance_end_date = #{insuranceEndDate},</if>
+            <if test="insuranceHandleTime != null">insurance_handle_time = #{insuranceHandleTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--    批量修改-->
+    <update id="updateList" parameterType="java.util.List">
+        update
+        c_vehicle
+        set
+        update_time =
+        <foreach collection="list" item="item" index="index" separator=" " open="case" close="end">
+            when license_plate = #{item.licensePlate} then #{item.updateTime}
+        </foreach>
+        , update_by =
+        <foreach collection="list" item="item" index="index" separator=" " open="case" close="end">
+            when license_plate = #{item.licensePlate} then #{item.updateBy}
+        </foreach>
+        , card_number =
+        <foreach collection="list" item="item" index="index" separator=" " open="case" close="end">
+            when license_plate = #{item.licensePlate} then #{item.cardNumber}
+        </foreach>
+        where
+        license_plate
+        in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.licensePlate}
+        </foreach>
+    </update>
+
+    <update id="updateByVehicleStatusList" parameterType="java.util.List">
+        update
+        c_vehicle
+        set
+        vehicle_status =
+        <foreach collection="list" item="item" index="index" separator=" " open="case" close="end">
+            when id = #{item.id} then #{item.vehicleStatus}
+        </foreach>
+        where
+        id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <delete id="deleteCVehicleById" parameterType="String">
+        delete from c_vehicle where id = #{id}
+    </delete>
+
+    <delete id="deleteCVehicleByIds" parameterType="String">
+        delete from c_vehicle where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryCardNumber" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        where card_number = #{cardNumber} and delete_flag = '1'
+    </select>
+
+    <!-- 获取车辆列表 -->
+    <select id="selectCVehicleNoDisableList" parameterType="CVehicle" resultMap="CVehicleResult">
+        <include refid="selectCVehicleVo"/>
+        <where>
+            <if test="vehicleTypeName != null and vehicleTypeName != null">and vehicle_type_name like concat('%',#{vehicleTypeName},'%')</if>
+            <if test="identifier != null  and identifier != ''"> and identifier like concat('%',#{identifier},'%')</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="brand != null  and brand != ''"> and brand like concat('%',#{brand},'%')</if>
+            <if test="isInspect != null "> and is_inspect = #{isInspect}</if>
+            <if test="frameNumber != null "> and frame_number like concat('%',#{frameNumber},'%')</if>
+            <if test="cardNumber != null "> and card_number like concat('%',#{cardNumber},'%')</if>
+            <if test="vehicleType != null and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>

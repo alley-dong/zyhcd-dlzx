@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.EtcCardMapper">
+    
+    <resultMap type="EtcCard" id="EtcCardResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="etcCardNumber"    column="etc_card_number"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="orderTime"    column="order_time"    />
+        <result property="status"    column="status"    />
+        <result property="method"    column="method"    />
+        <result property="obu"    column="obu"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEtcCardVo">
+        select id, vehicle_id, license_plate, etc_card_number, order_number, order_time, status, method, obu, delete_flag, create_by, create_time, update_by, update_time from etc_card
+    </sql>
+
+    <select id="selectEtcCardList" parameterType="EtcCard" resultMap="EtcCardResult">
+        <include refid="selectEtcCardVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="etcCardNumber != null  and etcCardNumber != ''"> and etc_card_number like concat('%', #{etcCardNumber}, '%')</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="orderTime != null "> and order_time = #{orderTime}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="method != null "> and method = #{method}</if>
+            <if test="obu != null  and obu != ''"> and obu = #{obu}</if>
+            and delete_flag ='1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectEtcCardListPaiHao" parameterType="String" resultMap="EtcCardResult">
+        <include refid="selectEtcCardVo"/>
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            and delete_flag ='1'
+        </where>
+    </select>
+
+    <select id="selectEtcCardListKaHao" parameterType="String" resultMap="EtcCardResult">
+        <include refid="selectEtcCardVo"/>
+        <where>
+            <if test="etcCardNumber != null  and etcCardNumber != ''"> and etc_card_number = #{etcCardNumber}</if>
+            and delete_flag ='1'
+        </where>
+    </select>
+
+    <select id="selectEtcCardListAll"  resultMap="EtcCardResult">
+        <include refid="selectEtcCardVo"/>
+        <where>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectEtcCardById" parameterType="String" resultMap="EtcCardResult">
+        <include refid="selectEtcCardVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertEtcCard" parameterType="EtcCard">
+        insert into etc_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="etcCardNumber != null">etc_card_number,</if>
+            <if test="orderNumber != null">order_number,</if>
+            <if test="orderTime != null">order_time,</if>
+            <if test="status != null">status,</if>
+            <if test="method != null">method,</if>
+            <if test="obu != null">obu,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="etcCardNumber != null">#{etcCardNumber},</if>
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="orderTime != null">#{orderTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="method != null">#{method},</if>
+            <if test="obu != null">#{obu},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtcCard" parameterType="EtcCard">
+        update etc_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="etcCardNumber != null">etc_card_number = #{etcCardNumber},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="orderTime != null">order_time = #{orderTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="method != null">method = #{method},</if>
+            <if test="obu != null">obu = #{obu},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEtcCardById" parameterType="String">
+        delete from etc_card where id = #{id}
+    </delete>
+
+    <delete id="deleteEtcCardByIds" parameterType="String">
+        delete from etc_card where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

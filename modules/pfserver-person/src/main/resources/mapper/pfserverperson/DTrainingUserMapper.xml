@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DTrainingUserMapper">
+    
+    <resultMap type="DTrainingUser" id="DTrainingUserResult">
+        <result property="id"    column="id"    />
+        <result property="trainingId"    column="training_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="tel"    column="tel"    />
+        <result property="latelyTime"    column="lately_time"    />
+        <result property="minDuration"    column="min_duration"    />
+    </resultMap>
+
+    <resultMap type="DTrainingAp" id="DTrainingApResult">
+        <result property="id"    column="id"    />
+        <result property="trainingId"    column="training_id"    />
+        <result property="title"    column="title"    />
+        <result property="trainingEndTime"    column="training_end_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <resultMap type="DTrainingUserRecord" id="DTrainingUserRecordResult">
+        <result property="id"    column="id"    />
+        <result property="trainingId"    column="training_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="driverSex"    column="driver_sex"    />
+        <result property="tel"    column="tel"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="completeTime"    column="complete_time"    />
+        <result property="latelyTime"    column="lately_time"    />
+    </resultMap>
+
+    <sql id="selectDTrainingUserVo">
+        select id, training_id, user_id from d_training_user
+    </sql>
+
+    <select id="selectDTrainingUserTwoList" parameterType="DTrainingUser" resultMap="DTrainingUserResult">
+        select u.id,u.training_id, u.user_id, r.status, r.driver_name, r.id_card, r.tel,r.lately_time ,p.min_duration from d_training_user u
+        left join d_training_user_record r on u.user_id = r.user_id and u.training_id = r.training_id
+        left join d_training p on u.training_id = p.id
+        <where>
+            <if test="trainingId != null  and trainingId != ''"> And u.training_id = #{trainingId}</if>
+            <if test="userId != null  and userId != ''"> And u.user_id = #{userId}</if>
+            <if test="driverName != null  and driverName != ''"> And r.driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="status != null  and status != ''"> And r.status = #{status}</if>
+            <if test="tel != null  and tel != ''"> And r.tel like concat('%', #{tel}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectDTrainingUserList" parameterType="DTrainingUser" resultMap="DTrainingUserResult">
+        <include refid="selectDTrainingUserVo"/>
+        <where>  
+            <if test="trainingId != null  and trainingId != ''"> and training_id = #{trainingId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+        </where>
+    </select>
+    
+    <select id="selectDTrainingUserById" parameterType="String" resultMap="DTrainingUserResult">
+        <include refid="selectDTrainingUserVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDTrainingUserByTrainingId" parameterType="String" resultMap="DTrainingUserResult">
+        <include refid="selectDTrainingUserVo"/>
+        where training_id = #{trainingId}
+    </select>
+
+    <insert id="insertDTrainingUser" parameterType="DTrainingUser">
+        insert into d_training_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="trainingId != null">training_id,</if>
+            <if test="userId != null">user_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="trainingId != null">#{trainingId},</if>
+            <if test="userId != null">#{userId},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDTrainingUserS">
+        insert into d_training_user( id, training_id, user_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.trainingId},#{item.userId})
+        </foreach>
+    </insert>
+
+    <update id="updateDTrainingUser" parameterType="DTrainingUser">
+        update d_training_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainingId != null">training_id = #{trainingId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDTrainingUserById" parameterType="String">
+        delete from d_training_user where id = #{id}
+    </delete>
+
+    <delete id="deleteDTrainingUserByTrainingId" parameterType="String">
+        delete from d_training_user where training_id = #{trainingId}
+    </delete>
+
+    <delete id="deleteDTrainingUserByIds" parameterType="String">
+        delete from d_training_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectDTrainingList" parameterType="DTrainingAp" resultMap="DTrainingApResult">
+        select p.id, u.training_id, r.title, r.training_end_time, r.create_time, r.create_by ,p.status
+        from d_training_user u
+        left join d_training r on u.training_id = r.id
+        left join d_training_user_record p on u.user_id = p.user_id AND p.training_id = r.id
+        <where>
+            <if test="userId != null  and userId != ''"> And u.user_id = #{userId}</if>
+            <if test="status != null  and status != ''"> And p.status = #{status}</if>
+            <if test="sTime != null">And r.create_time &gt;= #{sTime}</if>
+            <if test="fTime != null">And r.create_time &lt;= #{fTime}</if>
+            And r.delete_flag ='1'
+            And r.status ='2'
+        </where>
+    </select>
+
+    <update id="updateDTrainingStatus" parameterType="DTrainingAp">
+        update d_training_user_record a
+        left join d_training b on a.training_id = b.id
+        set a.status = '3' where b.training_end_time &lt; #{dangTime} and a.status = '1'
+    </update>
+
+</mapper>

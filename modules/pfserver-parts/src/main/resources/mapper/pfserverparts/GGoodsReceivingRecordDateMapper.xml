@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsReceivingRecordDateMapper">
+    
+    <resultMap type="GGoodsReceivingRecordDate" id="GGoodsReceivingRecordDateResult">
+        <result property="id"    column="id"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="receiveDate"  column="receive_date"    />
+        <result property="licensePlate"  column="license_plate"    />
+    </resultMap>
+
+    <sql id="selectGGoodsReceivingRecordDateVo">
+        select id, record_id, receive_date from g_goods_receiving_record_date
+    </sql>
+
+    <select id="selectGGoodsReceivingRecordDateList" parameterType="GGoodsReceivingRecordDate" resultMap="GGoodsReceivingRecordDateResult">
+        <include refid="selectGGoodsReceivingRecordDateVo"/>
+        <where>  
+            <if test="recordId != null  and recordId != ''"> and record_id = #{recordId}</if>
+            <if test="receiveDate != null "> and receive_date = #{receiveDate}</if>
+        </where>
+        order by receive_date desc
+    </select>
+    
+    <select id="selectGGoodsReceivingRecordDateById" parameterType="String" resultMap="GGoodsReceivingRecordDateResult">
+        <include refid="selectGGoodsReceivingRecordDateVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectGGoodsReceivingRecordDateByDate" parameterType="date" resultMap="GGoodsReceivingRecordDateResult">
+        SELECT
+        d.receive_date
+        FROM
+        g_goods_receiving_record_date d
+        LEFT JOIN g_goods_receiving_record r
+        ON d.record_id = r.id
+        WHERE d.receive_date IN (#{receiveDate})
+    </select>
+
+    <insert id="insertGGoodsReceivingRecordDate" parameterType="GGoodsReceivingRecordDate">
+        insert into g_goods_receiving_record_date
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="receiveDate != null">receive_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="receiveDate != null">#{receiveDate},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertGGoodsReceivingRecordDate1" parameterType="list">
+        insert into g_goods_receiving_record_date
+        (id, record_id, receive_date)
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="receiveDate != null">
+                <foreach collection="list" item="item" separator=",">
+                    #{receiveDate},
+                </foreach>
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--    批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into g_goods_receiving_record_date (
+        id, record_id, receive_date
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.recordId,jdbcType=VARCHAR},
+            #{item.receiveDate,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+
+    </insert>
+
+
+    <update id="updateGGoodsReceivingRecordDate" parameterType="GGoodsReceivingRecordDate">
+        update g_goods_receiving_record_date
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="receiveDate != null">receive_date = #{receiveDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsReceivingRecordDateById" parameterType="String">
+        delete from g_goods_receiving_record_date where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsReceivingRecordDateByIds" parameterType="String">
+        delete from g_goods_receiving_record_date where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteGoodsDateByRecordId" parameterType="String">
+        delete from g_goods_receiving_record_date where record_id = #{recordId}
+    </delete>
+
+</mapper>

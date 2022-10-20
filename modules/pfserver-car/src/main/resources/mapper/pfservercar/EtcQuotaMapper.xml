@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.EtcQuotaMapper">
+
+    <resultMap type="EtcQuota" id="EtcQuotaResult">
+        <result property="id"    column="id"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="vehicleModel"    column="vehicle_model"    />
+        <result property="vehicleModelName"    column="vehicle_model_name"    />
+        <result property="name"    column="name"    />
+        <result property="quota"    column="quota"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEtcQuotaVo">
+        select id, route_id, route_name, vehicle_model, vehicle_model_name, name, quota, delete_flag, create_by, create_time, update_by, update_time from etc_quota
+    </sql>
+
+    <select id="selectEtcQuotaList" parameterType="EtcQuota" resultMap="EtcQuotaResult">
+        <include refid="selectEtcQuotaVo"/>
+        <where>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="vehicleModel != null  and vehicleModel != ''"> and vehicle_model = #{vehicleModel}</if>
+            <if test="vehicleModelName != null  and vehicleModelName != ''"> and vehicle_model_name like concat('%', #{vehicleModelName}, '%')</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="quota != null "> and quota = #{quota}</if>
+             and delete_flag = '1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectEtcQuotaListDingE" resultMap="EtcQuotaResult">
+        <include refid="selectEtcQuotaVo"/>
+        <where>
+            route_id = #{routeId} and vehicle_model = #{vehicleModel}
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectEtcQuotaById" parameterType="String" resultMap="EtcQuotaResult">
+        <include refid="selectEtcQuotaVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEtcQuota" parameterType="EtcQuota">
+        insert into etc_quota
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="vehicleModel != null">vehicle_model,</if>
+            <if test="vehicleModelName != null">vehicle_model_name,</if>
+            <if test="name != null">name,</if>
+            <if test="quota != null">quota,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="vehicleModel != null">#{vehicleModel},</if>
+            <if test="vehicleModelName != null">#{vehicleModelName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="quota != null">#{quota},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtcQuota" parameterType="EtcQuota">
+        update etc_quota
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="vehicleModel != null">vehicle_model = #{vehicleModel},</if>
+            <if test="vehicleModelName != null">vehicle_model_name = #{vehicleModelName},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="quota != null">quota = #{quota},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEtcQuotaById" parameterType="String">
+        delete from etc_quota where id = #{id}
+    </delete>
+
+    <delete id="deleteEtcQuotaByIds" parameterType="String">
+        delete from etc_quota where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

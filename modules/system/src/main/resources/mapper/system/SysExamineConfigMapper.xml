@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.system.mapper.SysExamineConfigMapper">
+    <resultMap type="com.dlzx.system.domain.SysExamineConfig" id="SysExamineConfigResult">
+        <result property="id" column="id"/>
+        <result property="type" column="type"/>
+        <result property="level" column="level"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="roleName" column="role_name"/>
+        <result property="ccRoleName" column="cc_Role_Name"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectSysExamineConfigVo">
+        select sysConfig.id, sysConfig.type, sysConfig.level, sysConfig.delete_flag,sysConfig.role_name,sysConfig.cc_role_name, sysConfig.create_by, sysConfig.create_time, sysConfig.update_by, sysConfig.update_time
+        ,sysDict.dict_label as typeEnum
+        from
+        sys_examine_config as sysConfig
+        left join
+        sys_dict_data as sysDict
+        ON sysDict.dict_value = sysConfig.type AND sysDict.dict_type = 'sys_examine_config_type'
+    </sql>
+
+    <select id="selectSysExamineConfigList" parameterType="com.dlzx.system.domain.SysExamineConfig"
+            resultMap="SysExamineConfigResult">
+        <include refid="selectSysExamineConfigVo"/>
+        <where>
+            <if test="type != null ">and sysConfig.type = #{type}</if>
+             and sysConfig.delete_flag = '1'
+        </where>
+
+    </select>
+
+    <update id="updateSysExamineConfig" parameterType="com.dlzx.system.domain.SysExamineConfig">
+        update sys_examine_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="roleName != null">role_name = #{roleName},</if>
+            <if test="ccRoleName != null">cc_role_name = #{ccRoleName},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+</mapper>

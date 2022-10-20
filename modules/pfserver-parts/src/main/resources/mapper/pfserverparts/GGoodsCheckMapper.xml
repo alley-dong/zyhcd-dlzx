@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsCheckMapper">
+    
+    <resultMap type="GGoodsCheck" id="GGoodsCheckResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="goodsTypeId"    column="goods_type_id"    />
+        <result property="goodsTypeName"    column="goods_type_name"    />
+        <result property="status"    column="status"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="beginTimes"    column="beginTimes"    />
+        <result property="endTimes"    column="endTimes"    />
+    </resultMap>
+
+    <sql id="selectGGoodsCheckVo">
+        select id, code, goods_type_id, goods_type_name, status, delete_flag, create_by, create_time, update_by, update_time from g_goods_check
+    </sql>
+
+    <select id="selectGGoodsCheckList" parameterType="GGoodsCheck" resultMap="GGoodsCheckResult">
+        <include refid="selectGGoodsCheckVo"/>
+        <where>
+          delete_flag = '1'
+            <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+            <if test="updateTime != null "> and update_time = #{updateTime}</if>
+            <if test="beginTimes != null">
+                <![CDATA[
+				    and DATE_FORMAT(create_time,'%Y-%m-%d') >= #{beginTimes,jdbcType=VARCHAR}
+			    ]]>
+            </if>
+            <if test="endTimes != null ">
+                <![CDATA[
+				    and DATE_FORMAT(create_time,'%Y-%m-%d') <= #{endTimes,jdbcType=VARCHAR}
+			    ]]>
+            </if>
+        </where>
+        order by status asc , create_time desc
+    </select>
+    
+    <select id="selectGGoodsCheckById" parameterType="String" resultMap="GGoodsCheckResult">
+        <include refid="selectGGoodsCheckVo"/>
+        where id = #{id} and delete_flag = '1'
+    </select>
+
+    <select id="selectGGoodsCheckByCheckId" parameterType="String" resultMap="GGoodsCheckResult">
+        <include refid="selectGGoodsCheckVo"/>
+        where id = #{id} and delete_flag = '1'
+    </select>
+
+    <select id="countAll" parameterType="String" resultMap="GGoodsCheckResult">
+        select * from g_goods_check where goods_type_id=#{goodsTypeId} and delete_flag = '1' and status = 1
+    </select>
+
+    <select id="countAllEdit" resultType="int">
+        select count(*) from g_goods_type where name = #{name} and id != #{id} and delete_flag = '1'
+    </select>
+
+    <select id="selectGGoodsCheckByGoodsTypeId" resultType="string">
+        select id from g_goods_check where goods_type_id=#{goodsTypeId} and delete_flag = '1'
+    </select>
+
+    <select id="queryAdminGGoodsCheckList" parameterType="com.dlzx.pfserverparts.domain.GGoodsCheck" resultMap="GGoodsCheckResult">
+        <include refid="selectGGoodsCheckVo"/>
+        <where>
+            delete_flag = '1'
+            <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+            <if test="updateTime != null "> and update_time = #{updateTime}</if>
+            <if test="beginTimes != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(create_time, '%Y-%m') = #{beginTimes}
+			    ]]>
+            </if>
+        </where>
+        order by status asc , create_time desc
+
+    </select>
+
+    <insert id="insertGGoodsCheck" parameterType="com.dlzx.pfserverparts.domain.GGoodsCheck">
+        insert into g_goods_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="code != null">code,</if>
+            <if test="goodsTypeId != null">goods_type_id,</if>
+            <if test="goodsTypeName != null">goods_type_name,</if>
+            <if test="status != null">status,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="code != null">#{code},</if>
+            <if test="goodsTypeId != null">#{goodsTypeId},</if>
+            <if test="goodsTypeName != null">#{goodsTypeName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGGoodsCheck" parameterType="com.dlzx.pfserverparts.domain.GGoodsCheck">
+        update g_goods_check
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="goodsTypeId != null">goods_type_id = #{goodsTypeId},</if>
+            <if test="goodsTypeName != null">goods_type_name = #{goodsTypeName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsCheckById" parameterType="String">
+        delete from g_goods_check where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsCheckByIds" parameterType="String">
+        delete from g_goods_check where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

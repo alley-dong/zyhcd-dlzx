@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.job.mapper.CVehicleMapper">
+    
+    <resultMap type="CVehicle" id="CVehicleResult">
+        <result property="id"    column="id"    />
+        <result property="identifier"    column="identifier"    />
+        <result property="vehicleTypeName"  column="vehicle_type_name" />
+        <result property="vehicleModelName" column="vehicle_model_name"  />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="brand"    column="brand"    />
+        <result property="driveForm"    column="drive_form"    />
+        <result property="horsepower"    column="horsepower"    />
+        <result property="engineNumber"    column="engine_number"    />
+        <result property="frameNumber"    column="frame_number"    />
+        <result property="gearbox"    column="gearbox"    />
+        <result property="engine"    column="engine"    />
+        <result property="fuelType"    column="fuel_type"    />
+        <result property="rearAxle"    column="rear_axle"    />
+        <result property="manufacturer"    column="manufacturer"    />
+        <result property="mainTankVolume"    column="main_tank_volume"    />
+        <result property="viceTankVolume"    column="vice_tank_volume"    />
+        <result property="totalMass"    column="total_mass"    />
+        <result property="approvedLoad"    column="approved_load"    />
+        <result property="curbWeight"    column="curb_weight"    />
+        <result property="distributor"    column="distributor"    />
+        <result property="purchaseDate"    column="purchase_date"    />
+        <result property="purchasePrice"    column="purchase_price"    />
+        <result property="purchaseTax"    column="purchase_tax"    />
+        <result property="originalPrice"    column="original_price"    />
+        <result property="gpsCost"    column="gps_cost"    />
+        <result property="inspectCost"    column="inspect_cost"    />
+        <result property="scrapDate"    column="scrap_date"    />
+        <result property="registerDate"    column="register_date"    />
+        <result property="isInspect"    column="is_inspect"    />
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="nextInspectDate"    column="next_inspect_date"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="vehicleType"  column="vehicle_type" />
+        <result property="vehicleModel"  column="vehicle_model" />
+        <result property="vehicleStatus" column="vehicle_status" />
+        <result property="insuranceStartDate" column="insurance_start_date" />
+        <result property="insuranceEndDate" column="insurance_end_date" />
+        <result property="insuranceHandleTime" column="insurance_handle_time" />
+        <result property="color"    column="color"    />
+        <result property="conductor"    column="conductor"    />
+        <result property="permit"    column="permit"    />
+        <result property="cardNumber"    column="card_number"    />
+        <result property="lasting"    column="lasting"    />
+        <result property="wide"    column="wide"    />
+        <result property="high"    column="high"    />
+
+        <result property="typeId"  column="type_id" />
+        <result property="name"  column="name" />
+        <result property="type"  column="type" />
+    </resultMap>
+
+    <sql id="selectCVehicleVo">
+        select id, identifier, vehicle_model_name,license_plate, brand, drive_form, horsepower, engine_number, frame_number, gearbox, engine, fuel_type, rear_axle, manufacturer, main_tank_volume, vice_tank_volume, total_mass, approved_load, curb_weight, distributor, purchase_date, purchase_price, purchase_tax, original_price, gps_cost, inspect_cost, scrap_date, register_date, is_inspect, inspect_date, next_inspect_date, delete_flag, create_by, create_time,update_by,update_time,vehicle_type,vehicle_model,vehicle_status,vehicle_type_name,color,conductor,permit,card_number,lasting,wide,high,insurance_start_date,insurance_end_date,insurance_handle_time from c_vehicle
+    </sql>
+
+    <select id="selectCVehicleIsInspect" resultMap="CVehicleResult">
+        select id, license_plate
+        from c_vehicle
+        where delete_flag = '1' and is_inspect = '1'
+    </select>
+
+    <select id="selectCVehicleList" parameterType="CVehicle" resultMap="CVehicleResult">
+        select c.id, identifier, vehicle_model_name,license_plate, brand, drive_form, horsepower, engine_number
+        , frame_number, gearbox, engine, fuel_type, rear_axle, manufacturer, main_tank_volume, vice_tank_volume
+        , total_mass, approved_load, curb_weight, distributor, purchase_date, purchase_price, purchase_tax, original_price
+        , gps_cost, inspect_cost, scrap_date, register_date, is_inspect, inspect_date, next_inspect_date, c.delete_flag, c.create_by
+        , c.create_time,c.update_by,c.update_time,vehicle_type,vehicle_model,vehicle_status,vehicle_type_name,color,conductor,permit
+        ,card_number,lasting,wide,high,insurance_start_date,insurance_end_date,insurance_handle_time
+        from c_vehicle c
+        LEFT JOIN sys_dictionary sys
+        ON c.vehicle_type = sys.id
+        <where>
+            sys.name = '主车' and sys.parent_id =1 and c.delete_flag = 1
+
+            and c.delete_flag = '1'
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+    
+</mapper>

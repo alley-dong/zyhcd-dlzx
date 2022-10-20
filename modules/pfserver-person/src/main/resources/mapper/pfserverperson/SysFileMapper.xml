@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.SysFileMapper">
+    
+    <resultMap type="com.dlzx.pfserverperson.domain.SysFile" id="SysFileResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="relationId"    column="relation_id"    />
+        <result property="fileType"    column="file_type"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="fileSuffix"    column="file_suffix"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysFileVo">
+        select id, type, relation_id, file_type, file_name, file_path, file_suffix, delete_flag, create_user, create_time, update_user, update_time from sys_file
+    </sql>
+
+    <select id="selectSysFileList" parameterType="com.dlzx.pfserverperson.domain.SysFile" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="relationId != null  and relationId != ''"> and relation_id = #{relationId}</if>
+            <if test="fileType != null "> and file_type = #{fileType}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="fileSuffix != null  and fileSuffix != ''"> and file_suffix = #{fileSuffix}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="createUser != null  and createUser != ''"> and create_user = #{createUser}</if>
+            <if test="updateUser != null  and updateUser != ''"> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysFileById" parameterType="Long" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSysFileByListId" parameterType="String" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where relation_id = #{id}
+    </select>
+
+    <insert id="insertSysFile" parameterType="com.dlzx.pfserverperson.domain.SysFile">
+        insert into sys_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="relationId != null">relation_id,</if>
+            <if test="fileType != null">file_type,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="filePath != null">file_path,</if>
+            <if test="fileSuffix != null">file_suffix,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="relationId != null">#{relationId},</if>
+            <if test="fileType != null">#{fileType},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="filePath != null">#{filePath},</if>
+            <if test="fileSuffix != null">#{fileSuffix},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <select id="queryFilesByRelationId" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where delete_flag = 1 and relation_id = #{relationId}
+    </select>
+
+
+    <!--    批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into sys_file (id, type,relation_id, file_path, delete_flag, create_user, create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.type},
+            #{item.relationId},
+            #{item.filePath},
+            #{item.deleteFlag},
+            #{item.createUser},
+            #{item.createTime}
+            )
+        </foreach>
+
+    </insert>
+
+    <update id="updateSysFile" parameterType="com.dlzx.pfserverperson.domain.SysFile">
+        update sys_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="relationId != null">relation_id = #{relationId},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="fileSuffix != null">file_suffix = #{fileSuffix},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateSysFileDel" parameterType="String">
+        update sys_file set delete_flag = '2'
+        where relation_id = #{id} and type = #{type}
+    </update>
+
+    <delete id="deleteSysFileById" parameterType="Long">
+        delete from sys_file where id = #{id}
+    </delete>
+
+    <delete id="deleteSysFileByIds" parameterType="String">
+        delete from sys_file where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--    逻辑删除-->
+    <update id="delelteFilesByRelationId" parameterType="java.lang.String">
+        update sys_file set delete_flag = 2 where relation_id = #{relationId}
+    </update>
+
+    <select id="queryFilesByRelationIdByType" resultMap="SysFileResult">
+        <include refid="selectSysFileVo"/>
+        where delete_flag = 1 and relation_id = #{id} and type = #{type}
+    </select>
+
+</mapper>

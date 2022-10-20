@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskTrayMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskTrayVm" id="TTransportTaskTrayResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="shipUnitGid"    column="ship_unit_gid"    />
+        <result property="tranHandlingUnitGid"    column="tran_handling_unit_gid"    />
+        <result property="tranHandlingUnitName"    column="tran_handling_unit_name"    />
+        <result property="shipUnitCount"    column="ship_unit_count"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskTrayVo">
+        select id, task_id, shipment_xid, order_id, ship_unit_gid, tran_handling_unit_gid, tran_handling_unit_name, ship_unit_count, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_tray
+    </sql>
+
+    <sql id="selectTTransportTaskTrayDetail">
+SELECT
+	tray.id,
+	tray.task_id,
+	tray.shipment_xid,
+	tray.order_id,
+	ship_unit_gid,
+	tran_handling_unit_gid,
+	tran_handling_unit_name,
+	ship_unit_count,
+	tray.delete_flag,
+	tray.create_by,
+	tray.create_time,
+	tray.update_by,
+	tray.update_time
+FROM
+	t_transport_task_tray as tray
+
+    </sql>
+
+    <select id="selectTTransportTaskTrayList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskTrayModel" resultMap="TTransportTaskTrayResult">
+        <include refid="selectTTransportTaskTrayDetail"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and tray.task_id = #{taskId}</if>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and tray.shipment_xid = #{shipmentXid}</if>
+            <if test="orderId != null  and orderId != ''"> and tray.order_id = #{orderId}</if>
+            <if test="shipUnitGid != null  and shipUnitGid != ''"> and tray.ship_unit_gid = #{shipUnitGid}</if>
+            <if test="tranHandlingUnitGid != null  and tranHandlingUnitGid != ''"> and tray.tran_handling_unit_gid = #{tranHandlingUnitGid}</if>
+            <if test="tranHandlingUnitName != null  and tranHandlingUnitName != ''"> and tray.tran_handling_unit_name like concat('%', #{tranHandlingUnitName}, '%')</if>
+            <if test="shipUnitCount != null "> and tray.ship_unit_count = #{shipUnitCount}</if>
+            <if test="deleteFlag != null "> and tray.delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskTrayById" parameterType="String" resultMap="TTransportTaskTrayResult">
+        <include refid="selectTTransportTaskTrayVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTTransportTaskTray" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskTrayModel">
+        insert into t_transport_task_tray
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="shipUnitGid != null">ship_unit_gid,</if>
+            <if test="tranHandlingUnitGid != null">tran_handling_unit_gid,</if>
+            <if test="tranHandlingUnitName != null">tran_handling_unit_name,</if>
+            <if test="shipUnitCount != null">ship_unit_count,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="shipUnitGid != null">#{shipUnitGid},</if>
+            <if test="tranHandlingUnitGid != null">#{tranHandlingUnitGid},</if>
+            <if test="tranHandlingUnitName != null">#{tranHandlingUnitName},</if>
+            <if test="shipUnitCount != null">#{shipUnitCount},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskTray" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskTrayModel">
+        update t_transport_task_tray
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="shipUnitGid != null">ship_unit_gid = #{shipUnitGid},</if>
+            <if test="tranHandlingUnitGid != null">tran_handling_unit_gid = #{tranHandlingUnitGid},</if>
+            <if test="tranHandlingUnitName != null">tran_handling_unit_name = #{tranHandlingUnitName},</if>
+            <if test="shipUnitCount != null">ship_unit_count = #{shipUnitCount},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskTrayById" parameterType="String">
+        delete from t_transport_task_tray where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskTrayByIds" parameterType="String">
+        delete from t_transport_task_tray where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <insert id="insertOTMTransportTaskTray">
+        insert into t_transport_task_tray
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">id,</if>
+            <if test="SHIPMENT_GID != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="ORDER_MOVEMENT_GID != null">order_id,</if>
+            <if test="SHIP_UNIT_GID != null">ship_unit_gid,</if>
+            <if test="TRAN_HANDLING_UNIT_GID != null">tran_handling_unit_gid,</if>
+            <if test="TRAN_HANDLING_UNIT_NAME != null">tran_handling_unit_name,</if>
+            <if test="SHIP_UNIT_COUNT != null">ship_unit_count,</if>
+            delete_flag,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">#{TEMPLATE_ID},</if>
+            <if test="SHIPMENT_GID != null">#{SHIPMENT_GID},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="ORDER_MOVEMENT_GID != null">#{ORDER_MOVEMENT_GID},</if>
+            <if test="SHIP_UNIT_GID != null">#{SHIP_UNIT_GID},</if>
+            <if test="TRAN_HANDLING_UNIT_GID != null">#{TRAN_HANDLING_UNIT_GID},</if>
+            <if test="TRAN_HANDLING_UNIT_NAME != null">#{TRAN_HANDLING_UNIT_NAME},</if>
+            <if test="SHIP_UNIT_COUNT != null">#{SHIP_UNIT_COUNT},</if>
+            1,
+            now()
+        </trim>
+    </insert>
+
+</mapper>

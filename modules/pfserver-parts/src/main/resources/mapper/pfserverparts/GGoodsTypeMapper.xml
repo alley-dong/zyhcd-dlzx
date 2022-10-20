@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsTypeMapper">
+    
+    <resultMap type="GGoodsType" id="GGoodsTypeResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isDelete"    column="is_delete"    />
+    </resultMap>
+
+    <sql id="selectGGoodsTypeVo">
+        select id, status, name,type, delete_flag, create_by, create_time, update_by, update_time, is_delete from g_goods_type
+    </sql>
+
+    <select id="selectGGoodsTypeList" parameterType="GGoodsType" resultMap="GGoodsTypeResult">
+        <include refid="selectGGoodsTypeVo"/>
+        <where>
+            delete_flag = '1'
+            <if test="status != null "> and status = #{status}</if>
+            <if test="id != null "> and id = #{id}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="isDelete != null "> and is_delete = #{isDelete}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+        order by is_delete desc
+    </select>
+
+    <select id="countAll" parameterType="String" resultType="int">
+        select count(name) from g_goods_type where name=#{name} and delete_flag = 1
+    </select>
+
+    <select id="countAllEdit" resultType="int">
+        select count(*) from g_goods_type where name = #{name} and delete_flag = 1
+    </select>
+    
+    <select id="selectGGoodsTypeById" parameterType="String" resultMap="GGoodsTypeResult">
+        <include refid="selectGGoodsTypeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGGoodsType" parameterType="GGoodsType">
+        insert into g_goods_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="status != null">status,</if>
+            <if test="name != null">name,</if>
+            <if test="type != null">type,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDelete != null">is_delete,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="status != null">#{status},</if>
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDelete != null">#{isDelete},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGGoodsType" parameterType="GGoodsType">
+        update g_goods_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsTypeById" parameterType="String">
+        delete from g_goods_type where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsTypeByIds" parameterType="String">
+        delete from g_goods_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="queryIsdeleteGoodTypeList" resultMap="GGoodsTypeResult">
+        <include refid="selectGGoodsTypeVo"/>
+        <where>
+            delete_flag = 1
+        </where>
+        order by is_delete desc , create_time asc
+    </select>
+
+</mapper>

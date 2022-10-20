@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RDepreciationCostMapper">
+
+    <resultMap type="com.dlzx.pfservercar.domain.RDepreciationCost" id="RDepreciationCostResult">
+        <result property="id" column="id"/>
+        <result property="depreciationMonth" column="depreciation_month"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="vehicleId" column="vehicle_id"/>
+        <result property="depreciationCost" column="depreciation_cost"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectRDepreciationCostVo">
+        select id, depreciation_month, license_plate, vehicle_id, depreciation_cost, delete_flag, create_by, create_time, update_by, update_time from r_depreciation_cost
+    </sql>
+
+    <select id="selectRDepreciationCostList" parameterType="com.dlzx.pfservercar.domain.RDepreciationCost"
+            resultMap="RDepreciationCostResult">
+        <include refid="selectRDepreciationCostVo"/>
+        <where>
+            <if test="beginDepreciationMonth != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(depreciation_month, '%Y-%m') >= DATE_FORMAT(#{beginDepreciationMonth}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="endDepreciationMonth != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(depreciation_month, '%Y-%m') <= DATE_FORMAT(#{endDepreciationMonth}, '%Y-%m')
+			    ]]>
+            </if>
+
+            <if test="licensePlates != null and licensePlates.size() != 0">
+                and license_plate IN
+                <foreach collection="licensePlates" item="licensePlate" index="index" open="(" close=")" separator=",">
+                    #{licensePlate}
+                </foreach>
+            </if>
+            AND delete_flag ='1'
+        </where>
+        ORDER BY  depreciation_month DESC
+    </select>
+
+
+    <select id="selectRDepreciationCostMoney" parameterType="com.dlzx.pfservercar.domain.RDepreciationCost"
+            resultType="java.math.BigDecimal">
+        select
+        sum(depreciation_cost ) as depreciationCost
+        FROM r_depreciation_cost
+        <where>
+            <if test="beginDepreciationMonth != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(depreciation_month, '%Y-%m') >= DATE_FORMAT(#{beginDepreciationMonth}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="endDepreciationMonth != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(depreciation_month, '%Y-%m') <= DATE_FORMAT(#{endDepreciationMonth}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="licensePlates != null and licensePlates.size() != 0">
+                and license_plate IN
+                <foreach collection="licensePlates" item="licensePlate" index="index" open="(" close=")" separator=",">
+                    #{licensePlate}
+                </foreach>
+            </if>
+            and delete_flag ='1'
+        </where>
+
+    </select>
+
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into r_depreciation_cost (
+        id,depreciation_month,license_plate,vehicle_id,depreciation_cost,delete_flag,create_by,create_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.depreciationMonth,jdbcType=TIMESTAMP},
+            #{item.licensePlate,jdbcType=VARCHAR},
+            #{item.vehicleId,jdbcType=VARCHAR},
+            #{item.depreciationCost,jdbcType=DECIMAL},
+            #{item.deleteFlag,jdbcType=INTEGER},
+            #{item.createBy,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+
+    </insert>
+
+    <select id="selectListRDepreciationCostCost" resultMap="RDepreciationCostResult">
+        select  vehicle_id,license_plate from r_depreciation_cost
+    </select>
+
+    <select id="queryLicensePlatePullDown" resultType="java.lang.String">
+    select license_plate from r_depreciation_cost where delete_flag = 1 group by license_plate
+    </select>
+
+
+<!--    ERP费用-->
+    <select id="queryERPDepreciationCostList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel" resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+
+        select id, depreciation_month as depreciationMonth, license_plate as licensePlate, vehicle_id
+        , depreciation_cost depreciationCost, delete_flag, create_by, create_time
+        , update_by, update_time
+        from r_depreciation_cost
+        <where>
+
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(depreciation_month, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(depreciation_month, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+
+            AND delete_flag ='1'
+        </where>
+        ORDER BY  depreciation_month DESC
+    </select>
+
+</mapper>

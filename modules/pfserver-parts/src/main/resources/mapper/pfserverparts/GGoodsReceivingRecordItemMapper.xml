@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsReceivingRecordItemMapper">
+    
+    <resultMap type="GGoodsReceivingRecordItem" id="GGoodsReceivingRecordItemResult">
+        <result property="id"    column="id"    />
+        <result property="recordId"    column="record_id"    />
+        <result property="goodsTypeId"    column="goods_type_id"    />
+        <result property="goodsTypeName"    column="goods_type_name"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="number"    column="number"    />
+    </resultMap>
+
+    <sql id="selectGGoodsReceivingRecordItemVo">
+        select id, record_id, goods_type_id, goods_type_name, goods_id, goods_name, number from g_goods_receiving_record_item
+    </sql>
+
+    <sql id="selectGGoodsReceivingRecordItemDetail">
+        SELECT
+	item.id,
+	item.record_id,
+	item.goods_type_id,
+	item.goods_type_name,
+	item.goods_id,
+	item.goods_name,
+	item.number,
+goods.amount
+FROM
+	g_goods_receiving_record_item item LEFT JOIN g_goods goods ON item.goods_id = goods.id
+    </sql>
+
+    <select id="selectGGoodsReceivingRecordItemList" parameterType="GGoodsReceivingRecordItem" resultMap="GGoodsReceivingRecordItemResult">
+        <include refid="selectGGoodsReceivingRecordItemVo"/>
+        <where>
+            <if test="recordId != null  and recordId != ''"> and record_id = #{recordId}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="number != null "> and number = #{number}</if>
+        </where>
+    </select>
+    
+    <select id="selectGGoodsReceivingRecordItemById" parameterType="String" resultMap="GGoodsReceivingRecordItemResult">
+        <include refid="selectGGoodsReceivingRecordItemVo"/>
+        where id = #{id}
+    </select>
+
+<!--    app获取备件列表-->
+    <select id="queryGGoodsReceivingRecordItemList" parameterType="GGoodsReceivingRecordItem" resultMap="GGoodsReceivingRecordItemResult">
+        <include refid="selectGGoodsReceivingRecordItemDetail"/>
+        <where>
+            <if test="recordId != null  and recordId != ''"> and item.record_id = #{recordId}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and item.goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and item.goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="goodsId != null  and goodsId != ''"> and item.goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and item.goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="number != null "> and item.number = #{number}</if>
+        </where>
+    </select>
+
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into g_goods_receiving_record_item (
+            id, record_id, goods_type_id, goods_type_name, goods_id, goods_name, number
+         )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.recordId,jdbcType=VARCHAR},
+            #{item.goodsTypeId,jdbcType=VARCHAR},
+            #{item.goodsTypeName,jdbcType=VARCHAR},
+            #{item.goodsId,jdbcType=INTEGER},
+            #{item.goodsName,jdbcType=VARCHAR},
+            #{item.number,jdbcType=VARCHAR}
+            )
+        </foreach>
+
+    </insert>
+
+
+    <insert id="insertGGoodsReceivingRecordItem" parameterType="GGoodsReceivingRecordItem">
+        insert into g_goods_receiving_record_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="goodsTypeId != null">goods_type_id,</if>
+            <if test="goodsTypeName != null">goods_type_name,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="number != null">number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="goodsTypeId != null">#{goodsTypeId},</if>
+            <if test="goodsTypeName != null">#{goodsTypeName},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="number != null">#{number},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGGoodsReceivingRecordItem" parameterType="GGoodsReceivingRecordItem">
+        update g_goods_receiving_record_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="goodsTypeId != null">goods_type_id = #{goodsTypeId},</if>
+            <if test="goodsTypeName != null">goods_type_name = #{goodsTypeName},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="number != null">number = #{number},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsReceivingRecordItemById" parameterType="String">
+        delete from g_goods_receiving_record_item where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsReceivingRecordItemByIds" parameterType="String">
+        delete from g_goods_receiving_record_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteGoodsItemByRecordId" parameterType="String">
+        delete from g_goods_receiving_record_item where record_id = #{recordId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DVacationMapper">
+    
+    <resultMap type="com.dlzx.pfserverperson.domain.DVacation" id="DVacationResult">
+        <result property="id"    column="id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="type"    column="type"    />
+        <result property="vStartTime"    column="v_start_time"    />
+        <result property="vEndTime"    column="v_end_time"    />
+        <result property="duration"    column="duration"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDVacationVo">
+        select id, driver_id, driver_name, type, v_start_time, v_end_time, duration, remarks, status, review_time, review_user, review_remarks
+        , delete_flag, create_by, create_time, update_by, update_time from d_vacation
+    </sql>
+
+    <sql id="selectDVacationDetail">
+        select
+        d.id,d.driver_id,d.driver_name,d.type,d.v_start_time,d.v_end_time,d.duration,d.remarks,d.status,d.review_time
+        ,d.review_user,d.review_remarks,d.delete_flag,d.create_by,d.create_time,d.update_by,d.update_time
+        ,sysStatus.dict_label as statusEnum
+        ,leaveType.name as typeEnum
+        from d_vacation d
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = d.status AND sysStatus.dict_type = 'd_vacation_check_status'
+        LEFT JOIN d_leave_type leaveType ON leaveType.id = d.type
+    </sql>
+
+    <select id="selectDVacationList" parameterType="com.dlzx.pfserverperson.domain.DVacation" resultMap="DVacationResult">
+        <include refid="selectDVacationDetail"/>
+        <where>
+            <if test="driverId != null  and driverId != ''"> and d.driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and d.driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="type != null "> and d.type = #{type}</if>
+            <if test="vStartTime != null ">
+                <![CDATA[
+				and	DATE_FORMAT(d.v_start_time, '%Y-%m-%d') >= DATE_FORMAT(#{vStartTime}, '%Y-%m-%d')
+			]]>
+            </if>
+            <if test="vEndTime != null ">
+                <![CDATA[
+				and	DATE_FORMAT(d.v_end_time, '%Y-%m-%d') <= DATE_FORMAT(#{vEndTime}, '%Y-%m-%d')
+			]]>
+            </if>
+            <if test="duration != null "> and d.duration = #{duration}</if>
+            <if test="remarks != null  and remarks != ''"> and d.remarks = #{remarks}</if>
+            <if test="status != null "> and d.status = #{status}</if>
+            <if test="reviewTime != null "> and d.review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and d.review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and d.review_remarks = #{reviewRemarks}</if>
+            and d.delete_flag = 1
+        </where>
+        order by d.create_time desc
+    </select>
+
+    <select id="selectDVacationById" parameterType="String" resultMap="DVacationResult">
+        <include refid="selectDVacationDetail"/>
+        where d.id = #{id} and d.delete_flag = 1
+    </select>
+
+
+    <select id="queryLeaveStatistics" resultType="com.dlzx.pfserverperson.domain.DVacation">
+        SELECT
+	d.driver_name as driverName,
+	SUM( d.duration ) as days,
+	d.driver_id as driverId
+FROM
+	d_vacation d
+	where delete_flag = 1 and d.status = 2
+        <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+        <if test="vStartTime != null ">
+            <![CDATA[
+				and	DATE_FORMAT(v_start_time, '%Y-%m-%d') >= DATE_FORMAT(#{vStartTime}, '%Y-%m-%d')
+			]]>
+         </if>
+        <if test="vEndTime != null ">
+            <![CDATA[
+				and	DATE_FORMAT(v_end_time, '%Y-%m-%d') <= DATE_FORMAT(#{vEndTime}, '%Y-%m-%d')
+			]]>
+        </if>
+GROUP BY
+	d.driver_id
+
+    </select>
+
+    <select id="queryInDriverIds" resultType="com.dlzx.pfserverperson.domain.DVacation">
+        select
+        d.v_start_time as vStartTime,
+        d.v_end_time as vEndTime,
+        d.driver_id as driverId,
+        leaveType.name as typeEnum
+        from d_vacation d
+        LEFT JOIN d_leave_type leaveType ON leaveType.id = d.type
+        where d.delete_flag = 1 and d.status = 2
+        <if test="vStartTime != null ">
+            <![CDATA[
+				and	DATE_FORMAT(v_start_time, '%Y-%m-%d') >= DATE_FORMAT(#{vStartTime}, '%Y-%m-%d')
+			]]>
+        </if>
+        <if test="vEndTime != null ">
+            <![CDATA[
+				and	DATE_FORMAT(v_end_time, '%Y-%m-%d') <= DATE_FORMAT(#{vEndTime}, '%Y-%m-%d')
+			]]>
+        </if>
+        <if test="list != null and list.size>0">
+            and
+            driver_id in
+            <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <update id="checkDVacation" parameterType="com.dlzx.pfserverperson.domain.DVacation">
+        update d_vacation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <insert id="insertDVacation" parameterType="com.dlzx.pfserverperson.domain.DVacation">
+        insert into d_vacation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="type != null">type,</if>
+            <if test="vStartTime != null">v_start_time,</if>
+            <if test="vEndTime != null">v_end_time,</if>
+            <if test="duration != null">duration,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="type != null">#{type},</if>
+            <if test="vStartTime != null">#{vStartTime},</if>
+            <if test="vEndTime != null">#{vEndTime},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDVacation" parameterType="com.dlzx.pfserverperson.domain.DVacation">
+        update d_vacation
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="vStartTime != null">v_start_time = #{vStartTime},</if>
+            <if test="vEndTime != null">v_end_time = #{vEndTime},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDVacationById" parameterType="String">
+        delete from d_vacation where id = #{id}
+    </delete>
+
+    <delete id="deleteDVacationByIds" parameterType="String">
+        delete from d_vacation where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+<!--   =========分割线=======APP===========   -->
+
+    <sql id="selectAppDVacation">
+        d.id,d.driver_id,d.driver_name,d.type,d.v_start_time,d.v_end_time,d.duration,d.remarks,d.status,d.review_time,d.review_user,d.review_remarks,d.delete_flag,d.create_by,d.create_time,d.update_by,d.update_time
+    </sql>
+
+<!--    获取驾驶员请假记录  -->
+    <select id="queryAppVacationList" parameterType="com.dlzx.pfserverperson.domain.DVacation" resultMap="DVacationResult">
+        SELECT
+        <include refid="selectAppDVacation"/>
+
+        ,sysStatus.dict_label as statusEnum
+        ,leaveType.name as typeEnum
+        FROM
+        d_vacation d
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = d.status AND sysStatus.dict_type = 'd_vacation_check_status'
+        LEFT JOIN d_leave_type leaveType ON leaveType.id = d.type
+
+        <where>
+            d.delete_flag = 1
+            <if test="status != null "> and d.status = #{status}</if>
+            and d.driver_id = #{driverId}
+        </where>
+        order by d.create_time desc
+    </select>
+
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.system.mapper.SysExamineConfigProcessMapper">
+
+    <resultMap type="com.dlzx.system.domain.SysExamineConfigProcess" id="SysExamineConfigProcessResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="configId"    column="config_id"    />
+        <result property="level"    column="level"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="roleName"    column="role_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="ccRoleId"    column="cc_role_id"    />
+        <result property="ccRoleName"    column="cc_role_name"    />
+        <result property="ccUserId"    column="cc_user_id"    />
+        <result property="ccUserName"    column="cc_user_name"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysExamineConfigProcessVo">
+        select id, type, config_id, level, role_id, role_name, user_id, user_name, cc_role_id, cc_role_name, cc_user_id, cc_user_name, delete_flag, create_by, create_time, update_by, update_time from sys_examine_config_process
+    </sql>
+
+    <select id="selectSysExamineConfigProcessList" parameterType="String" resultMap="SysExamineConfigProcessResult">
+        <include refid="selectSysExamineConfigProcessVo"/>
+        where config_id = #{configId}
+        and delete_flag = '1'
+        ORDER BY level asc
+    </select>
+
+    <select id="selectSysExamineConfigProcessByType" parameterType="Long" resultMap="SysExamineConfigProcessResult">
+    <include refid="selectSysExamineConfigProcessVo"/>
+        WHERE type =#{type} and delete_flag = '1'
+        ORDER BY  level  ASC
+    </select>
+
+    <!--修改-->
+    <update id="updateSysExamineConfigProcess" parameterType="com.dlzx.system.domain.SysExamineConfigProcess">
+        update sys_examine_config_process
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="level != null">level = #{level},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="roleName != null">role_name = #{roleName},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="ccRoleId != null">cc_role_id = #{ccRoleId},</if>
+            <if test="ccRoleName != null">cc_role_name = #{ccRoleName},</if>
+            <if test="ccUserId != null">cc_user_id = #{ccUserId},</if>
+            <if test="ccUserName != null">cc_user_name = #{ccUserName},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--删除-->
+    <delete id="deleteSysExamineConfigProcessById" parameterType="String">
+         update  sys_examine_config_process
+          set delete_flag='2'
+          where id = #{id}
+    </delete>
+
+    <!--真删除-->
+    <delete id="deleteById" parameterType="String">
+        delete from sys_examine_config_process
+        where id = #{id}
+    </delete>
+
+    <!--新增-->
+    <insert id="insertSysExamineConfigProcess" parameterType="com.dlzx.system.domain.SysExamineConfigProcess">
+        insert into sys_examine_config_process
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="configId != null">config_id,</if>
+            <if test="level != null">level,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="roleName != null">role_name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="ccRoleId != null">cc_role_id,</if>
+            <if test="ccRoleName != null">cc_role_name,</if>
+            <if test="ccUserId != null">cc_user_id,</if>
+            <if test="ccUserName != null">cc_user_name,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="configId != null">#{configId},</if>
+            <if test="level != null">#{level},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="roleName != null">#{roleName},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="ccRoleId != null">#{ccRoleId},</if>
+            <if test="ccRoleName != null">#{ccRoleName},</if>
+            <if test="ccUserId != null">#{ccUserId},</if>
+            <if test="ccUserName != null">#{ccUserName},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <select id="selectMaxRank" resultType="Long" parameterType="com.dlzx.system.domain.SysExamineConfigProcess">
+           select max(level)+1  from sys_examine_config_process where type=#{type} and delete_flag='1' and config_id=#{configId}
+     </select>
+
+      <select id="selectSysExamineConfigProcessResult" parameterType="String" resultMap="SysExamineConfigProcessResult">
+         SELECT
+         config_id,
+         group_concat(role_name) AS role_name,
+         group_concat(cc_role_name) AS cc_role_name,
+        MAX(`level`) AS `level`
+        FROM
+        sys_examine_config_process
+        WHERE config_id =#{configId}
+        AND delete_flag = '1'
+
+      GROUP BY
+      config_id
+      </select>
+
+    <select id="selectMaxRanks" resultType="Long" parameterType="com.dlzx.system.domain.SysExamineConfigProcess">
+           select max(level) from sys_examine_config_process where type=#{type} and delete_flag='1' and config_id=#{configId}
+     </select>
+    <select id="querySysExamineConfigProcessByType" resultMap="SysExamineConfigProcessResult">
+        <include refid="selectSysExamineConfigProcessVo"/>
+        WHERE type =#{type} and config_id = #{id} and user_id = #{userId} and delete_flag = '1'
+        ORDER BY level  ASC limit 1
+    </select>
+
+
+</mapper>

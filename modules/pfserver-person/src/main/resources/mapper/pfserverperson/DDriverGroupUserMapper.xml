@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverGroupUserMapper">
+    
+    <resultMap type="DDriverGroupUser" id="DDriverGroupUserResult">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="driverSex"    column="driver_sex"    />
+        <result property="tel"    column="tel"    />
+        <result property="idCard"    column="id_card"    />
+    </resultMap>
+
+    <sql id="selectDDriverGroupUserVo">
+        select id, group_id, driver_id, driver_name, driver_sex, tel, id_card from d_driver_group_user
+    </sql>
+
+    <select id="selectDDriverGroupUserList" parameterType="DDriverGroupUser" resultMap="DDriverGroupUserResult">
+        <include refid="selectDDriverGroupUserVo"/>
+        <where>
+            <if test="groupId != null  and groupId != ''"> and group_id = #{groupId}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="driverSex != null  and driverSex != ''"> and driver_sex = #{driverSex}</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="idCard != null  and idCard != ''"> and id_card = #{idCard}</if>
+        </where>
+    </select>
+
+    <select id="selectDDriverGroupUserListS" resultType="string" >
+        select distinct driver_id from d_driver_group_user where group_id in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectDDriverGroupUserById" parameterType="String" resultMap="DDriverGroupUserResult">
+        <include refid="selectDDriverGroupUserVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDDriverGroupUserListById" parameterType="String" resultMap="DDriverGroupUserResult">
+        <include refid="selectDDriverGroupUserVo"/>
+        where group_id = #{id}
+    </select>
+
+    <insert id="insertDDriverGroupUser" parameterType="DDriverGroupUser">
+        insert into d_driver_group_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="driverSex != null">driver_sex,</if>
+            <if test="tel != null">tel,</if>
+            <if test="idCard != null">id_card,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="driverSex != null">#{driverSex},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="idCard != null">#{idCard},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDDriverGroupUserList">
+        insert into d_driver_group_user( id, group_id, driver_id, driver_name, driver_sex, tel, id_card) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.groupId},#{item.driverId},#{item.driverName},#{item.driverSex},#{item.tel},#{item.idCard})
+        </foreach>
+    </insert>
+
+    <update id="updateDDriverGroupUser" parameterType="DDriverGroupUser">
+        update d_driver_group_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="driverSex != null">driver_sex = #{driverSex},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverGroupUserById" parameterType="String">
+        delete from d_driver_group_user where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverGroupUserByGroupId" parameterType="String">
+        delete from d_driver_group_user where group_id = #{groupId}
+    </delete>
+
+    <delete id="deleteDDriverGroupUserByIds" parameterType="String">
+        delete from d_driver_group_user where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

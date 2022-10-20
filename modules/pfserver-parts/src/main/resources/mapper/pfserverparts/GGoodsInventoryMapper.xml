@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsInventoryMapper">
+
+    <resultMap type="GGoodsInventory" id="GGoodsInventoryResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="code"    column="code" />
+        <result property="inventoryType"    column="inventory_type"    />
+        <result property="goodsTypeId"    column="goods_type_id"    />
+        <result property="goodsTypeName"    column="goods_type_name"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsCode"    column="goods_code"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="specification"    column="specification"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="inventoryTime"    column="inventory_time"    />
+        <result property="inventoryNumber"    column="inventory_number"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="beginTimes"    column="beginTimes"    />
+        <result property="endTimes"    column="endTimes"    />
+        <result property="storageLocation"    column="storage_location"    />
+    </resultMap>
+
+    <sql id="selectGGoodsInventoryVo">
+        select id, type, code, inventory_type, goods_type_id, goods_type_name, goods_id, goods_code, goods_name, specification, unit, unit_price, supplier, inventory_time, inventory_number, remarks, delete_flag, create_by, create_time, update_by, update_time,license_plate,storage_location from g_goods_inventory
+    </sql>
+
+    <select id="selectGGoodsInventoryList" parameterType="GGoodsInventory" resultMap="GGoodsInventoryResult">
+        <include refid="selectGGoodsInventoryVo"/>
+        <where>
+            delete_flag = '1'
+            and inventory_type &lt;&gt; 2
+            and inventory_type &lt;&gt; 5
+            <if test="type != null "> and type = #{type}</if>
+            <if test="code != null "> and code = #{code}</if>
+            <if test="inventoryType != null "> and inventory_type = #{inventoryType}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name = #{goodsTypeName}</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+            <if test="inventoryNumber != null "> and inventory_number = #{inventoryNumber}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="beginTimes != null ">
+                <![CDATA[
+				and	DATE_FORMAT(inventory_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTimes != null ">
+                <![CDATA[
+				and	DATE_FORMAT(inventory_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            order by inventory_time desc
+        </where>
+    </select>
+
+    <select id="selectAllGoodsTypeName" parameterType="String" resultMap="GGoodsInventoryResult">
+        select id, goods_type_id, goods_type_name from g_goods_inventory
+        where delete_flag = '1' and type = #{type}
+    </select>
+
+    <select id="selectAllGoodsTypeNameKC" resultMap="GGoodsInventoryResult">
+        select id, goods_type_id, goods_type_name from g_goods_inventory
+        where delete_flag = '1'
+    </select>
+
+    <select id="selectAllGoodsTypeNameBF" resultMap="GGoodsInventoryResult">
+        select id, goods_type_id, goods_type_name from g_goods_inventory
+        where delete_flag = '1' and type = '2' and inventory_type = '4'
+    </select>
+
+    <select id="countAll" parameterType="String" resultType="int">
+        select count(goods_name) from g_goods_inventory where goods_name=#{goodsName} and delete_flag = '1'
+    </select>
+
+    <select id="countAllEdit" resultType="int">
+        select count(*) from g_goods_inventory where goods_name = #{goodsName} and goods_id != #{goodsId} and delete_flag = '1'
+    </select>
+
+    <select id="selectGGoodsInventoryById" parameterType="String" resultMap="GGoodsInventoryResult">
+        <include refid="selectGGoodsInventoryVo"/>
+        where id = #{id}
+    </select>
+
+    <!-- 获取出库列表  -->
+    <select id="selectGGoodsOutInventoryList" parameterType="com.dlzx.pfserverparts.domain.GGoodsInventory" resultMap="GGoodsInventoryResult">
+        <include refid="selectGGoodsInventoryVo"/>
+        <where>
+            delete_flag = '1'
+            and inventory_type &lt;&gt; 6
+            and inventory_type &lt;&gt; 2
+            and inventory_type &lt;&gt; 5
+            <if test="type != null "> and type = #{type}</if>
+            <if test="code != null "> and code = #{code}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name = #{goodsTypeName}</if>
+            <if test="inventoryType != null  and inventoryType != ''"> and inventory_type = #{inventoryType}</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+            <if test="inventoryNumber != null "> and inventory_number = #{inventoryNumber}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="beginTimes != null ">
+                <![CDATA[
+				and	DATE_FORMAT(inventory_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTimes != null ">
+                <![CDATA[
+				and	DATE_FORMAT(inventory_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            order by inventory_time desc
+        </where>
+    </select>
+
+    <!-- 获取库存明细列表  -->
+    <select id="selectGGoodsInventoryDetailList" parameterType="com.dlzx.pfserverparts.domain.GGoodsInventory" resultMap="GGoodsInventoryResult">
+        <include refid="selectGGoodsInventoryVo"/>
+        <where>
+            delete_flag = '1'
+            and inventory_type &lt;&gt; 6
+            and inventory_type &lt;&gt; 2
+            and inventory_type &lt;&gt; 5
+            <if test="type != null "> and type = #{type}</if>
+            <if test="code != null "> and code = #{code}</if>
+            <if test="inventoryType != null "> and inventory_type = #{inventoryType}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name = #{goodsTypeName}</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+            <if test="inventoryNumber != null "> and inventory_number = #{inventoryNumber}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="beginTimes != null ">
+                <![CDATA[
+				and	DATE_FORMAT(inventory_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTimes != null ">
+                <![CDATA[
+				and	DATE_FORMAT(inventory_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            order by inventory_time desc
+        </where>
+    </select>
+
+    <insert id="insertGGoodsInventory" parameterType="GGoodsInventory">
+        insert into g_goods_inventory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="code != null">code,</if>
+            <if test="inventoryType != null">inventory_type,</if>
+            <if test="goodsTypeId != null">goods_type_id,</if>
+            <if test="goodsTypeName != null">goods_type_name,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsCode != null">goods_code,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="unit != null">unit,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="supplier != null">supplier,</if>
+            <if test="inventoryTime != null">inventory_time,</if>
+            <if test="inventoryNumber != null">inventory_number,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="storageLocation != null">storage_location,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="code != null">#{code},</if>
+            <if test="inventoryType != null">#{inventoryType},</if>
+            <if test="goodsTypeId != null">#{goodsTypeId},</if>
+            <if test="goodsTypeName != null">#{goodsTypeName},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsCode != null">#{goodsCode},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="supplier != null">#{supplier},</if>
+            <if test="inventoryTime != null">#{inventoryTime},</if>
+            <if test="inventoryNumber != null">#{inventoryNumber},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="storageLocation != null">#{storageLocation},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGGoodsInventory" parameterType="GGoodsInventory">
+        update g_goods_inventory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="inventoryType != null">inventory_type = #{inventoryType},</if>
+            <if test="goodsTypeId != null">goods_type_id = #{goodsTypeId},</if>
+            <if test="goodsTypeName != null">goods_type_name = #{goodsTypeName},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsCode != null">goods_code = #{goodsCode},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="supplier != null">supplier = #{supplier},</if>
+            <if test="inventoryTime != null">inventory_time = #{inventoryTime},</if>
+            <if test="inventoryNumber != null">inventory_number = #{inventoryNumber},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="storageLocation != null">storage_location = #{storageLocation},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsInventoryById" parameterType="String">
+        delete from g_goods_inventory where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsInventoryByIds" parameterType="String">
+        delete from g_goods_inventory where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into g_goods_inventory (
+        id, type, code, inventory_type, goods_type_id, goods_type_name
+        , goods_id, goods_code, goods_name, specification, unit, unit_price, supplier, inventory_time, inventory_number
+        , delete_flag, create_by, create_time,license_plate,storage_location
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.type,jdbcType=INTEGER},
+            #{item.code,jdbcType=VARCHAR},
+            #{item.inventoryType,jdbcType=INTEGER},
+            #{item.goodsTypeId,jdbcType=VARCHAR},
+            #{item.goodsTypeName,jdbcType=VARCHAR},
+            #{item.goodsId,jdbcType=VARCHAR},
+            #{item.goodsCode,jdbcType=VARCHAR},
+            #{item.goodsName,jdbcType=VARCHAR},
+            #{item.specification,jdbcType=VARCHAR},
+            #{item.unit,jdbcType=VARCHAR},
+            #{item.unitPrice,jdbcType=DECIMAL},
+            #{item.supplier,jdbcType=VARCHAR},
+            now(),
+            #{item.inventoryNumber,jdbcType=INTEGER},
+            1,
+            #{item.createBy,jdbcType=VARCHAR},
+            now(),
+            #{item.licensePlate,jdbcType=VARCHAR},
+            #{item.storageLocation,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+</mapper>

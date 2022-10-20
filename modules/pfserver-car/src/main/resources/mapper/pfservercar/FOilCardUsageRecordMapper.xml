@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.FOilCardUsageRecordMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.FOilCardUsageRecord" id="FOilCardUsageRecordResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="oilCardId"    column="oil_card_id"    />
+        <result property="oilCardNumber"    column="oil_card_number"    />
+        <result property="consume"    column="consume"    />
+        <result property="surplus"    column="surplus"    />
+        <result property="unit"    column="unit"    />
+        <result property="transactionStatus"    column="transaction_status"    />
+        <result property="transactionTime"    column="transaction_time"    />
+        <result property="transactionAddress"    column="transaction_address"    />
+        <result property="productType"    column="product_type"    />
+        <result property="productName"    column="product_name"    />
+        <result property="oilQuantity"    column="oil_quantity"    />
+        <result property="status"    column="status"    />
+        <result property="exceptionType"    column="exception_type"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isShowType"    column="is_show_type"    />
+        <result property="oilNum"    column="oilNum"    />
+    </resultMap>
+
+    <sql id="selectFOilCardUsageRecordVo">
+        select id, vehicle_id, license_plate, oil_card_id, oil_card_number, consume, surplus, unit, transaction_status, transaction_time,transaction_address, product_type, product_name, oil_quantity, status, exception_type, delete_flag, create_by, create_time, update_by, update_time,is_show_type from f_oil_card_usage_record
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+
+    <!--油料使用记录-->
+    <select id="selectFOilCardUsageRecordList" parameterType="com.dlzx.pfservercar.domain.FOilCardUsageRecord" resultMap="FOilCardUsageRecordResult">
+        <include refid="selectFOilCardUsageRecordVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="oilCardId != null  and oilCardId != ''"> and oil_card_id = #{oilCardId}</if>
+            <if test="oilCardNumber != null  and oilCardNumber != ''"> and oil_card_number like concat('%', #{oilCardNumber}, '%')</if>
+            <if test="consume != null "> and consume = #{consume}</if>
+            <if test="surplus != null "> and surplus = #{surplus}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="transactionStatus != null "> and transaction_status = #{transactionStatus}</if>
+            <if test="transactionTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(transaction_time, '%Y-%m-%d') >= DATE_FORMAT(#{transactionTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="transactionEndTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(transaction_time, '%Y-%m-%d') <= DATE_FORMAT(#{transactionEndTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="productType != null  and productType != ''"> and product_type = #{productType}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="oilQuantity != null "> and oil_quantity = #{oilQuantity}</if>
+            <if test="exceptionType != null  and exceptionType != ''"> and exception_type = #{exceptionType}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by transaction_time desc
+    </select>
+
+
+    <select id="selectFOilCardUsageRecordListNum" parameterType="com.dlzx.pfservercar.domain.FOilCardUsageRecord"
+            resultMap="FOilCardUsageRecordResult">
+        select license_plate, SUM(oil_quantity) AS oilNum from f_oil_card_usage_record
+        <where>
+            <if test="transactionTime != null"> and date_format(transaction_time,'%Y-%m') =date_format( #{transactionTime},'%Y-%m') </if>
+            and status = '2'
+            and delete_flag = '1'
+        </where>
+        GROUP By license_plate
+    </select>
+
+    <!--油料异常使用记录-->
+    <select id="selectFOilCardUsageAbnormalRecordList" parameterType="com.dlzx.pfservercar.domain.FOilCardUsageRecord" resultMap="FOilCardUsageRecordResult">
+        <include refid="selectFOilCardUsageRecordVo"/>
+        <where>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="oilCardId != null  and oilCardId != ''"> and oil_card_id = #{oilCardId}</if>
+            <if test="oilCardNumber != null  and oilCardNumber != ''"> and oil_card_number like concat('%', #{oilCardNumber}, '%')</if>
+            <if test="consume != null "> and consume = #{consume}</if>
+            <if test="surplus != null "> and surplus = #{surplus}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="transactionStatus != null "> and transaction_status = #{transactionStatus}</if>
+            <if test="transactionTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(transaction_time, '%Y-%m-%d') >= DATE_FORMAT(#{transactionTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="transactionEndTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(transaction_time, '%Y-%m-%d') <= DATE_FORMAT(#{transactionEndTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="productType != null  and productType != ''"> and product_type = #{productType}</if>
+            <if test="productName != null  and productName != ''"> and product_name like concat('%', #{productName}, '%')</if>
+            <if test="oilQuantity != null "> and oil_quantity = #{oilQuantity}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="exceptionType != null  and exceptionType != ''"> and exception_type = #{exceptionType}</if>
+            <include refid="deleteFlag"/>
+            and status = 1
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectFOilCardUsageRecordById" parameterType="String" resultMap="FOilCardUsageRecordResult">
+        <include refid="selectFOilCardUsageRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFOilCardUsageRecord" parameterType="com.dlzx.pfservercar.domain.FOilCardUsageRecord">
+        insert into f_oil_card_usage_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="oilCardId != null">oil_card_id,</if>
+            <if test="oilCardNumber != null">oil_card_number,</if>
+            <if test="consume != null">consume,</if>
+            <if test="surplus != null">surplus,</if>
+            <if test="unit != null">unit,</if>
+            <if test="transactionStatus != null">transaction_status,</if>
+            <if test="transactionTime != null">transaction_time,</if>
+            <if test="transactionAddress != null">transaction_address,</if>
+            <if test="productType != null">product_type,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="oilQuantity != null">oil_quantity,</if>
+            <if test="status != null">status,</if>
+            <if test="exceptionType != null">exception_type,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isShowType != null">is_show_type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="oilCardId != null">#{oilCardId},</if>
+            <if test="oilCardNumber != null">#{oilCardNumber},</if>
+            <if test="consume != null">#{consume},</if>
+            <if test="surplus != null">#{surplus},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="transactionStatus != null">#{transactionStatus},</if>
+            <if test="transactionTime != null">#{transactionTime},</if>
+            <if test="transactionAddress != null">#{transactionAddress},</if>
+            <if test="productType != null">#{productType},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="oilQuantity != null">#{oilQuantity},</if>
+            <if test="status != null">#{status},</if>
+            <if test="exceptionType != null">#{exceptionType},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isShowType != null">#{isShowType},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFOilCardUsageRecord" parameterType="com.dlzx.pfservercar.domain.FOilCardUsageRecord">
+        update f_oil_card_usage_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="oilCardId != null">oil_card_id = #{oilCardId},</if>
+            <if test="oilCardNumber != null">oil_card_number = #{oilCardNumber},</if>
+            <if test="consume != null">consume = #{consume},</if>
+            <if test="surplus != null">surplus = #{surplus},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="transactionStatus != null">transaction_status = #{transactionStatus},</if>
+            <if test="transactionTime != null">transaction_time = #{transactionTime},</if>
+            <if test="transactionAddress != null">transaction_address = #{transactionAddress},</if>
+            <if test="productType != null">product_type = #{productType},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="oilQuantity != null">oil_quantity = #{oilQuantity},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="exceptionType != null">exception_type = #{exceptionType},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isShowType != null">is_show_type = #{isShowType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <insert id="insertList" parameterType="java.util.List">
+
+        insert into f_oil_card_usage_record (id, vehicle_id, license_plate, oil_card_id,
+        oil_card_number, consume, surplus, unit, transaction_status, transaction_time,
+        transaction_address, product_type, product_name, oil_quantity, status,
+         exception_type, delete_flag, create_time,is_show_type )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.vehicleId},
+            #{item.licensePlate},
+            #{item.oilCardId},
+            #{item.oilCardNumber},
+            #{item.consume},
+            #{item.surplus},
+            #{item.unit},
+            #{item.transactionStatus},
+            #{item.transactionTime},
+            #{item.transactionAddress},
+            #{item.productType},
+            #{item.productName},
+            #{item.oilQuantity},
+            #{item.status},
+            #{item.exceptionType},
+            #{item.deleteFlag},
+            #{item.createTime},
+            #{item.isShowType}
+            )
+        </foreach>
+    </insert>
+
+
+    <delete id="deleteFOilCardUsageRecordById" parameterType="String">
+        delete from f_oil_card_usage_record where id = #{id}
+    </delete>
+
+    <delete id="deleteFOilCardUsageRecordByIds" parameterType="String">
+        delete from f_oil_card_usage_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

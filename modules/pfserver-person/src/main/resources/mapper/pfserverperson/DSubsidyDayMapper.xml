@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DSubsidyDayMapper">
+    
+    <resultMap type="DSubsidyDay" id="DSubsidyDayResult">
+        <result property="id"    column="id"    />
+        <result property="subsidyId"    column="subsidy_id"    />
+        <result property="subsidyDate"    column="subsidy_date"    />
+    </resultMap>
+
+    <sql id="selectDSubsidyDayVo">
+        select id, subsidy_id, subsidy_date from d_subsidy_day
+    </sql>
+
+    <select id="selectDSubsidyDayList" parameterType="DSubsidyDay" resultMap="DSubsidyDayResult">
+        <include refid="selectDSubsidyDayVo"/>
+        <where>  
+            <if test="subsidyId != null  and subsidyId != ''"> and subsidy_id = #{subsidyId}</if>
+            <if test="subsidyDate != null "> and subsidy_date = #{subsidyDate}</if>
+        </where>
+    </select>
+    
+    <select id="selectDSubsidyDayById" parameterType="String" resultMap="DSubsidyDayResult">
+        <include refid="selectDSubsidyDayVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDSubsidyDay" parameterType="DSubsidyDay">
+        insert into d_subsidy_day
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="subsidyId != null">subsidy_id,</if>
+            <if test="subsidyDate != null">subsidy_date,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="subsidyId != null">#{subsidyId},</if>
+            <if test="subsidyDate != null">#{subsidyDate},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDSubsidyDayList" parameterType="DSubsidyDay">
+        insert into d_subsidy_day( id, subsidy_id, subsidy_date ) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.subsidyId},#{item.subsidyDate})
+        </foreach>
+    </insert>
+
+    <update id="updateDSubsidyDay" parameterType="DSubsidyDay">
+        update d_subsidy_day
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="subsidyId != null">subsidy_id = #{subsidyId},</if>
+            <if test="subsidyDate != null">subsidy_date = #{subsidyDate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDSubsidyDayById" parameterType="String">
+        delete from d_subsidy_day where id = #{id}
+    </delete>
+
+    <delete id="deleteDSubsidyDayByIds" parameterType="String">
+        delete from d_subsidy_day where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteDSubsidyDayBySubId" parameterType="String">
+        delete from d_subsidy_day where subsidy_id = #{subsidyId}
+    </delete>
+
+</mapper>

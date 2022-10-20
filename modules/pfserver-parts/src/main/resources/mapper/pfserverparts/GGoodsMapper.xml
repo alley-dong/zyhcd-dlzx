@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsMapper">
+    
+    <resultMap type="GGoods" id="GGoodsResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="goodsTypeId"    column="goods_type_id"    />
+        <result property="goodsTypeName"    column="goods_type_name"    />
+        <result property="name"    column="name"    />
+        <result property="specification"    column="specification"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="supplier"    column="supplier"    />
+        <result property="amount"    column="amount"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectGGoodsVo">
+        select id, code, goods_type_id, goods_type_name, name, specification, unit, unit_price, supplier, amount, delete_flag, create_by, create_time, update_by, update_time from g_goods
+    </sql>
+
+    <select id="selectGGoodsByTypeGoodsTypeIdList" parameterType="String" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/>
+        where delete_flag = '1' and goods_type_id= #{goodsTypeId}
+    </select>
+
+    <select id="selectGGoodsList" parameterType="GGoods" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/>
+        <where>
+          delete_flag = '1'
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="id != null  and id != ''"> and id = #{id}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectGGoodsListAmount" parameterType="GGoods" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/>
+        <where>
+
+            <if test="code != null  and code != ''"> and code = #{code}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="supplier != null  and supplier != ''"> and supplier = #{supplier}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectGGoodsById" parameterType="String" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="countAll" parameterType="String" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/> where name=#{name} and delete_flag = '1'
+    </select>
+
+    <select id="countCodeAll" parameterType="String" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/> where code=#{code} and delete_flag = '1'
+    </select>
+
+    <select id="countAllEdit" resultType="int">
+        select count(*) from g_goods where name = #{name} and id != #{id} and delete_flag = '1'
+    </select>
+    <select id="selectGGoodsByIdList" resultType="com.dlzx.pfserverparts.domain.GGoods">
+        <include refid="selectGGoodsVo"/>
+        where id = #{id} and delete_flag = '1'
+    </select>
+
+    <insert id="insertGGoods" parameterType="GGoods">
+        insert into g_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="code != null">code,</if>
+            <if test="goodsTypeId != null">goods_type_id,</if>
+            <if test="goodsTypeName != null">goods_type_name,</if>
+            <if test="name != null">name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="unit != null">unit,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="supplier != null">supplier,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="code != null">#{code},</if>
+            <if test="goodsTypeId != null">#{goodsTypeId},</if>
+            <if test="goodsTypeName != null">#{goodsTypeName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="supplier != null">#{supplier},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGGoods" parameterType="GGoods">
+        update g_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="goodsTypeId != null">goods_type_id = #{goodsTypeId},</if>
+            <if test="goodsTypeName != null">goods_type_name = #{goodsTypeName},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="supplier != null">supplier = #{supplier},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsById" parameterType="String">
+        delete from g_goods where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsByIds" parameterType="String">
+        delete from g_goods where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectGGoodsByIdsList" resultMap="GGoodsResult">
+        <include refid="selectGGoodsVo"/>
+        where id in
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectDriversList" resultType="com.dlzx.pfserverparts.domain.DDriver">
+        select id,name from d_driver where delete_flag = 1 and status = 3 and disable_status = 1
+    </select>
+
+    <update id="updateList" parameterType="java.util.List">
+
+        update
+        g_goods
+        set
+        amount =
+        <foreach collection="list" item="item" index="index" separator=" " open="case" close="end">
+            when id = #{item.id} then #{item.amount}
+        </foreach>
+        where
+        id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+
+    </update>
+
+    <select id="queryInList" resultType="com.dlzx.pfserverparts.domain.GGoods">
+        <include refid="selectGGoodsVo"/>
+
+        WHERE id IN
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

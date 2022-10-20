@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverFamilyRecordMapper">
+    
+    <resultMap type="DDriverFamilyRecord" id="DDriverFamilyRecordResult">
+        <result property="id"    column="id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="relation"    column="relation"    />
+        <result property="name"    column="name"    />
+        <result property="tel"    column="tel"    />
+        <result property="workUnit"    column="work_unit"    />
+        <result property="position"    column="position"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDDriverFamilyRecordVo">
+        select id, driver_id, relation, name, tel, work_unit, position, delete_flag, create_by, create_time, update_by, update_time from d_driver_family_record
+    </sql>
+
+    <select id="selectDDriverFamilyRecordList" parameterType="DDriverFamilyRecord" resultMap="DDriverFamilyRecordResult">
+        <include refid="selectDDriverFamilyRecordVo"/>
+        <where>  
+            <if test="relation != null  and relation != ''"> and relation = #{relation}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="workUnit != null  and workUnit != ''"> and work_unit = #{workUnit}</if>
+            <if test="position != null  and position != ''"> and position = #{position}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectDDriverFamilyRecordByDriverId" parameterType="String" resultMap="DDriverFamilyRecordResult">
+    <include refid="selectDDriverFamilyRecordVo"/>
+            where driver_id = #{id} and delete_flag = '1'
+        ORDER by create_time DESC
+    </select>
+    
+    <select id="selectDDriverFamilyRecordById" parameterType="String" resultMap="DDriverFamilyRecordResult">
+        <include refid="selectDDriverFamilyRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDDriverFamilyRecord" parameterType="DDriverFamilyRecord">
+        insert into d_driver_family_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="relation != null">relation,</if>
+            <if test="name != null">name,</if>
+            <if test="tel != null">tel,</if>
+            <if test="workUnit != null">work_unit,</if>
+            <if test="position != null">position,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="relation != null">#{relation},</if>
+            <if test="name != null">#{name},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="workUnit != null">#{workUnit},</if>
+            <if test="position != null">#{position},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDDriverFamilyRecord" parameterType="DDriverFamilyRecord">
+        update d_driver_family_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="relation != null">relation = #{relation},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="workUnit != null">work_unit = #{workUnit},</if>
+            <if test="position != null">position = #{position},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverFamilyRecordById" parameterType="String">
+        delete from d_driver_family_record where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverFamilyRecordByIds" parameterType="String">
+        delete from d_driver_family_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

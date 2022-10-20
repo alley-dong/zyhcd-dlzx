@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskVm" id="TTransportTaskResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="shipmentType"    column="shipment_type"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="status"    column="status"    />
+        <result property="isException"    column="is_exception"    />
+        <result property="consignor"    column="consignor"    />
+        <result property="consignorTel"    column="consignor_tel"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="consigneeTel"    column="consignee_tel"    />
+        <result property="mainVehicleId"    column="main_vehicle_id"    />
+        <result property="mainLicensePlate"    column="main_license_plate"    />
+        <result property="mainVehicleModel"    column="main_vehicle_model"    />
+        <result property="mainVehicleModelName"    column="main_vehicle_model_name"    />
+        <result property="hangVehicleId"    column="hang_vehicle_id"    />
+        <result property="hangLicensePlate"    column="hang_license_plate"    />
+        <result property="hangVehicleModel"    column="hang_vehicle_model"    />
+        <result property="hangVehicleModelName"    column="hang_vehicle_model_name"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="viceDriverId"    column="vice_driver_id"    />
+        <result property="viceDriverName"    column="vice_driver_name"    />
+        <result property="pickTime"    column="pick_time"    />
+        <result property="planDeliveryTime"    column="plan_delivery_time"    />
+        <result property="totalCount"    column="total_count"    />
+        <result property="totalWeight"    column="total_weight"    />
+        <result property="totalVolume"    column="total_volume"    />
+        <result property="totalPackCount"    column="total_pack_count"    />
+        <result property="startInspectCount"    column="start_inspect_count"    />
+        <result property="processInspectCount"    column="process_inspect_count"    />
+        <result property="processInspectMinCount"    column="process_inspect_min_count"    />
+        <result property="endInspectCount"    column="end_inspect_count"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="taskStartTime"    column="task_start_time"    />
+        <result property="taskEndTime"    column="task_end_time"    />
+        <result property="businessUnitName"    column="business_unit_name"    />
+        <result property="servprovName"    column="servprov_name"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="amount"    column="amount"    />
+        <result property="totalCost"    column="totalCost"    />
+    </resultMap>
+
+    <resultMap type="com.dlzx.pfservercar.domain.TTransportTask" id="TTransportTaskRealResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="shipmentType"    column="shipment_type"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="status"    column="status"    />
+        <result property="isException"    column="is_exception"    />
+        <result property="consignor"    column="consignor"    />
+        <result property="consignorTel"    column="consignor_tel"    />
+        <result property="consignee"    column="consignee"    />
+        <result property="consigneeTel"    column="consignee_tel"    />
+        <result property="mainVehicleId"    column="main_vehicle_id"    />
+        <result property="mainLicensePlate"    column="main_license_plate"    />
+        <result property="mainVehicleModel"    column="main_vehicle_model"    />
+        <result property="mainVehicleModelName"    column="main_vehicle_model_name"    />
+        <result property="hangVehicleId"    column="hang_vehicle_id"    />
+        <result property="hangLicensePlate"    column="hang_license_plate"    />
+        <result property="hangVehicleModel"    column="hang_vehicle_model"    />
+        <result property="hangVehicleModelName"    column="hang_vehicle_model_name"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="viceDriverId"    column="vice_driver_id"    />
+        <result property="viceDriverName"    column="vice_driver_name"    />
+        <result property="pickTime"    column="pick_time"    />
+        <result property="planDeliveryTime"    column="plan_delivery_time"    />
+        <result property="totalCount"    column="total_count"    />
+        <result property="totalWeight"    column="total_weight"    />
+        <result property="totalVolume"    column="total_volume"    />
+        <result property="totalPackCount"    column="total_pack_count"    />
+        <result property="startInspectCount"    column="start_inspect_count"    />
+        <result property="processInspectCount"    column="process_inspect_count"    />
+        <result property="processInspectMinCount"    column="process_inspect_min_count"    />
+        <result property="endInspectCount"    column="end_inspect_count"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="taskStartTime"    column="task_start_time"    />
+        <result property="taskEndTime"    column="task_end_time"    />
+        <result property="businessUnitName"    column="business_unit_name"    />
+        <result property="servprovName"    column="servprov_name"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="amount"    column="amount"    />
+        <result property="totalCost"    column="totalCost"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskVo">
+        select id, shipment_xid, shipment_type, customer_name, route_id, route_name, status, is_exception, consignor, consignor_tel, consignee, consignee_tel, main_vehicle_id, main_license_plate, main_vehicle_model, main_vehicle_model_name, hang_vehicle_id, hang_license_plate, hang_vehicle_model, hang_vehicle_model_name, driver_id, driver_name, vice_driver_id, vice_driver_name, pick_time, plan_delivery_time, total_count, total_weight, total_volume, total_pack_count, start_inspect_count, process_inspect_count, process_inspect_min_count, end_inspect_count, delete_flag, create_by, create_time, update_by, update_time, task_start_time, task_end_time ,business_unit_name,servprov_name,business_type,total_amount,amount from t_transport_task
+    </sql>
+
+<!--    获取翻译信息-->
+    <sql id="selectTTransportTaskDetail">
+        select id, shipment_xid, shipment_type, customer_name, route_id, route_name, task.status, is_exception, consignor, consignor_tel, consignee, consignee_tel, main_vehicle_id, main_license_plate, main_vehicle_model, main_vehicle_model_name, hang_vehicle_id, hang_license_plate, hang_vehicle_model, hang_vehicle_model_name, driver_id, driver_name, vice_driver_id, vice_driver_name, pick_time, plan_delivery_time, total_count, total_weight, total_volume, total_pack_count, start_inspect_count, process_inspect_count, process_inspect_min_count, end_inspect_count, task_start_time, task_end_time,delete_flag,business_unit_name,servprov_name,business_type,total_amount,amount
+        , task.create_by, task.create_time, task.update_by, task.update_time
+        ,sysStatus.dict_label as statusEnum
+        ,sysType.dict_label as shipmentTypeEnum
+        , task_start_time as taskStartDate
+        , task_end_time as taskEndDate
+        from t_transport_task as task
+        LEFT JOIN sys_dict_data sysStatus on task.status = sysStatus.dict_value and sysStatus.dict_type = 't_transport_task_status'
+        LEFT JOIN sys_dict_data sysType on task.shipment_type = sysType.dict_value and sysType.dict_type = 't_transport_task_type'
+    </sql>
+
+    <select id="selectTTransportTaskList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskModel" resultMap="TTransportTaskResult">
+        <include refid="selectTTransportTaskDetail"/>
+        <where>  
+            <if test="shipmentXid != null  and shipmentXid != ''"> and shipment_xid like concat('%', #{shipmentXid}, '%')</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="hangLicensePlate != null  and hangLicensePlate != ''"> and hang_license_plate like concat('%', #{hangLicensePlate}, '%')</if>
+            <if test="status != null "> and task.status = #{status}</if>
+            <if test="taskStartTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(task.create_time, '%Y-%m-%d') >= DATE_FORMAT(#{taskStartTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="taskEndTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(task.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{taskEndTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+
+            <if test="synchronizationTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(task.create_time, '%Y-%m-%d') = DATE_FORMAT(#{synchronizationTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+
+            <if test="shipmentType != null "> and shipment_type = #{shipmentType}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="isException != null "> and is_exception = #{isException}</if>
+            <if test="consignor != null  and consignor != ''"> and consignor = #{consignor}</if>
+            <if test="consignorTel != null  and consignorTel != ''"> and consignor_tel = #{consignorTel}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="consigneeTel != null  and consigneeTel != ''"> and consignee_tel = #{consigneeTel}</if>
+            <if test="mainVehicleId != null  and mainVehicleId != ''"> and main_vehicle_id = #{mainVehicleId}</if>
+            <if test="mainVehicleModel != null  and mainVehicleModel != ''"> and main_vehicle_model = #{mainVehicleModel}</if>
+            <if test="mainVehicleModelName != null  and mainVehicleModelName != ''"> and main_vehicle_model_name like concat('%', #{mainVehicleModelName}, '%')</if>
+            <if test="hangVehicleId != null  and hangVehicleId != ''"> and hang_vehicle_id = #{hangVehicleId}</if>
+            <if test="hangVehicleModel != null  and hangVehicleModel != ''"> and hang_vehicle_model = #{hangVehicleModel}</if>
+            <if test="hangVehicleModelName != null  and hangVehicleModelName != ''"> and hang_vehicle_model_name like concat('%', #{hangVehicleModelName}, '%')</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="viceDriverId != null  and viceDriverId != ''"> and vice_driver_id = #{viceDriverId}</if>
+            <if test="viceDriverName != null  and viceDriverName != ''"> and vice_driver_name like concat('%', #{viceDriverName}, '%')</if>
+            <if test="pickTime != null "> and pick_time = #{pickTime}</if>
+            <if test="planDeliveryTime != null "> and plan_delivery_time = #{planDeliveryTime}</if>
+            <if test="totalCount != null "> and total_count = #{totalCount}</if>
+            <if test="totalWeight != null "> and total_weight = #{totalWeight}</if>
+            <if test="totalVolume != null "> and total_volume = #{totalVolume}</if>
+            <if test="totalPackCount != null "> and total_pack_count = #{totalPackCount}</if>
+            <if test="startInspectCount != null "> and start_inspect_count = #{startInspectCount}</if>
+            <if test="processInspectCount != null "> and process_inspect_count = #{processInspectCount}</if>
+            <if test="processInspectMinCount != null "> and process_inspect_min_count = #{processInspectMinCount}</if>
+            <if test="endInspectCount != null "> and end_inspect_count = #{endInspectCount}</if>
+            and delete_flag = 1 and business_type = 1
+        </where>
+        order by task_start_time desc
+    </select>
+
+    <!--    承运商成本核算-->
+    <select id="selectTTransportTaskAccountingList" parameterType="TTransportTask" resultMap="TTransportTaskResult">
+        SELECT
+        a.shipment_xid,
+        a.route_name,
+        a.servprov_name,
+        b.business_type,
+        b.amount,
+        b.create_time
+        FROM
+        t_transport_task a
+        LEFT JOIN t_transport_task_cost b ON a.id = b.task_id
+        WHERE
+        a.delete_flag = '1'
+        AND b.delete_flag = '1'
+        and a.business_type = '2'
+        <if test="taskStartTime != null">
+            <![CDATA[
+				    and	DATE_FORMAT(a.task_start_time, '%Y-%m-%d') >= DATE_FORMAT(#{taskStartTime}, '%Y-%m-%d')
+			    ]]></if>
+        <if test="taskEndTime != null">
+            <![CDATA[
+				    and	DATE_FORMAT(a.task_end_time, '%Y-%m-%d') <= DATE_FORMAT(#{taskEndTime}, '%Y-%m-%d')
+			    ]]>
+        </if>
+        <if test="routeId != null and routeId != ''"> and a.route_id = #{routeId}</if>
+        ORDER BY
+        b.create_time DESC
+    </select>
+
+    <!--    承运商核算路线下拉只查询外包线路-->
+    <select id="selectTTransportTaskRouteName" resultMap="TTransportTaskResult">
+        select route_id, route_name from t_transport_task
+        where delete_flag = '1' and business_type = '2'
+    </select>
+
+<!--    翻译查询-->
+    <select id="selectTTransportTaskById" parameterType="String" resultMap="TTransportTaskResult">
+        <include refid="selectTTransportTaskDetail"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+
+<!--    根据驾驶员ID 获取该驾驶员的线路信息-->
+    <select id="queryDriverTRouteList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskModel" resultMap="TTransportTaskResult">
+         SELECT
+	route_name,
+	main_license_plate,
+	hang_license_plate,
+	main_vehicle_model_name,
+	hang_vehicle_model_name,
+	if(driver_id = #{driverId},driver_name ,vice_driver_name) as driverNamePlus
+FROM
+	t_transport_task
+WHERE
+	delete_flag = 1 and (driver_id = #{driverId} OR vice_driver_id = #{driverId} )
+    </select>
+
+<!--根据运单号查询一条记录-->
+    <select id="selectTTransportTaskByXid" parameterType="String" resultMap="TTransportTaskResult">
+        <include refid="selectTTransportTaskDetail"/>
+        where shipment_xid = #{shipmentXid} and delete_flag = 1
+    </select>
+
+    <!--任务成本核算查询-->
+    <select id="selectTTransportTaskCost" parameterType="String" resultMap="TTransportTaskRealResult">
+        SELECT
+	a.id,
+	a.shipment_xid,
+	a.route_name,
+	a.main_license_plate,
+	a.hang_license_plate,
+	a.task_end_time,
+    a.route_id,
+        a.driver_name,
+        a.vice_driver_name,
+	b.business_type as bType,
+	b.fee_type as fType,
+	b.total_amount as tAmount,
+    c.mileage as mileage
+FROM
+	t_transport_task AS a
+	LEFT JOIN t_transport_task_cost AS b ON a.id = b.task_id
+        LEFT JOIN t_route AS c ON a.route_id = c.id
+<where>
+	AND a.status = '2'
+	AND b.delete_flag = '1'
+    AND a.id = #{id}
+</where>
+    </select>
+
+    <insert id="insertTTransportTask" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskModel">
+        insert into t_transport_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="shipmentType != null">shipment_type,</if>
+            <if test="customerName != null">customer_name,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="status != null">status,</if>
+            <if test="isException != null">is_exception,</if>
+            <if test="consignor != null">consignor,</if>
+            <if test="consignorTel != null">consignor_tel,</if>
+            <if test="consignee != null">consignee,</if>
+            <if test="consigneeTel != null">consignee_tel,</if>
+            <if test="mainVehicleId != null">main_vehicle_id,</if>
+            <if test="mainLicensePlate != null">main_license_plate,</if>
+            <if test="mainVehicleModel != null">main_vehicle_model,</if>
+            <if test="mainVehicleModelName != null">main_vehicle_model_name,</if>
+            <if test="hangVehicleId != null">hang_vehicle_id,</if>
+            <if test="hangLicensePlate != null">hang_license_plate,</if>
+            <if test="hangVehicleModel != null">hang_vehicle_model,</if>
+            <if test="hangVehicleModelName != null">hang_vehicle_model_name,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="viceDriverId != null">vice_driver_id,</if>
+            <if test="viceDriverName != null">vice_driver_name,</if>
+            <if test="pickTime != null">pick_time,</if>
+            <if test="planDeliveryTime != null">plan_delivery_time,</if>
+            <if test="totalCount != null">total_count,</if>
+            <if test="totalWeight != null">total_weight,</if>
+            <if test="totalVolume != null">total_volume,</if>
+            <if test="totalPackCount != null">total_pack_count,</if>
+            <if test="startInspectCount != null">start_inspect_count,</if>
+            <if test="processInspectCount != null">process_inspect_count,</if>
+            <if test="processInspectMinCount != null">process_inspect_min_count,</if>
+            <if test="endInspectCount != null">end_inspect_count,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="taskStartTime != null">task_start_time,</if>
+            <if test="taskEndTime != null">task_end_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="shipmentType != null">#{shipmentType},</if>
+            <if test="customerName != null">#{customerName},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="isException != null">#{isException},</if>
+            <if test="consignor != null">#{consignor},</if>
+            <if test="consignorTel != null">#{consignorTel},</if>
+            <if test="consignee != null">#{consignee},</if>
+            <if test="consigneeTel != null">#{consigneeTel},</if>
+            <if test="mainVehicleId != null">#{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">#{mainLicensePlate},</if>
+            <if test="mainVehicleModel != null">#{mainVehicleModel},</if>
+            <if test="mainVehicleModelName != null">#{mainVehicleModelName},</if>
+            <if test="hangVehicleId != null">#{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">#{hangLicensePlate},</if>
+            <if test="hangVehicleModel != null">#{hangVehicleModel},</if>
+            <if test="hangVehicleModelName != null">#{hangVehicleModelName},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="viceDriverId != null">#{viceDriverId},</if>
+            <if test="viceDriverName != null">#{viceDriverName},</if>
+            <if test="pickTime != null">#{pickTime},</if>
+            <if test="planDeliveryTime != null">#{planDeliveryTime},</if>
+            <if test="totalCount != null">#{totalCount},</if>
+            <if test="totalWeight != null">#{totalWeight},</if>
+            <if test="totalVolume != null">#{totalVolume},</if>
+            <if test="totalPackCount != null">#{totalPackCount},</if>
+            <if test="startInspectCount != null">#{startInspectCount},</if>
+            <if test="processInspectCount != null">#{processInspectCount},</if>
+            <if test="processInspectMinCount != null">#{processInspectMinCount},</if>
+            <if test="endInspectCount != null">#{endInspectCount},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="taskStartTime != null">#{taskStartTime},</if>
+            <if test="taskEndTime != null">#{taskEndTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTask" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskModel">
+        update t_transport_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="shipmentType != null">shipment_type = #{shipmentType},</if>
+            <if test="customerName != null">customer_name = #{customerName},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isException != null">is_exception = #{isException},</if>
+            <if test="consignor != null">consignor = #{consignor},</if>
+            <if test="consignorTel != null">consignor_tel = #{consignorTel},</if>
+            <if test="consignee != null">consignee = #{consignee},</if>
+            <if test="consigneeTel != null">consignee_tel = #{consigneeTel},</if>
+            <if test="mainVehicleId != null">main_vehicle_id = #{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">main_license_plate = #{mainLicensePlate},</if>
+            <if test="mainVehicleModel != null">main_vehicle_model = #{mainVehicleModel},</if>
+            <if test="mainVehicleModelName != null">main_vehicle_model_name = #{mainVehicleModelName},</if>
+            <if test="hangVehicleId != null">hang_vehicle_id = #{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">hang_license_plate = #{hangLicensePlate},</if>
+            <if test="hangVehicleModel != null">hang_vehicle_model = #{hangVehicleModel},</if>
+            <if test="hangVehicleModelName != null">hang_vehicle_model_name = #{hangVehicleModelName},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="viceDriverId != null">vice_driver_id = #{viceDriverId},</if>
+            <if test="viceDriverName != null">vice_driver_name = #{viceDriverName},</if>
+            <if test="pickTime != null">pick_time = #{pickTime},</if>
+            <if test="planDeliveryTime != null">plan_delivery_time = #{planDeliveryTime},</if>
+            <if test="totalCount != null">total_count = #{totalCount},</if>
+            <if test="totalWeight != null">total_weight = #{totalWeight},</if>
+            <if test="totalVolume != null">total_volume = #{totalVolume},</if>
+            <if test="totalPackCount != null">total_pack_count = #{totalPackCount},</if>
+            <if test="startInspectCount != null">start_inspect_count = #{startInspectCount},</if>
+            <if test="processInspectCount != null">process_inspect_count = #{processInspectCount},</if>
+            <if test="processInspectMinCount != null">process_inspect_min_count = #{processInspectMinCount},</if>
+            <if test="endInspectCount != null">end_inspect_count = #{endInspectCount},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="taskStartTime != null">task_start_time = #{taskStartTime},</if>
+            <if test="taskEndTime != null">task_end_time = #{taskEndTime},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskById" parameterType="String">
+        delete from t_transport_task where id = #{id}
+    </delete>
+
+    <update id="deleteTTransportTaskByIds" parameterType="String">
+        update t_transport_task set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+<!--更新任务时间-->
+    <update id="UpdateOTMCarTransportTask" parameterType="com.dlzx.pfservercar.domain.model.OTMTTransportTaskTimeModel">
+        update t_transport_task
+        <trim prefix="SET" suffixOverrides=",">
+            update_time = now(),
+            <if test="start_shipping_date != null">task_start_time = #{start_shipping_date},</if>
+            <if test="delivery_date != null">task_end_time = #{delivery_date},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where shipment_xid = #{SHIPMENT_XID}
+    </update>
+
+
+    <!--进行中 12.31前版本-->
+    <!--全部，根据status条件晒选 12.31后版本-->
+    <!--全部and外包，根据business_type条件晒选 01.07后版本-->
+    <select id="queryApiTaskList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskModel" resultMap="TTransportTaskResult">
+        <include refid="selectTTransportTaskDetail"/>
+        where
+        delete_flag = 1
+        and (driver_id = #{driverId} OR vice_driver_id = #{driverId} )
+        <if test="status != null">
+        and task.status = #{status}
+        </if>
+        <if test="shipmentType != null">
+            and shipment_type = #{shipmentType}
+        </if>
+        and task.status = 1
+        and task_start_time is not null
+        and business_type = 1
+        order by status asc , task_start_time desc
+    </select>
+
+    <!--任务记录-->
+    <select id="queryApiTaskRecord" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskModel" resultMap="TTransportTaskResult">
+        <include refid="selectTTransportTaskDetail"/>
+        where
+        delete_flag = 1
+        and (driver_id = #{driverId} OR vice_driver_id = #{driverId} )
+        <if test="shipmentType != null">
+        and shipment_type = #{shipmentType}
+        </if>
+        and task.status <![CDATA[ <> ]]> 1
+        and task_end_time is not null
+        and business_type = 1
+        order by task_start_time desc
+    </select>
+
+
+    <select id="queryTaskListById" resultMap="TTransportTaskResult">
+        <include refid="selectTTransportTaskDetail"/>
+        where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="selectTTransportTaskListEtcUse" parameterType="com.dlzx.pfservercar.domain.TTransportTask" resultMap="TTransportTaskRealResult">
+        <include refid="selectTTransportTaskDetail"/>
+        <where>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and shipment_xid like concat('%', #{shipmentXid}, '%')</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="hangLicensePlate != null  and hangLicensePlate != ''"> and hang_license_plate like concat('%', #{hangLicensePlate}, '%')</if>
+            <if test="status != null "> and task.status = #{status}</if>
+            <if test="taskStartTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(task.create_time, '%Y-%m-%d') >= DATE_FORMAT(#{taskStartTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="taskEndTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(task.create_time, '%Y-%m-%d') <= DATE_FORMAT(#{taskEndTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+
+            <if test="shipmentType != null "> and shipment_type = #{shipmentType}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="isException != null "> and is_exception = #{isException}</if>
+            <if test="consignor != null  and consignor != ''"> and consignor = #{consignor}</if>
+            <if test="consignorTel != null  and consignorTel != ''"> and consignor_tel = #{consignorTel}</if>
+            <if test="consignee != null  and consignee != ''"> and consignee = #{consignee}</if>
+            <if test="consigneeTel != null  and consigneeTel != ''"> and consignee_tel = #{consigneeTel}</if>
+            <if test="mainVehicleId != null  and mainVehicleId != ''"> and main_vehicle_id = #{mainVehicleId}</if>
+            <if test="mainVehicleModel != null  and mainVehicleModel != ''"> and main_vehicle_model = #{mainVehicleModel}</if>
+            <if test="mainVehicleModelName != null  and mainVehicleModelName != ''"> and main_vehicle_model_name like concat('%', #{mainVehicleModelName}, '%')</if>
+            <if test="hangVehicleId != null  and hangVehicleId != ''"> and hang_vehicle_id = #{hangVehicleId}</if>
+            <if test="hangVehicleModel != null  and hangVehicleModel != ''"> and hang_vehicle_model = #{hangVehicleModel}</if>
+            <if test="hangVehicleModelName != null  and hangVehicleModelName != ''"> and hang_vehicle_model_name like concat('%', #{hangVehicleModelName}, '%')</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="viceDriverId != null  and viceDriverId != ''"> and vice_driver_id = #{viceDriverId}</if>
+            <if test="viceDriverName != null  and viceDriverName != ''"> and vice_driver_name like concat('%', #{viceDriverName}, '%')</if>
+            <if test="pickTime != null "> and pick_time = #{pickTime}</if>
+            <if test="planDeliveryTime != null "> and plan_delivery_time = #{planDeliveryTime}</if>
+            <if test="totalCount != null "> and total_count = #{totalCount}</if>
+            <if test="totalWeight != null "> and total_weight = #{totalWeight}</if>
+            <if test="totalVolume != null "> and total_volume = #{totalVolume}</if>
+            <if test="totalPackCount != null "> and total_pack_count = #{totalPackCount}</if>
+            <if test="startInspectCount != null "> and start_inspect_count = #{startInspectCount}</if>
+            <if test="processInspectCount != null "> and process_inspect_count = #{processInspectCount}</if>
+            <if test="processInspectMinCount != null "> and process_inspect_min_count = #{processInspectMinCount}</if>
+            <if test="endInspectCount != null "> and end_inspect_count = #{endInspectCount}</if>
+            and delete_flag = 1 and business_type = 1
+        </where>
+        order by task_start_time desc
+    </select>
+
+
+
+    <insert id="insertOTMTransportTask">
+        insert into t_transport_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="SHIPMENT_GID != null">id,</if>
+            <if test="SHIPMENT_XID != null">shipment_xid,</if>
+            <if test="SHIPMENT_TYPE != null">shipment_type,</if>
+            <if test="CUSTOMER_NAME != null">customer_name,</if>
+            <if test="X_LANE_GID != null">route_id,</if>
+            <if test="SHIPMENT_NAME != null">route_name,</if>
+            status,
+            is_exception,
+            <if test="SOURCE_CONTACTS != null">consignor,</if>
+            <if test="SOURCE_PHONE_NUMBER != null">consignor_tel,</if>
+            <if test="DEST_CONTACTS != null">consignee,</if>
+            <if test="DEST_PHONE_NUMBER != null">consignee_tel,</if>
+            <if test="mainVehicleId != null">main_vehicle_id,</if>
+            <if test="EQUIPMENT_NUMBER != null">main_license_plate,</if>
+            <if test="mainVehicleModel != null">main_vehicle_model,</if>
+            <if test="mainVehicleModelName != null">main_vehicle_model_name,</if>
+            <if test="hangVehicleId != null">hang_vehicle_id,</if>
+            <if test="VEHICLE_PLATE_NUMBER != null">hang_license_plate,</if>
+            <if test="hangVehicleModel != null">hang_vehicle_model,</if>
+            <if test="hangVehicleModelName != null">hang_vehicle_model_name,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="DRIVER_NAME != null">driver_name,</if>
+            <if test="viceDriverId != null">vice_driver_id,</if>
+            <if test="ASSISTANT_DRIVER_NAME != null">vice_driver_name,</if>
+            <if test="PLAN_START_SHIPPING_DATE != null">pick_time,</if>
+            <if test="PLAN_DELIVERY_DATE != null">plan_delivery_time,</if>
+            <if test="TOTAL_ITEM_COUNT != null">total_count,</if>
+            <if test="TOTAL_GROSS_WEIGHT != null">total_weight,</if>
+            <if test="TOTAL_GROSS_VOLUME != null">total_volume,</if>
+            <if test="TOTAL_PACKAGE_COUNT != null">total_pack_count,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="processInspectMinCount != null">process_inspect_min_count,</if>
+            start_inspect_count,
+            process_inspect_count,
+            end_inspect_count,
+            delete_flag,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="SHIPMENT_GID != null">#{SHIPMENT_GID},</if>
+            <if test="SHIPMENT_XID != null">#{SHIPMENT_XID},</if>
+            <if test="SHIPMENT_TYPE != null">
+                (select dict_value from sys_dict_data where sys_dict_data.dict_type = 't_transport_task_type' and sys_dict_data.dict_value = #{SHIPMENT_TYPE}),
+            </if>
+            <if test="CUSTOMER_NAME != null">#{CUSTOMER_NAME},</if>
+            <if test="X_LANE_GID != null">#{X_LANE_GID},</if>
+            <if test="SHIPMENT_NAME != null">#{SHIPMENT_NAME},</if>
+            1,
+            1,
+            <if test="SOURCE_CONTACTS != null">#{SOURCE_CONTACTS},</if>
+            <if test="SOURCE_PHONE_NUMBER != null">#{SOURCE_PHONE_NUMBER},</if>
+            <if test="DEST_CONTACTS != null">#{DEST_CONTACTS},</if>
+            <if test="DEST_PHONE_NUMBER != null">#{DEST_PHONE_NUMBER},</if>
+            <if test="mainVehicleId != null">#{mainVehicleId},</if>
+            <if test="EQUIPMENT_NUMBER != null">#{EQUIPMENT_NUMBER},</if>
+            <if test="mainVehicleModel != null">#{mainVehicleModel},</if>
+            <if test="mainVehicleModelName != null">#{mainVehicleModelName},</if>
+            <if test="hangVehicleId != null">#{hangVehicleId},</if>
+            <if test="VEHICLE_PLATE_NUMBER != null">#{VEHICLE_PLATE_NUMBER},</if>
+            <if test="hangVehicleModel != null">#{hangVehicleModel},</if>
+            <if test="hangVehicleModelName != null">#{hangVehicleModelName},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="DRIVER_NAME != null">#{DRIVER_NAME},</if>
+            <if test="viceDriverId != null">#{viceDriverId},</if>
+            <if test="ASSISTANT_DRIVER_NAME != null">#{ASSISTANT_DRIVER_NAME},</if>
+            <if test="PLAN_START_SHIPPING_DATE != null">#{PLAN_START_SHIPPING_DATE},</if>
+            <if test="PLAN_DELIVERY_DATE != null">#{PLAN_DELIVERY_DATE},</if>
+            <if test="TOTAL_ITEM_COUNT != null">#{TOTAL_ITEM_COUNT},</if>
+            <if test="TOTAL_GROSS_WEIGHT != null">#{TOTAL_GROSS_WEIGHT},</if>
+            <if test="TOTAL_GROSS_VOLUME != null">#{TOTAL_GROSS_VOLUME},</if>
+            <if test="TOTAL_PACKAGE_COUNT != null">#{TOTAL_PACKAGE_COUNT},</if>
+            <if test="businessType != null">#{businessType},</if>
+            <if test="processInspectMinCount != null">#{processInspectMinCount},</if>
+            0,
+            0,
+            0,
+            1,
+            now()
+        </trim>
+    </insert>
+</mapper>

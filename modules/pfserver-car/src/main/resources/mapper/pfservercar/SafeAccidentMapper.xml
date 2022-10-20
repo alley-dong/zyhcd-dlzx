@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.SafeAccidentMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.SafeAccident" id="SafeAccidentResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="vehicleName"    column="vehicle_name"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="accidentTime"    column="accident_time"    />
+        <result property="accidentPlace"    column="accident_place"    />
+        <result property="longitude"    column="longitude"    />
+        <result property="latitude"    column="latitude"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="oneSideDriveLicenceCardJust"    column="one_side_drive_licence_card_just"    />
+        <result property="oneSideDriveLicenceCardAgainst"    column="one_side_drive_licence_card_against"    />
+        <result property="oneSideTravelLicenceCardJust"    column="one_side_travel_licence_card_just"    />
+        <result property="oneSideTravelLicenceCardAgainst"    column="one_side_travel_licence_card_against"    />
+        <result property="theOtherDriveLicenceCardJust"    column="the_other_drive_licence_card_just"    />
+        <result property="theOtherDriveLicenceCardAgainst"    column="the_other_drive_licence_card_against"    />
+        <result property="theOtherTravelLicenceCardJust"    column="the_other_travel_licence_card_just"    />
+        <result property="theOtherTravelLicenceCardAgainst"    column="the_other_travel_licence_card_against"    />
+        <result property="driverIdCardJust"    column="driver_id_card_just"    />
+        <result property="driverIdCardAgainst"    column="driver_id_card_against"    />
+        <result property="carTheInsuredIdCardJust"    column="car_the_insured__id_card_just"    />
+        <result property="carTheInsuredIdCardAgainst"    column="car_the_insured__id_card_against"    />
+        <result property="liabilityStatement"    column="liability_statement"    />
+    </resultMap>
+
+    <sql id="selectSafeAccidentVo">
+        select id, vehicle_id, vehicle_name, driver_id, driver_name,accident_time, accident_place, longitude, latitude, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time, one_side_drive_licence_card_just, one_side_drive_licence_card_against,one_side_travel_licence_card_just,one_side_travel_licence_card_against, the_other_drive_licence_card_just, the_other_drive_licence_card_against,the_other_travel_licence_card_just,the_other_travel_licence_card_against, driver_id_card_just, driver_id_card_against, car_the_insured__id_card_just, car_the_insured__id_card_against, liability_statement from safe_accident
+    </sql>
+
+    <select id="selectSafeAccidentList" parameterType="com.dlzx.pfservercar.domain.SafeAccident" resultMap="SafeAccidentResult">
+        <include refid="selectSafeAccidentVo"/>
+        <where>  
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="beginTime != null and beginTime != '' ">
+                <![CDATA[
+				    and DATE_FORMAT(accident_time,'%Y-%m-%d') >= #{beginTime,jdbcType=VARCHAR}
+			    ]]>
+            </if>
+            <if test="endTime != null and endTime != '' ">
+                <![CDATA[
+				    and DATE_FORMAT(accident_time,'%Y-%m-%d') <= #{endTime,jdbcType=VARCHAR}
+			    ]]>
+            </if>
+            <if test="accidentPlace != null  and accidentPlace != ''"> and accident_place like concat('%', #{accidentPlace}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+             and delete_flag = 1
+        </where>
+        order by accident_time desc
+    </select>
+
+    <select id="selectSafeAccidentListVehName" parameterType="com.dlzx.pfservercar.domain.SafeAccident" resultMap="SafeAccidentResult">
+        select vehicle_id , vehicle_name  from safe_accident
+        <where>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="aTime != null  and aTime != ''"> and accident_time = #{aTime}</if>
+            and delete_flag = '1'
+        </where>
+        GROUP BY vehicle_id , vehicle_name
+    </select>
+
+    <select id="selectSafeAccidentListVehNameTu" parameterType="com.dlzx.pfservercar.domain.SafeAccident" resultMap="SafeAccidentResult">
+        select vehicle_id , vehicle_name  ,accident_time from safe_accident
+        <where>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="aTime != null  and aTime != ''"> and accident_time = #{aTime}</if>
+            and delete_flag = '1'
+            and status = '2'
+        </where>
+    </select>
+
+    <select id="selectSafeAccidentListVehNameAll" parameterType="com.dlzx.pfservercar.domain.SafeAccident" resultMap="SafeAccidentResult">
+        <include refid="selectSafeAccidentVo"/>
+        <where>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="aTime != null  and aTime != ''"> and accident_time = #{aTime}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectSafeAccidentById" parameterType="String" resultMap="SafeAccidentResult">
+        <include refid="selectSafeAccidentVo"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+
+    <select id="selectSafeAccidentByType" parameterType="String" resultMap="SafeAccidentResult">
+        <include refid="selectSafeAccidentVo"/>
+         where vehicle_id = #{vehicleId} and delete_flag = '1'
+    </select>
+        
+    <insert id="insertSafeAccident" parameterType="com.dlzx.pfservercar.domain.SafeAccident">
+        insert into safe_accident
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="vehicleName != null">vehicle_name,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="accidentTime != null">accident_time,</if>
+            <if test="accidentPlace != null">accident_place,</if>
+            <if test="longitude != null">longitude,</if>
+            <if test="latitude != null">latitude,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="oneSideDriveLicenceCardJust != null">one_side_drive_licence_card_just,</if>
+            <if test="oneSideDriveLicenceCardAgainst != null">one_side_drive_licence_card_against,</if>
+            <if test="oneSideTravelLicenceCardJust != null">one_side_travel_licence_card_just,</if>
+            <if test="oneSideTravelLicenceCardAgainst != null">one_side_travel_licence_card_against,</if>
+            <if test="theOtherDriveLicenceCardJust != null">the_other_drive_licence_card_just,</if>
+            <if test="theOtherDriveLicenceCardAgainst != null">the_other_drive_licence_card_against,</if>
+            <if test="theOtherTravelLicenceCardJust != null">the_other_travel_licence_card_just,</if>
+            <if test="theOtherTravelLicenceCardAgainst != null">the_other_travel_licence_card_against,</if>
+            <if test="driverIdCardJust != null">driver_id_card_just,</if>
+            <if test="driverIdCardAgainst != null">driver_id_card_against,</if>
+            <if test="carTheInsuredIdCardJust != null">car_the_insured__id_card_just,</if>
+            <if test="carTheInsuredIdCardAgainst != null">car_the_insured__id_card_against,</if>
+            <if test="liabilityStatement != null">liability_statement,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="vehicleName != null">#{vehicleName},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="accidentTime != null">#{accidentTime},</if>
+            <if test="accidentPlace != null">#{accidentPlace},</if>
+            <if test="longitude != null">#{longitude},</if>
+            <if test="latitude != null">#{latitude},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="oneSideDriveLicenceCardJust != null">#{oneSideDriveLicenceCardJust},</if>
+            <if test="oneSideDriveLicenceCardAgainst != null">#{oneSideDriveLicenceCardAgainst},</if>
+            <if test="oneSideTravelLicenceCardJust != null">#{oneSideTravelLicenceCardJust},</if>
+            <if test="oneSideTravelLicenceCardAgainst != null">#{oneSideTravelLicenceCardAgainst},</if>
+            <if test="theOtherDriveLicenceCardJust != null">#{theOtherDriveLicenceCardJust},</if>
+            <if test="theOtherDriveLicenceCardAgainst != null">#{theOtherDriveLicenceCardAgainst},</if>
+            <if test="theOtherTravelLicenceCardJust != null">#{theOtherTravelLicenceCardJust},</if>
+            <if test="theOtherTravelLicenceCardAgainst != null">#{theOtherTravelLicenceCardAgainst},</if>
+            <if test="driverIdCardJust != null">#{driverIdCardJust},</if>
+            <if test="driverIdCardAgainst != null">#{driverIdCardAgainst},</if>
+            <if test="carTheInsuredIdCardJust != null">#{carTheInsuredIdCardJust},</if>
+            <if test="carTheInsuredIdCardAgainst != null">#{carTheInsuredIdCardAgainst},</if>
+            <if test="liabilityStatement != null">#{liabilityStatement},</if>
+         </trim>
+    </insert>
+
+    <update id="checkSafeAccident" parameterType="com.dlzx.pfservercar.domain.SafeAccident">
+        update safe_accident
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateSafeAccident" parameterType="com.dlzx.pfservercar.domain.SafeAccident">
+        update safe_accident
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="vehicleName != null">vehicle_name = #{vehicleName},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="accidentTime != null">accident_time = #{accidentTime},</if>
+            <if test="accidentPlace != null">accident_place = #{accidentPlace},</if>
+            <if test="longitude != null">longitude = #{longitude},</if>
+            <if test="latitude != null">latitude = #{latitude},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="oneSideDriveLicenceCardJust != null">one_side_drive_licence_card_just = #{oneSideDriveLicenceCardJust},</if>
+            <if test="oneSideDriveLicenceCardAgainst != null">one_side_drive_licence_card_against = #{oneSideDriveLicenceCardAgainst},</if>
+            <if test="oneSideTravelLicenceCardJust != null">the_other_travel_licence_card_just = #{oneSideTravelLicenceCardJust},</if>
+            <if test="oneSideTravelLicenceCardAgainst != null">the_other_travel_licence_card_against = #{oneSideTravelLicenceCardAgainst},</if>
+            <if test="theOtherDriveLicenceCardJust != null"> the_other_drive_licence_card_just = #{theOtherDriveLicenceCardJust},</if>
+            <if test="theOtherDriveLicenceCardAgainst != null"> the_other_drive_licence_card_against = #{theOtherDriveLicenceCardAgainst},</if>
+            <if test="theOtherTravelLicenceCardJust != null"> the_other_travel_licence_card_just = #{theOtherTravelLicenceCardJust},</if>
+            <if test="theOtherTravelLicenceCardAgainst != null"> the_other_travel_licence_card_against = #{theOtherTravelLicenceCardAgainst},</if>
+            <if test="driverIdCardJust != null">driver_id_card_just = #{driverIdCardJust},</if>
+            <if test="driverIdCardAgainst != null">driver_id_card_against = #{driverIdCardAgainst},</if>
+            <if test="carTheInsuredIdCardJust != null">car_the_insured__id_card_just = #{carTheInsuredIdCardJust},</if>
+            <if test="carTheInsuredIdCardAgainst != null">car_the_insured__id_card_against = #{carTheInsuredIdCardAgainst},</if>
+            <if test="liabilityStatement != null">liability_statement = #{liabilityStatement},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafeAccidentById" parameterType="String">
+        delete from safe_accident where id = #{id}
+    </delete>
+
+    <delete id="deleteSafeAccidentByIds" parameterType="String">
+        update safe_accident set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!--   =========分割线=======APP===========   -->
+
+    <sql id="selectAppSafeAccident">
+        s.id, s.vehicle_id, s.vehicle_name, s.driver_id, s.accident_time, s.accident_place,s.driver_name,
+        s.longitude, s.latitude, s.status, s.review_time, s.review_user, s.review_remarks, s.delete_flag,
+         s.create_by, s.create_time, s.update_by, s.update_time, s.one_side_drive_licence_card_just,
+         s.one_side_drive_licence_card_against,s.one_side_travel_licence_card_just,
+          s.one_side_travel_licence_card_against, s.the_other_drive_licence_card_just,
+          the_other_drive_licence_card_against,the_other_travel_licence_card_just,s.the_other_travel_licence_card_against,
+          s.driver_id_card_just, s.driver_id_card_against, s.car_the_insured__id_card_just, s.car_the_insured__id_card_against,
+           s.liability_statement
+    </sql>
+
+<!--    事故记录列表-->
+    <select id="querySafeAccidentList" parameterType="com.dlzx.pfservercar.domain.SafeAccident" resultMap="SafeAccidentResult">
+        select
+        <include refid="selectAppSafeAccident"/>
+        ,sdd.dict_label as statusEnum
+        from safe_accident s
+        left join sys_dict_data sdd on s.status = sdd.dict_value and sdd.dict_type = 'safe_accident_status'
+        <where>
+            <if test="beginTime != null and beginTime != '' ">
+                <![CDATA[
+				    and DATE_FORMAT(s.accident_time,'%Y-%m')= #{beginTime,jdbcType=VARCHAR}
+			    ]]>
+            </if>
+            <if test="status != null  and status != ''"> and s.status = #{status}</if>
+             and s.delete_flag = 1
+             and s.driver_id = #{driverId}
+        </where>
+        order by s.accident_time desc
+    </select>
+
+
+</mapper>

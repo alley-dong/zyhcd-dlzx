@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.FFuelPlaceItemMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.FFuelPlaceItem" id="FFuelPlaceItemResult">
+        <result property="id"    column="id"    />
+        <result property="placeId"    column="place_id"    />
+        <result property="name"    column="name"    />
+        <result property="address"    column="address"    />
+    </resultMap>
+
+    <sql id="selectFFuelPlaceItemVo">
+        select id, place_id, name, address from f_fuel_place_item
+    </sql>
+
+    <select id="selectFFuelPlaceItemList" parameterType="com.dlzx.pfservercar.domain.FFuelPlaceItem" resultMap="FFuelPlaceItemResult">
+        <include refid="selectFFuelPlaceItemVo"/>
+        <where>  
+            <if test="placeId != null  and placeId != ''"> and place_id = #{placeId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+        </where>
+    </select>
+    
+    <select id="selectFFuelPlaceItemById" parameterType="String" resultMap="FFuelPlaceItemResult">
+        <include refid="selectFFuelPlaceItemVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFFuelPlaceItem" parameterType="com.dlzx.pfservercar.domain.FFuelPlaceItem">
+        insert into f_fuel_place_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="placeId != null">place_id,</if>
+            <if test="name != null">name,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="placeId != null">#{placeId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFFuelPlaceItem" parameterType="com.dlzx.pfservercar.domain.FFuelPlaceItem">
+        update f_fuel_place_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="placeId != null">place_id = #{placeId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFFuelPlaceItemById" parameterType="String">
+        delete from f_fuel_place_item where id = #{id}
+    </delete>
+
+    <delete id="deleteFFuelPlaceItemByIds" parameterType="String">
+        delete from f_fuel_place_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

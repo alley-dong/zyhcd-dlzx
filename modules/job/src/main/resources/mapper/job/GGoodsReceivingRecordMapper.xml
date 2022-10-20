@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.job.mapper.GGoodsReceivingRecordMapper">
+
+    <resultMap type="GGoodsReceivingRecord" id="GGoodsReceivingRecordResult">
+        <result property="id" column="id"/>
+        <result property="goodsTypeId" column="goods_type_id"/>
+        <result property="goodsTypeName" column="goods_type_name"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="vehicleId" column="vehicle_id"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="routeId" column="route_id"/>
+        <result property="routeName" column="route_name"/>
+        <result property="specification" column="specification"/>
+        <result property="number" column="number"/>
+        <result property="remarks" column="remarks"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"/>
+        <result property="reviewTime" column="review_time"/>
+        <result property="reviewUser" column="review_user"/>
+        <result property="reviewRemarks" column="review_remarks"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="speNum" column="speNum"/>
+    </resultMap>
+
+    <sql id="selectGGoodsReceivingRecordVo">
+        select id, goods_type_id, goods_type_name, goods_id, goods_name, vehicle_id, license_plate, driver_id, route_id, route_name, specification, number, remarks, type, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time from g_goods_receiving_record
+    </sql>
+
+    <select id="selectGGoodsReceivingRecordListNum" parameterType="GGoodsReceivingRecord"
+            resultMap="GGoodsReceivingRecordResult">
+        select license_plate, create_time, SUM(specification*number) AS speNum from g_goods_receiving_record
+        <where>
+            <if test="createTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(create_time, '%Y-%m') = DATE_FORMAT(#{createTime}, '%Y-%m')
+			    ]]>
+            </if>
+            and status = 4
+            and delete_flag = 1
+            and goods_type_id = '1'
+        </where>
+        GROUP By license_plate
+    </select>
+
+</mapper>

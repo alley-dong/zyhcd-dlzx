@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DTrainingUserRecordMapper">
+    
+    <resultMap type="DTrainingUserRecord" id="DTrainingUserRecordResult">
+        <result property="id"    column="id"    />
+        <result property="trainingId"    column="training_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="status"    column="status"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="driverSex"    column="driver_sex"    />
+        <result property="tel"    column="tel"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="completeTime"    column="complete_time"    />
+        <result property="latelyTime"    column="lately_time"    />
+    </resultMap>
+
+    <sql id="selectDTrainingUserRecordVo">
+        select id, training_id, user_id, status, driver_name, driver_sex, tel, id_card, complete_time, lately_time from d_training_user_record
+    </sql>
+
+    <select id="selectDTrainingUserRecordList" parameterType="DTrainingUserRecord" resultMap="DTrainingUserRecordResult">
+        <include refid="selectDTrainingUserRecordVo"/>
+        <where>  
+            <if test="trainingId != null  and trainingId != ''"> and training_id = #{trainingId}</if>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="driverSex != null  and driverSex != ''"> and driver_sex = #{driverSex}</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="idCard != null  and idCard != ''"> and id_card = #{idCard}</if>
+            <if test="completeTime != null "> and complete_time = #{completeTime}</if>
+            <if test="latelyTime != null "> and lately_time = #{latelyTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectDTrainingUserRecordById" parameterType="String" resultMap="DTrainingUserRecordResult">
+        <include refid="selectDTrainingUserRecordVo"/>
+        where training_id = #{id}
+    </select>
+        
+    <insert id="insertDTrainingUserRecord" parameterType="DTrainingUserRecord">
+        insert into d_training_user_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="trainingId != null">training_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="status != null">status,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="driverSex != null">driver_sex,</if>
+            <if test="tel != null">tel,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="completeTime != null">complete_time,</if>
+            <if test="latelyTime != null">lately_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="trainingId != null">#{trainingId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="driverSex != null">#{driverSex},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+            <if test="latelyTime != null">#{latelyTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDTrainingUserRecordT" >
+        insert into d_training_user_record( id, training_id, user_id, status, driver_name, id_card, tel) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.trainingId},#{item.userId},#{item.status},#{item.driverName},#{item.idCard},#{item.tel})
+        </foreach>
+    </insert>
+
+    <update id="updateDTrainingUserRecord" parameterType="DTrainingUserRecord">
+        update d_training_user_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="trainingId != null">training_id = #{trainingId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="driverSex != null">driver_sex = #{driverSex},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+            <if test="latelyTime != null">lately_time = #{latelyTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDTrainingUserRecordById" parameterType="String">
+        delete from d_training_user_record where id = #{id}
+    </delete>
+
+    <delete id="deleteDTrainingUserRecordByIds" parameterType="String">
+        delete from d_training_user_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverMapper">
+    
+    <resultMap type="DDriver" id="DDriverResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="name"    column="name"    />
+        <result property="sex"    column="sex"    />
+        <result property="birthday"    column="birthday"    />
+        <result property="idCard"    column="id_card"    />
+        <result property="nation"    column="nation"    />
+        <result property="politicalAffiliation"    column="political_affiliation"    />
+        <result property="maritalStatus"    column="marital_status"    />
+        <result property="education"    column="education"    />
+        <result property="contact"    column="contact"    />
+        <result property="urgentTel"    column="urgent_tel"    />
+        <result property="drivingLicenseType"    column="driving_license_type"    />
+        <result property="drivingLicenseTime"    column="driving_license_time"    />
+        <result property="driveAge"    column="drive_age"    />
+        <result property="dntryTime"    column="dntry_time"    />
+        <result property="address"    column="address"    />
+        <result property="driverTypeId"    column="driver_type_id"    />
+        <result property="performanceType"    column="performance_type"    />
+        <result property="staffType"    column="staff_type"    />
+        <result property="interviewRecord"    column="interview_record"    />
+        <result property="interviewStatus"    column="interview_status"    />
+        <result property="interviewRemarks"    column="interview_remarks"    />
+        <result property="examStatus"    column="exam_status"    />
+        <result property="examRemarks"    column="exam_remarks"    />
+        <result property="driveStraightDrivingStatus"    column="drive_straight_driving_status"    />
+        <result property="driveStraightDrivingRemarks"    column="drive_straight_driving_remarks"    />
+        <result property="driveParkingStatus"    column="drive_parking_status"    />
+        <result property="driveParkingRemarks"    column="drive_parking_remarks"    />
+        <result property="driveEmergencyStatus"    column="drive_emergency_status"    />
+        <result property="driveEmergencyRemarks"    column="drive_emergency_remarks"    />
+        <result property="driveStatus"    column="drive_status"    />
+        <result property="driveRemarks"    column="drive_remarks"    />
+        <result property="createBy"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deleteFlag"  column="delete_flag"  />
+        <result property="driverPhoto" column="driver_photo" />
+        <result property="password" column="password" />
+        <result property="token" column="token" />
+        <result property="deviceType" column="device_type"/>
+        <result property="disableStatus" column="disable_status"/>
+        <result property="driverTypeName" column="driver_type_name" />
+        <result property="qualification" column="qualification"/>
+    </resultMap>
+
+    <sql id="selectDDriverVo">
+        select id, status, name, sex, birthday, id_card, nation, political_affiliation, marital_status, education, contact, urgent_tel, driving_license_type, driving_license_time, drive_age, dntry_time, address, driver_type_id, performance_type, staff_type, interview_record, interview_status, interview_remarks, exam_status, exam_remarks, drive_straight_driving_status, drive_straight_driving_remarks, drive_parking_status, drive_parking_remarks, drive_emergency_status, drive_emergency_remarks, drive_status, drive_remarks, create_by, create_time, update_by, update_time,delete_flag,driver_photo,password,token,device_type,disable_status,driver_type_name,qualification from d_driver
+    </sql>
+
+    <select id="selectDDriverList" parameterType="DDriver" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        <where>  
+            <if test="status != null "> and status = #{status}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idCard != null  and idCard != ''"> and id_card like concat('%', #{idCard}, '%')</if>
+            <if test="contact != null  and contact != ''"> and contact like concat('%', #{contact}, '%')</if>
+            <if test="dntryTime != null and dntryTime != ''">and dntry_time like concat('%',#{dntryTime},'%')</if>
+            and delete_flag = '1' and status != '3'
+        </where>
+        ORDER BY field(`status`,1,2,4), create_time desc
+    </select>
+
+    <select id="selectDDriverListQi" parameterType="DDriver" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        <where>
+            and status = '3'
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idCard != null  and idCard != ''"> and id_card like concat('%', #{idCard}, '%')</if>
+            <if test="contact != null  and contact != ''"> and contact like concat('%', #{contact}, '%')</if>
+            <if test="urgentTel != null  and urgentTel != ''"> and contact like concat('%', #{urgentTel}, '%')</if>
+            <if test="dntryTime != null and dntryTime != ''">and dntry_time like concat('%',#{dntryTime},'%')</if>
+            and delete_flag = '1'
+            and disable_status = '1'
+        </where>
+        ORDER BY
+        CONVERT (name USING gbk)
+    </select>
+
+    <select id="selectDDriverListName"  resultMap="DDriverResult">
+        select id , name from d_driver
+        <where>
+            and status = '3'
+            and delete_flag = '1'
+            and disable_status = '1'
+        </where>
+    </select>
+
+    <select id="selectDDriverListTong" parameterType="DDriver" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        <where>
+            and status = '3'
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idCard != null  and idCard != ''"> and id_card like concat('%', #{idCard}, '%')</if>
+            <if test="contact != null  and contact != ''"> and contact like concat('%', #{contact}, '%')</if>
+            <if test="dntryTime != null and dntryTime != ''">and dntry_time like concat('%',#{dntryTime},'%')</if>
+            and delete_flag = '1'
+            and disable_status = '1'
+        </where>
+        ORDER BY
+        CONVERT (name USING gbk)
+    </select>
+
+    <select id="selectDDriverListFile" parameterType="DDriver" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        <where>
+            and status = '3'
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idCard != null  and idCard != ''"> and id_card like concat('%', #{idCard}, '%')</if>
+            <if test="contact != null  and contact != ''"> and contact like concat('%', #{contact}, '%')</if>
+            <if test="disableStatus != null and disableStatus !=''">and disable_status = #{disableStatus}</if>
+            <if test="startTime != null">and dntry_time &gt;= #{startTime}</if>
+            <if test="finishTime != null">and dntry_time &lt;= #{finishTime}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY
+        create_time DESC
+    </select>
+
+    <select id="selectDDriverListZhong" parameterType="DDriver" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        <where>
+            and status = '1'
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="idCard != null  and idCard != ''"> and id_card like concat('%', #{idCard}, '%')</if>
+            <if test="contact != null  and contact != ''"> and contact like concat('%', #{contact}, '%')</if>
+            <if test="dntryTime != null and dntryTime != ''">and dntry_time like concat('%',#{dntryTime},'%')</if>
+            and delete_flag = '1'
+            and disable_status = '1'
+        </where>
+        ORDER BY
+        CONVERT (name USING gbk)
+    </select>
+
+    <select id="selectDDriverListS" resultMap="DDriverResult">
+        select  id ,name ,id_card ,contact ,status from d_driver where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectDDriverById" parameterType="String" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDDriverByDriverTypeId" parameterType="String" resultMap="DDriverResult">
+        <include refid="selectDDriverVo"/>
+        where driver_type_id = #{DriverTypeId}
+    </select>
+
+    <select id="selectDDriverOfIdsList" parameterType="DDriver" resultMap="DDriverResult">
+        SELECT
+	d.id,
+	d.STATUS,
+	d.NAME,
+	d.sex,
+	d.birthday,
+	d.id_card,
+	d.nation,
+	d.political_affiliation,
+	d.marital_status,
+	d.education,
+	d.contact,
+	d.urgent_tel,
+	d.driving_license_type,
+	d.driving_license_time,
+	d.drive_age,
+	d.dntry_time,
+	d.address,
+	d.driver_type_id,
+	d.performance_type,
+	d.staff_type,
+	d.interview_record,
+	d.interview_status,
+	d.interview_remarks,
+	d.exam_status,
+	d.exam_remarks,
+	d.drive_straight_driving_status,
+	d.drive_straight_driving_remarks,
+	d.drive_parking_status,
+	d.drive_parking_remarks,
+	d.drive_emergency_status,
+	d.drive_emergency_remarks,
+	d.drive_status,
+	d.drive_remarks,
+	d.create_by,
+	d.create_time,
+	d.update_by,
+	d.update_time,
+	d.delete_flag,
+	d.driver_photo,
+	d.PASSWORD,
+	d.token,
+	d.device_type,
+	d.disable_status,
+	d.driver_type_name,
+	d.qualification
+FROM
+	d_driver d
+	LEFT JOIN d_driver_type dType ON d.driver_type_id = dType.id
+	where d.delete_flag = '1' and d.status = 3 and d.staff_type = 2 and dType.type = 1
+
+    </select>
+
+    <select id="selectDDriverByIdCard" parameterType="String" resultType="int">
+    select count(id_card) from d_driver where id_card = #{idCard} and delete_flag = '1'
+    </select>
+
+    <select id="selectDDriverLongD" resultMap="DDriverResult">
+    SELECT id,name,driver_type_name,dntry_time from d_driver
+    where performance_type = '1' and delete_flag = '1' and disable_status = '1'
+    </select>
+
+    <select id="selectDDriverShortD" resultMap="DDriverResult">
+        SELECT id,name,driver_type_name,dntry_time from d_driver
+        where performance_type = '2' and delete_flag = '1' and disable_status = '1'
+    </select>
+
+    <select id="selectDDriverAll" resultMap="DDriverResult">
+        select id,name,performance_type,dntry_time,driver_type_id from d_driver
+        where disable_status = '1' and status = '3' and delete_flag = '1'
+    </select>
+
+    <select id="selectOTMDriverAll" resultType="com.dlzx.pfserverperson.domain.model.OTMDriverModel">
+        select
+        name as NAME,
+        contact as PHONE,
+        id_card as ID_NUMBER,
+        qualification as QUALIFICATION_CERTIFICATE,
+        disable_status as ENABLED_FLAG,
+        driving_license_type as VEHICLE_CLASS
+        from d_driver
+        where status = '3' and delete_flag = '1'
+    </select>
+
+    <select id="selectDDriverId" parameterType="String" resultMap="DDriverResult">
+            select id from d_driver where name = #{name} and delete_flag = '1'
+    </select>
+
+    <insert id="insertDDriver" parameterType="DDriver">
+        insert into d_driver
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="status != null">status,</if>
+            <if test="name != null">name,</if>
+            <if test="sex != null">sex,</if>
+            <if test="birthday != null">birthday,</if>
+            <if test="idCard != null">id_card,</if>
+            <if test="nation != null">nation,</if>
+            <if test="politicalAffiliation != null">political_affiliation,</if>
+            <if test="maritalStatus != null">marital_status,</if>
+            <if test="education != null">education,</if>
+            <if test="contact != null">contact,</if>
+            <if test="urgentTel != null">urgent_tel,</if>
+            <if test="drivingLicenseType != null">driving_license_type,</if>
+            <if test="drivingLicenseTime != null">driving_license_time,</if>
+            <if test="driveAge != null">drive_age,</if>
+            <if test="dntryTime != null">dntry_time,</if>
+            <if test="address != null">address,</if>
+            <if test="driverTypeId != null">driver_type_id,</if>
+            <if test="performanceType != null">performance_type,</if>
+            <if test="staffType != null">staff_type,</if>
+            <if test="interviewRecord != null">interview_record,</if>
+            <if test="interviewStatus != null">interview_status,</if>
+            <if test="interviewRemarks != null">interview_remarks,</if>
+            <if test="examStatus != null">exam_status,</if>
+            <if test="examRemarks != null">exam_remarks,</if>
+            <if test="driveStraightDrivingStatus != null">drive_straight_driving_status,</if>
+            <if test="driveStraightDrivingRemarks != null">drive_straight_driving_remarks,</if>
+            <if test="driveParkingStatus != null">drive_parking_status,</if>
+            <if test="driveParkingRemarks != null">drive_parking_remarks,</if>
+            <if test="driveEmergencyStatus != null">drive_emergency_status,</if>
+            <if test="driveEmergencyRemarks != null">drive_emergency_remarks,</if>
+            <if test="driveStatus != null">drive_status,</if>
+            <if test="driveRemarks != null">drive_remarks,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="driverPhoto != null">driver_photo,</if>
+            <if test="password != null">password,</if>
+            <if test="token != null">token,</if>
+            <if test="deviceType != null">device_type,</if>
+            <if test="disableStatus != null">disable_status,</if>
+            <if test="driverTypeName != null">driver_type_name,</if>
+            <if test="qualification != null">qualification,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="status != null">#{status},</if>
+            <if test="name != null">#{name},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="birthday != null">#{birthday},</if>
+            <if test="idCard != null">#{idCard},</if>
+            <if test="nation != null">#{nation},</if>
+            <if test="politicalAffiliation != null">#{politicalAffiliation},</if>
+            <if test="maritalStatus != null">#{maritalStatus},</if>
+            <if test="education != null">#{education},</if>
+            <if test="contact != null">#{contact},</if>
+            <if test="urgentTel != null">#{urgentTel},</if>
+            <if test="drivingLicenseType != null">#{drivingLicenseType},</if>
+            <if test="drivingLicenseTime != null">#{drivingLicenseTime},</if>
+            <if test="driveAge != null">#{driveAge},</if>
+            <if test="dntryTime != null">#{dntryTime},</if>
+            <if test="address != null">#{address},</if>
+            <if test="driverTypeId != null">#{driverTypeId},</if>
+            <if test="performanceType != null">#{performanceType},</if>
+            <if test="staffType != null">#{staffType},</if>
+            <if test="interviewRecord != null">#{interviewRecord},</if>
+            <if test="interviewStatus != null">#{interviewStatus},</if>
+            <if test="interviewRemarks != null">#{interviewRemarks},</if>
+            <if test="examStatus != null">#{examStatus},</if>
+            <if test="examRemarks != null">#{examRemarks},</if>
+            <if test="driveStraightDrivingStatus != null">#{driveStraightDrivingStatus},</if>
+            <if test="driveStraightDrivingRemarks != null">#{driveStraightDrivingRemarks},</if>
+            <if test="driveParkingStatus != null">#{driveParkingStatus},</if>
+            <if test="driveParkingRemarks != null">#{driveParkingRemarks},</if>
+            <if test="driveEmergencyStatus != null">#{driveEmergencyStatus},</if>
+            <if test="driveEmergencyRemarks != null">#{driveEmergencyRemarks},</if>
+            <if test="driveStatus != null">#{driveStatus},</if>
+            <if test="driveRemarks != null">#{driveRemarks},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="driverPhoto != null">#{driverPhoto},</if>
+            <if test="password != null">#{password},</if>
+            <if test="token != null">#{token},</if>
+            <if test="deviceType != null">#{deviceType},</if>
+            <if test="disableStatus != null">#{disableStatus},</if>
+            <if test="driverTypeName != null">#{driverTypeName},</if>
+            <if test="qualification != null">#{qualification},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDDriver" parameterType="DDriver">
+        update d_driver
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="birthday != null">birthday = #{birthday},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
+            <if test="nation != null">nation = #{nation},</if>
+            <if test="politicalAffiliation != null">political_affiliation = #{politicalAffiliation},</if>
+            <if test="maritalStatus != null">marital_status = #{maritalStatus},</if>
+            <if test="education != null">education = #{education},</if>
+            <if test="contact != null">contact = #{contact},</if>
+            <if test="urgentTel != null">urgent_tel = #{urgentTel},</if>
+            <if test="drivingLicenseType != null">driving_license_type = #{drivingLicenseType},</if>
+            <if test="drivingLicenseTime != null">driving_license_time = #{drivingLicenseTime},</if>
+            <if test="driveAge != null">drive_age = #{driveAge},</if>
+            <if test="dntryTime != null">dntry_time = #{dntryTime},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="driverTypeId != null">driver_type_id = #{driverTypeId},</if>
+            <if test="performanceType != null">performance_type = #{performanceType},</if>
+            <if test="staffType != null">staff_type = #{staffType},</if>
+            <if test="interviewRecord != null">interview_record = #{interviewRecord},</if>
+            <if test="interviewStatus != null">interview_status = #{interviewStatus},</if>
+            <if test="interviewRemarks != null">interview_remarks = #{interviewRemarks},</if>
+            <if test="examStatus != null">exam_status = #{examStatus},</if>
+            <if test="examRemarks != null">exam_remarks = #{examRemarks},</if>
+            <if test="driveStraightDrivingStatus != null">drive_straight_driving_status = #{driveStraightDrivingStatus},</if>
+            <if test="driveStraightDrivingRemarks != null">drive_straight_driving_remarks = #{driveStraightDrivingRemarks},</if>
+            <if test="driveParkingStatus != null">drive_parking_status = #{driveParkingStatus},</if>
+            <if test="driveParkingRemarks != null">drive_parking_remarks = #{driveParkingRemarks},</if>
+            <if test="driveEmergencyStatus != null">drive_emergency_status = #{driveEmergencyStatus},</if>
+            <if test="driveEmergencyRemarks != null">drive_emergency_remarks = #{driveEmergencyRemarks},</if>
+            <if test="driveStatus != null">drive_status = #{driveStatus},</if>
+            <if test="driveRemarks != null">drive_remarks = #{driveRemarks},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="driverPhoto != null">driver_photo = #{driverPhoto},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="token != null">token = #{token},</if>
+            <if test="deviceType != null">device_type = #{deviceType},</if>
+            <if test="disableStatus != null">disable_status = #{disableStatus},</if>
+            <if test="driverTypeName != null">driver_type_name = #{driverTypeName},</if>
+            <if test="qualification != null">qualification=#{qualification},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+<!--    更新App驾驶员密码-->
+    <update id="updateDDriverPassword">
+        update d_driver set password = #{encryptPassword} where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverById" parameterType="String">
+        delete from d_driver where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverByIds" parameterType="String">
+        delete from d_driver where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="queryDriverByContact" resultMap="DDriverResult">
+        select * from d_driver where contact = #{contact} and delete_flag = '1'
+    </select>
+
+
+    <select id="selectDDriverByIdContact" parameterType="String" resultType="int">
+        select count(contact) from d_driver where contact = #{contact} and delete_flag = '1'
+    </select>
+
+    <select id="selectDDriverStaff" resultMap="DDriverResult">
+        select id,name,performance_type,dntry_time,driver_type_id from d_driver
+        where disable_status = '1' and status = '3' and delete_flag = '1' and staff_type = 2
+    </select>
+    <!--   =========分割线=======APP===========   -->
+<!--
+
+    <sql id="selectAppDDriver">
+        dd.id, dd.status, dd.name, dd.sex, dd.birthday, dd.id_card, dd.nation, dd.political_affiliation,
+         dd.marital_status, dd.education, dd.contact, dd.urgent_tel, dd.driving_license_type, dd.driving_license_time,
+          dd.drive_age, dd.dntry_time, address, dd.driver_type_id, dd.performance_type, dd.staff_type, dd.interview_record,
+          dd.interview_status, dd.interview_remarks, dd.exam_status, dd.exam_remarks, dd.drive_straight_driving_status,
+          dd.drive_straight_driving_remarks, dd.drive_parking_status, dd.drive_parking_remarks, dd.drive_emergency_status,
+          dd.drive_emergency_remarks, dd.drive_status, dd.drive_remarks, dd.create_by, dd.create_time, dd.update_by,
+          dd.update_time,dd.delete_flag,dd.driver_photo,dd.password,dd.token,dd.device_type,dd.disable_status,dd.driver_type_name
+    </sql>
+
+    &lt;!&ndash;    获取驾驶员个人中心信息&ndash;&gt;
+    <select id="driverInfo" parameterType="String" resultMap="DDriverResult">
+        select
+        <include refid="selectAppDDriver"/>
+        ,ddt.type as driverTypeEnum
+        from d_driver dd left join d_driver_type ddt on dd.driver_type_id = ddt.id
+        where dd.id = #{}
+    </select>
+
+-->
+
+
+</mapper>

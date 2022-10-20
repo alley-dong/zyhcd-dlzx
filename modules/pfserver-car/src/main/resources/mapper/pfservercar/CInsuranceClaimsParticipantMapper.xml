@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CInsuranceClaimsParticipantMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.CInsuranceClaimsParticipant" id="CInsuranceClaimsParticipantResult">
+        <result property="id"    column="id"    />
+        <result property="insuranceClaimsId"    column="insurance_claims_id"    />
+        <result property="userType"    column="user_type"    />
+        <result property="name"    column="name"    />
+        <result property="proportion"    column="proportion"    />
+        <result property="compensateMoney"    column="compensate_money"    />
+        <result property="compensateTime"    column="compensate_time"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCInsuranceClaimsParticipantVo">
+        select id, insurance_claims_id,user_type,name, proportion, compensate_money, compensate_time, delete_flag, create_by, create_time, update_by, update_time from c_insurance_claims_participant
+    </sql>
+
+    <select id="selectCInsuranceClaimsParticipantList" parameterType="com.dlzx.pfservercar.domain.CInsuranceClaimsParticipant" resultMap="CInsuranceClaimsParticipantResult">
+        <include refid="selectCInsuranceClaimsParticipantVo"/>
+        <where>  
+            <if test="userType != null "> and user_type = #{userType}</if>
+            <if test="insuranceClaimsId != null "> and insurance_claims_id = #{insuranceClaimsId}</if>
+            <if test="name != null "> and name = #{name}</if>
+            <if test="proportion != null "> and proportion = #{proportion}</if>
+            <if test="compensateMoney != null "> and compensate_money = #{compensateMoney}</if>
+            <if test="compensateTime != null "> and compensate_time = #{compensateTime}</if>
+            and delete_flag = 1
+        </where>
+    </select>
+    
+    <select id="selectCInsuranceClaimsParticipantById" parameterType="String" resultMap="CInsuranceClaimsParticipantResult">
+        <include refid="selectCInsuranceClaimsParticipantVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCInsuranceClaimsParticipant" parameterType="com.dlzx.pfservercar.domain.CInsuranceClaimsParticipant">
+        insert into c_insurance_claims_participant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="insuranceClaimsId != null">insurance_claims_id,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="name != null">name,</if>
+            <if test="proportion != null">proportion,</if>
+            <if test="compensateMoney != null">compensate_money,</if>
+            <if test="compensateTime != null">compensate_time,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="insuranceClaimsId != null">#{insuranceClaimsId},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="name != null">#{name},</if>
+            <if test="proportion != null">#{proportion},</if>
+            <if test="compensateMoney != null">#{compensateMoney},</if>
+            <if test="compensateTime != null">#{compensateTime},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCInsuranceClaimsParticipant" parameterType="com.dlzx.pfservercar.domain.CInsuranceClaimsParticipant">
+        update c_insurance_claims_participant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="insuranceClaimsId != null">insurance_claims_id = #{insuranceClaimsId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="proportion != null">proportion = #{proportion},</if>
+            <if test="compensateMoney != null">compensate_money = #{compensateMoney},</if>
+            <if test="compensateTime != null">compensate_time = #{compensateTime},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCInsuranceClaimsParticipantById" parameterType="String">
+        delete from c_insurance_claims_participant where id = #{id}
+    </delete>
+
+    <delete id="deleteCInsuranceClaimsParticipantByIds" parameterType="String">
+        update c_insurance_claims_participant set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

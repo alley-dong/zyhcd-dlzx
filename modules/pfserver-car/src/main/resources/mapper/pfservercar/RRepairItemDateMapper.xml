@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RRepairItemDateMapper">
+    
+    <resultMap type="RRepairItemDate" id="RRepairItemDateResult">
+        <result property="id"    column="id"    />
+        <result property="repairId"    column="repair_id"    />
+        <result property="itemId"    column="item_id"    />
+        <result property="itemName"    column="item_name"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="files"    column="files"    />
+    </resultMap>
+
+    <sql id="selectRRepairItemDateVo">
+        select id, repair_id, item_id, item_name, remarks, files from r_repair_item_date
+    </sql>
+
+    <select id="selectRRepairItemDateList" parameterType="RRepairItemDate" resultMap="RRepairItemDateResult">
+        <include refid="selectRRepairItemDateVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectRRepairItemDateById" parameterType="String" resultMap="RRepairItemDateResult">
+        <include refid="selectRRepairItemDateVo"/>
+        where repair_id = #{id}
+    </select>
+
+    <select id="selectRRepairItemDateByRepairId" parameterType="String" resultMap="RRepairItemDateResult">
+        <include refid="selectRRepairItemDateVo"/>
+        where repair_id = #{id}
+    </select>
+
+    <select id="selectRRepairItemDateStat" parameterType="RRepairItemDate" resultMap="RRepairItemDateResult">
+        SELECT
+	a.item_id,
+	a.item_name,
+	COUNT( item_id ) AS statistics
+FROM
+	r_repair_item_date a,
+	r_repair b
+	<where>
+        <if test="startTime != null"> and b.complete_time &gt;=  #{startTime}</if>
+        <if test="finishTime != null">and b.complete_time &lt;=  #{finishTime}</if>
+        and a.repair_id = b.id and b.delete_flag = '1' and b.type = '1' and repair_type &lt;&gt; 3 and repair_type &lt;&gt; 2
+    </where>
+GROUP BY
+		a.item_id
+    </select>
+
+    <select id="queryRepairItemDateList" parameterType="String" resultMap="RRepairItemDateResult">
+        <include refid="selectRRepairItemDateVo"/>
+        where repair_id = #{id}  group by item_id
+    </select>
+
+    <insert id="insertRRepairItemDate" parameterType="RRepairItemDate">
+        insert into r_repair_item_date
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="repairId != null">repair_id,</if>
+            <if test="itemId != null">item_id,</if>
+            <if test="itemName != null">item_name,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="files != null">files,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="repairId != null">#{repairId},</if>
+            <if test="itemId != null">#{itemId},</if>
+            <if test="itemName != null">#{itemName},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="files != null">#{files},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertRRepairItemDateBatch" parameterType="List">
+           insert into r_repair_item_date(id,repair_id,item_id,item_name,remarks,files)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.repairId},#{item.itemId},#{item.itemName},#{item.remarks},#{item.files})
+       </foreach>
+    </insert>
+
+    <update id="updateRRepairItemDate" parameterType="RRepairItemDate">
+        update r_repair_item_date
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="repairId != null">repair_id = #{repairId},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="itemName != null">item_name = #{itemName},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="files != null">files = #{files},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRRepairItemDateById" parameterType="String">
+        delete from r_repair_item_date where id = #{id}
+    </delete>
+
+    <delete id="deleteRRepairItemDateByIds" parameterType="String">
+        delete from r_repair_item_date where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteRRepairItemDateBatch" parameterType="String">
+        delete from r_repair_item_date where repair_id = #{id}
+    </delete>
+    
+</mapper>

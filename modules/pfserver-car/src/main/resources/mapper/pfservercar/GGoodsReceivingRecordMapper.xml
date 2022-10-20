@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.GGoodsReceivingRecordMapper">
+
+    <resultMap type="GGoodsReceivingRecord" id="GGoodsReceivingRecordResult">
+        <result property="id" column="id"/>
+        <result property="goodsTypeId" column="goods_type_id"/>
+        <result property="goodsTypeName" column="goods_type_name"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="goodsName" column="goods_name"/>
+        <result property="vehicleId" column="vehicle_id"/>
+        <result property="licensePlate" column="license_plate"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="routeId" column="route_id"/>
+        <result property="routeName" column="route_name"/>
+        <result property="specification" column="specification"/>
+        <result property="number" column="number"/>
+        <result property="remarks" column="remarks"/>
+        <result property="type" column="type"/>
+        <result property="status" column="status"/>
+        <result property="reviewTime" column="review_time"/>
+        <result property="reviewUser" column="review_user"/>
+        <result property="reviewRemarks" column="review_remarks"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="speNum" column="speNum"/>
+    </resultMap>
+
+    <sql id="selectGGoodsReceivingRecordVo">
+        select id, goods_type_id, goods_type_name, goods_id, goods_name, vehicle_id, license_plate, driver_id, route_id, route_name, specification, number, remarks, type, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time ,receive_time from g_goods_receiving_record
+    </sql>
+
+    <select id="selectGGoodsReceivingRecordList" parameterType="GGoodsReceivingRecord"
+            resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordVo"/>
+        <where>
+            <if test="goodsTypeId != null  and goodsTypeId != ''">and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''">and goods_type_name like concat('%', #{goodsTypeName}, '%')
+            </if>
+            <if test="goodsId != null  and goodsId != ''">and goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''">and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="vehicleId != null  and vehicleId != ''">and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''">and license_plate = #{licensePlate}</if>
+            <if test="driverId != null  and driverId != ''">and driver_id = #{driverId}</if>
+            <if test="routeId != null  and routeId != ''">and route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''">and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="specification != null  and specification != ''">and specification = #{specification}</if>
+            <if test="number != null ">and number = #{number}</if>
+            <if test="remarks != null  and remarks != ''">and remarks = #{remarks}</if>
+            <if test="type != null ">and type = #{type}</if>
+            <if test="status != null ">and status = #{status}</if>
+            <if test="reviewTime != null ">and review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''">and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''">and review_remarks = #{reviewRemarks}</if>
+            <if test="deleteFlag != null ">and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+
+    <select id="selectGGoodsReceivingRecordListNum" parameterType="GGoodsReceivingRecord"
+            resultMap="GGoodsReceivingRecordResult">
+        select license_plate,  SUM(specification*number) AS speNum from g_goods_receiving_record
+        <where>
+            <if test="createTime != null"> and date_format(create_time,'%Y-%m') =date_format( #{createTime},'%Y-%m') </if>
+            and status = '4'
+            and delete_flag = '1'
+            and goods_type_id = '1'
+        </where>
+        GROUP By license_plate
+    </select>
+
+    <select id="selectGGoodsReceivingRecordById" parameterType="String" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGGoodsReceivingRecord" parameterType="GGoodsReceivingRecord">
+        insert into g_goods_receiving_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="goodsTypeId != null">goods_type_id,</if>
+            <if test="goodsTypeName != null">goods_type_name,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="number != null">number,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="type != null">type,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="receiveTime != null">receive_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="goodsTypeId != null">#{goodsTypeId},</if>
+            <if test="goodsTypeName != null">#{goodsTypeName},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="number != null">#{number},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="type != null">#{type},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="receiveTime != null">#{receiveTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGGoodsReceivingRecord" parameterType="GGoodsReceivingRecord">
+        update g_goods_receiving_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsTypeId != null">goods_type_id = #{goodsTypeId},</if>
+            <if test="goodsTypeName != null">goods_type_name = #{goodsTypeName},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="receiveTime != null">receive_time = #{receiveTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsReceivingRecordById" parameterType="String">
+        delete from g_goods_receiving_record where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsReceivingRecordByIds" parameterType="String">
+        delete from g_goods_receiving_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    ERP费用-->
+    <select id="queryERPReceivingRecordUreatList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel" resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+        SELECT
+        ggrr.id,
+        ggrr.goods_type_id,
+        ggrr.goods_type_name,
+        ggrr.goods_id,
+        ggrr.goods_name,
+        ggrr.vehicle_id,
+        ggrr.license_plate as licensePlate,
+        ggrr.driver_id,
+        ggrr.route_id,
+        ggrr.route_name,
+        ggrr.specification,
+        ggrr.unit,
+        ggrr.number as number,
+        ggrr.remarks,
+        ggrr.type,
+        ggrr.STATUS,
+        ggrr.review_time,
+        ggrr.review_user,
+        ggrr.review_remarks,
+        ggrr.delete_flag,
+        ggrr.create_by,
+        ggrr.create_time,
+        ggrr.update_by,
+        ggrr.update_time,
+        ggrr.receive_time as receiveTime,
+        gg.unit_price as unitPrice,
+        gg.amount as amount
+        from g_goods_receiving_record as ggrr
+        left JOIN g_goods AS gg ON gg.id = ggrr.goods_id
+        LEFT JOIN g_goods_type as gType ON gType.id = ggrr.goods_type_id
+        <where>
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            and ggrr.delete_flag = '1'
+            and gType.type = 1
+        </where>
+
+    </select>
+
+
+<!--    ERP费用-->
+    <select id="queryERPReceivingRecordTyreList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel" resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+
+        SELECT
+        ggrr.id,
+        ggrr.goods_type_id,
+        ggrr.goods_type_name,
+        ggrr.goods_id,
+        ggrr.goods_name,
+        ggrr.vehicle_id,
+        ggrr.license_plate as licensePlate,
+        ggrr.driver_id,
+        ggrr.route_id,
+        ggrr.route_name,
+        ggrr.specification,
+        ggrr.unit,
+        ggrr.number as number,
+        ggrr.remarks,
+        ggrr.type,
+        ggrr.STATUS,
+        ggrr.review_time,
+        ggrr.review_user,
+        ggrr.review_remarks,
+        ggrr.delete_flag,
+        ggrr.create_by,
+        ggrr.create_time,
+        ggrr.update_by,
+        ggrr.update_time,
+        ggrr.receive_time as receiveTime,
+        gg.unit_price as unitPrice,
+        gg.amount as amount
+        from g_goods_receiving_record as ggrr
+        left JOIN g_goods AS gg ON gg.id = ggrr.goods_id
+        LEFT JOIN g_goods_type as gType ON gType.id = ggrr.goods_type_id
+        <where>
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            and ggrr.delete_flag = '1'
+            and gType.type = 3
+        </where>
+
+    </select>
+
+</mapper>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CVehicleInspectMapper">
+    
+    <resultMap type="CVehicleInspect" id="CVehicleInspectResult">
+        <result property="id"    column="id"    />
+        <result property="monthlyId"    column="monthly_id"    />
+        <result property="monthlyItemId"    column="monthly_item_id"    />
+        <result property="type"    column="type"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="totalNumber"    column="total_number"    />
+        <result property="completeNumber"    column="complete_number"    />
+        <result property="incompleteNumber"    column="incomplete_number"    />
+
+        <result property="inspectId"    column="inspect_id"    />
+        <result property="cviiType"    column="cviiType"    />
+        <result property="itemType"    column="item_type"    />
+        <result property="name"    column="name"    />
+        <result property="cviiStatus"    column="cviiStatus"    />
+        <result property="files"    column="files"    />
+    </resultMap>
+
+    <sql id="selectCVehicleInspectVo">
+        select id, monthly_id, type, vehicle_id, license_plate, driver_id, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time,monthly_item_id from c_vehicle_inspect
+    </sql>
+    <sql id="selectCVehicleInspectOrCVIM">
+        select cvi.id, cvi.monthly_id, cvi.type, cvi.vehicle_id, cvi.license_plate, cvi.driver_id, cvi.status
+        , cvi.review_time, cvi.review_user, cvi.review_remarks, cvi.delete_flag, cvi.create_by
+        , cvi.create_time, cvi.update_by, cvi.update_time,cvi.monthly_item_id
+        , cvim.id, cvim.inspect_date, cvim.total_number, cvim.complete_number, cvim.incomplete_number
+        , cvii.id, cvii.inspect_id, cvii.type as cviiType, cvii.item_type, cvii.name, cvii.status as cviiStatus, cvii.files
+        from c_vehicle_inspect as cvi
+    </sql>
+
+    <select id="selectCVehicleInspectList" parameterType="CVehicleInspect" resultMap="CVehicleInspectResult">
+        <include refid="selectCVehicleInspectVo"/>
+        <where>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="createBy != null "> and create_by like concat('%', #{createBy}, '%')</if>
+            <if test="sTime != null"> and create_time &gt;= #{sTime}</if>
+            <if test="fTime != null"> and create_time &lt;= #{fTime}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY field(`status`,1,3,2,4), create_time desc
+    </select>
+
+    <select id="selectCVehicleInspectListApp" parameterType="CVehicleInspect" resultMap="CVehicleInspectResult">
+        <include refid="selectCVehicleInspectVo"/>
+        <where>
+            <if test="monthlyId != null  and monthlyId != ''"> and monthly_id = #{monthlyId}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectCVehicleInspectById" parameterType="String" resultMap="CVehicleInspectResult">
+        <include refid="selectCVehicleInspectVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCVehicleInspectByMonthlyItemId" parameterType="String" resultMap="CVehicleInspectResult">
+        <include refid="selectCVehicleInspectVo"/>
+        where monthly_item_id = #{id}
+    </select>
+
+    <select id="selectCVehicleInspectInfo" resultMap="CVehicleInspectResult">
+        <include refid="selectCVehicleInspectOrCVIM"/>
+        join c_vehicle_inspect_monthly as cvim
+        on cvim.id = cvi.monthly_id
+        join c_vehicle_inspect_item as cvii
+        on cvii.inspect_id = cvi.id
+        where cvi.delete_flag = '1' and cvi.monthly_id = #{monthlyId}
+    </select>
+        
+    <insert id="insertCVehicleInspect" parameterType="CVehicleInspect">
+        insert into c_vehicle_inspect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="monthlyId != null">monthly_id,</if>
+            <if test="monthlyItemId != null">monthly_item_id,</if>
+            <if test="type != null">type,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="monthlyId != null">#{monthlyId},</if>
+            <if test="monthlyItemId != null">#{monthlyItemId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCVehicleInspect" parameterType="CVehicleInspect">
+        update c_vehicle_inspect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="monthlyId != null">monthly_id = #{monthlyId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="monthlyItemId != null and monthlyItemId != ''">monthly_item_id = #{monthlyItemId},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="checkCVehicleInspect" parameterType="CInsuranceVehicle">
+        update c_vehicle_inspect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCVehicleInspectById" parameterType="String">
+        delete from c_vehicle_inspect where id = #{id}
+    </delete>
+
+    <delete id="deleteCVehicleInspectByIds" parameterType="String">
+        delete from c_vehicle_inspect where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

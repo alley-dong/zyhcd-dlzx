@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.PContractMapper">
+    
+    <resultMap type="com.dlzx.pfserverperson.domain.PContract" id="PContractResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="contractType"    column="contract_type"    />
+        <result property="flag"    column="flag"    />
+        <result property="name"    column="name"    />
+        <result property="carrierId"    column="carrier_id"    />
+        <result property="carrierName"    column="carrier_name"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="contractStartTime"    column="contract_start_time"    />
+        <result property="contractEndTiem"    column="contract_end_tiem"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPContractVo">
+        select id, type, contract_type, flag, name, carrier_id, carrier_name, unit_price, payment_method, contract_start_time, contract_end_tiem, remarks, delete_flag, create_by, create_time, update_by, update_time from p_contract
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+    <select id="selectPContractList" parameterType="com.dlzx.pfserverperson.domain.PContract" resultMap="PContractResult">
+        <include refid="selectPContractVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="contractType != null "> and contract_type = #{contractType}</if>
+            <if test="flag != null "> and flag = #{flag}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name like concat('%', #{carrierName}, '%')</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="paymentMethod != null  and paymentMethod != ''"> and payment_method = #{paymentMethod}</if>
+            <if test="contractStartTime != null "> and contract_start_time = #{contractStartTime}</if>
+            <if test="contractEndTiem != null ">
+                <![CDATA[
+				and	DATE_FORMAT(contract_end_tiem, '%Y-%m') = DATE_FORMAT(#{contractEndTiem}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <include refid="deleteFlag"/>
+            and type = #{type}
+            order by flag desc, contract_end_tiem asc
+        </where>
+
+    </select>
+    
+    <select id="selectPContractById" parameterType="String" resultMap="PContractResult">
+        <include refid="selectPContractVo"/>
+        where id = #{id}
+        <include refid="deleteFlag"/>
+    </select>
+        
+    <insert id="insertPContract" parameterType="com.dlzx.pfserverperson.domain.PContract">
+        insert into p_contract
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="contractType != null">contract_type,</if>
+            <if test="flag != null">flag,</if>
+            <if test="name != null">name,</if>
+            <if test="carrierId != null">carrier_id,</if>
+            <if test="carrierName != null">carrier_name,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="paymentMethod != null">payment_method,</if>
+            <if test="contractStartTime != null">contract_start_time,</if>
+            <if test="contractEndTiem != null">contract_end_tiem,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="contractType != null">#{contractType},</if>
+            <if test="flag != null">#{flag},</if>
+            <if test="name != null">#{name},</if>
+            <if test="carrierId != null">#{carrierId},</if>
+            <if test="carrierName != null">#{carrierName},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="paymentMethod != null">#{paymentMethod},</if>
+            <if test="contractStartTime != null">#{contractStartTime},</if>
+            <if test="contractEndTiem != null">#{contractEndTiem},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePContract" parameterType="com.dlzx.pfserverperson.domain.PContract">
+        update p_contract
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="contractType != null">contract_type = #{contractType},</if>
+            <if test="flag != null">flag = #{flag},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="carrierId != null">carrier_id = #{carrierId},</if>
+            <if test="carrierName != null">carrier_name = #{carrierName},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+            <if test="contractStartTime != null">contract_start_time = #{contractStartTime},</if>
+            <if test="contractEndTiem != null">contract_end_tiem = #{contractEndTiem},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <update id="updateCustomerContractStatus" parameterType="com.dlzx.pfserverperson.domain.PContract">
+        update p_contract set flag = #{flag} where id = #{id}
+    </update>
+
+    <delete id="deletePContractById" parameterType="String">
+        delete from p_contract where id = #{id}
+    </delete>
+
+    <update id="deletePContractByIds" parameterType="String">
+        update p_contract set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+    
+</mapper>

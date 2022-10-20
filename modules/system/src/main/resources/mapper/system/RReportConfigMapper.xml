@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.system.mapper.RReportConfigMapper">
+    
+    <resultMap type="RReportConfig" id="RReportConfigResult">
+        <result property="id"    column="id"    />
+        <result property="driverPay"    column="driver_pay"    />
+        <result property="adminPay"    column="admin_pay"    />
+        <result property="serviceCost"    column="service_cost"    />
+        <result property="fuelCost"    column="fuel_cost"    />
+        <result property="inspectionFee"    column="inspection_fee"    />
+        <result property="insurance"    column="insurance"    />
+        <result property="maintenanceCost"    column="maintenance_cost"    />
+        <result property="trieCost"    column="trie_cost"    />
+        <result property="consumablesCost"    column="consumables_cost"    />
+        <result property="depreciationCost"    column="depreciation_cost"    />
+        <result property="systemCost"    column="system_cost"    />
+        <result property="ureaCost" column="urea_cost"/>
+    </resultMap>
+
+    <sql id="selectRReportConfigVo">
+        select id, driver_pay, admin_pay, service_cost, fuel_cost, inspection_fee, insurance, maintenance_cost, trie_cost, consumables_cost, depreciation_cost, system_cost,urea_cost from r_report_config
+    </sql>
+
+    <select id="selectRReportConfigList" parameterType="RReportConfig" resultMap="RReportConfigResult">
+        <include refid="selectRReportConfigVo"/>
+        <where>  
+        </where>
+    </select>
+    
+    <select id="selectRReportConfigById" parameterType="String" resultMap="RReportConfigResult">
+        <include refid="selectRReportConfigVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRReportConfig" parameterType="RReportConfig">
+        insert into r_report_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="driverPay != null">driver_pay,</if>
+            <if test="adminPay != null">admin_pay,</if>
+            <if test="serviceCost != null">service_cost,</if>
+            <if test="fuelCost != null">fuel_cost,</if>
+            <if test="inspectionFee != null">inspection_fee,</if>
+            <if test="insurance != null">insurance,</if>
+            <if test="maintenanceCost != null">maintenance_cost,</if>
+            <if test="trieCost != null">trie_cost,</if>
+            <if test="consumablesCost != null">consumables_cost,</if>
+            <if test="depreciationCost != null">depreciation_cost,</if>
+            <if test="systemCost != null">system_cost,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="driverPay != null">#{driverPay},</if>
+            <if test="adminPay != null">#{adminPay},</if>
+            <if test="serviceCost != null">#{serviceCost},</if>
+            <if test="fuelCost != null">#{fuelCost},</if>
+            <if test="inspectionFee != null">#{inspectionFee},</if>
+            <if test="insurance != null">#{insurance},</if>
+            <if test="maintenanceCost != null">#{maintenanceCost},</if>
+            <if test="trieCost != null">#{trieCost},</if>
+            <if test="consumablesCost != null">#{consumablesCost},</if>
+            <if test="depreciationCost != null">#{depreciationCost},</if>
+            <if test="systemCost != null">#{systemCost},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRReportConfig" parameterType="RReportConfig">
+        update r_report_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverPay != null">driver_pay = #{driverPay},</if>
+            <if test="adminPay != null">admin_pay = #{adminPay},</if>
+            <if test="serviceCost != null">service_cost = #{serviceCost},</if>
+            <if test="fuelCost != null">fuel_cost = #{fuelCost},</if>
+            <if test="inspectionFee != null">inspection_fee = #{inspectionFee},</if>
+            <if test="insurance != null">insurance = #{insurance},</if>
+            <if test="maintenanceCost != null">maintenance_cost = #{maintenanceCost},</if>
+            <if test="trieCost != null">trie_cost = #{trieCost},</if>
+            <if test="consumablesCost != null">consumables_cost = #{consumablesCost},</if>
+            <if test="depreciationCost != null">depreciation_cost = #{depreciationCost},</if>
+            <if test="systemCost != null">system_cost = #{systemCost},</if>
+            <if test="ureaCost != null">urea_cost = #{ureaCost},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRReportConfigById" parameterType="String">
+        delete from r_report_config where id = #{id}
+    </delete>
+
+    <delete id="deleteRReportConfigByIds" parameterType="String">
+        delete from r_report_config where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

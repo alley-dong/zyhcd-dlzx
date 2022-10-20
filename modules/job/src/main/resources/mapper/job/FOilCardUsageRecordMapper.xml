@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.job.mapper.FOilCardUsageRecordMapper">
+    
+    <resultMap type="com.dlzx.job.domain.FOilCardUsageRecord" id="FOilCardUsageRecordResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="oilCardId"    column="oil_card_id"    />
+        <result property="oilCardNumber"    column="oil_card_number"    />
+        <result property="consume"    column="consume"    />
+        <result property="surplus"    column="surplus"    />
+        <result property="unit"    column="unit"    />
+        <result property="transactionStatus"    column="transaction_status"    />
+        <result property="transactionTime"    column="transaction_time"    />
+        <result property="transactionAddress"    column="transaction_address"    />
+        <result property="productType"    column="product_type"    />
+        <result property="productName"    column="product_name"    />
+        <result property="oilQuantity"    column="oil_quantity"    />
+        <result property="status"    column="status"    />
+        <result property="exceptionType"    column="exception_type"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="oilNum"    column="oilNum"    />
+    </resultMap>
+
+    <sql id="selectFOilCardUsageRecordVo">
+        select id, vehicle_id, license_plate, oil_card_id, oil_card_number, consume, surplus, unit, transaction_status, transaction_time,transaction_address, product_type, product_name, oil_quantity, status, exception_type, delete_flag, create_by, create_time, update_by, update_time from f_oil_card_usage_record
+    </sql>
+
+    <select id="selectFOilCardUsageRecordListNum" parameterType="com.dlzx.job.domain.FOilCardUsageRecord"
+            resultMap="FOilCardUsageRecordResult">
+        select license_plate, SUM(oil_quantity) AS oilNum from f_oil_card_usage_record
+        <where>
+            <if test="transactionTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(transaction_time, '%Y-%m') = DATE_FORMAT(#{transactionTime}, '%Y-%m')
+			    ]]>
+            </if>
+            and delete_flag = '1'
+        </where>
+        GROUP By license_plate
+    </select>
+
+</mapper>

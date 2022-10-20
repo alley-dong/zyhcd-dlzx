@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.dlzx</groupId>
+        <artifactId>dlzx-modules</artifactId>
+        <version>2.2.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+	
+    <artifactId>dlzx-modules-pfserver-person</artifactId>
+
+    <description>
+        dlzx-modules-pfserver-person人模块
+    </description>
+	
+    <dependencies>
+    	
+    	<!-- SpringCloud Ailibaba Nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        
+        <!-- SpringCloud Ailibaba Nacos Config -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        
+    	<!-- SpringCloud Ailibaba Sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        
+    	<!-- SpringBoot Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+		
+        <!-- Swagger -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.fox.version}</version>
+        </dependency>
+		
+        <!-- Mysql Connector -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        
+        <!-- dlzx Common Security -->
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-security</artifactId>
+        </dependency>
+        
+        <!-- dlzx Common Datascope -->
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-datascope</artifactId>
+        </dependency>
+        
+        <!-- dlzx Common Log -->
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-log</artifactId>
+        </dependency>
+        
+        <!-- dlzx Common Swagger -->
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-swagger</artifactId>
+        </dependency>
+        
+        <!-- dlzx Common Redis-->
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-redis</artifactId>
+        </dependency>
+
+        <!-- dlzx Common Core-->
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-mongo</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dlzx</groupId>
+            <artifactId>dlzx-common-minio</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.12</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+   
+</project>

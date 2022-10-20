@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskPartsMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskPartsVm" id="TTransportTaskPartsResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="orderOn"    column="order_on"    />
+        <result property="type"    column="type"    />
+        <result property="partsCode"    column="parts_code"    />
+        <result property="partsName"    column="parts_name"    />
+        <result property="partsType"    column="parts_type"    />
+        <result property="partsCount"    column="parts_count"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskPartsVo">
+        select id, task_id, shipment_xid, order_on, type, parts_code, parts_name, parts_type, parts_count, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_parts
+    </sql>
+
+    <!--    获取翻译信息-->
+    <sql id="selectTTransportTaskPartsDetail">
+       select id, task_id, shipment_xid, order_on, type, parts_code, parts_name, parts_type, parts_count, delete_flag
+       , parts.create_by, parts.create_time, parts.update_by, parts.update_time
+        ,sysType.dict_label as typeEnum
+        ,sysPartsType.dict_label as partsTypeEnum
+        from t_transport_task_parts as parts
+        LEFT JOIN sys_dict_data sysType on parts.type = sysType.dict_value and sysType.dict_type = 't_transport_task_parts_type'
+        LEFT JOIN sys_dict_data sysPartsType on parts.parts_type = sysPartsType.dict_value and sysPartsType.dict_type = 't_transport_task_parts_type'
+    </sql>
+
+    <select id="selectTTransportTaskPartsList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskPartsModel" resultMap="TTransportTaskPartsResult">
+        <include refid="selectTTransportTaskPartsDetail"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and shipment_xid = #{shipmentXid}</if>
+            <if test="orderOn != null  and orderOn != ''"> and order_on = #{orderOn}</if>
+            <if test="type != null "> and parts.type = #{type}</if>
+            <if test="partsCode != null  and partsCode != ''"> and parts_code = #{partsCode}</if>
+            <if test="partsName != null  and partsName != ''"> and parts_name like concat('%', #{partsName}, '%')</if>
+            <if test="partsType != null "> and parts_type = #{partsType}</if>
+            <if test="partsCount != null "> and parts_count = #{partsCount}</if>
+            and delete_flag = 1
+            and parts.create_time is not null
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskPartsById" parameterType="String" resultMap="TTransportTaskPartsResult">
+        <include refid="selectTTransportTaskPartsVo"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+
+
+<!--    根据任务ID获取部件-->
+    <select id="selectTaskPartsByTaskId" parameterType="String" resultMap="TTransportTaskPartsResult">
+        <include refid="selectTTransportTaskPartsDetail"/>
+        where task_id = #{taskId} and parts.create_time is not null
+    </select>
+
+    <!--    根据订单编号获取明细-->
+    <select id="selectTaskPartsByOrderId" resultType="com.dlzx.pfservercar.domain.TTransportTaskParts">
+        <include refid="selectTTransportTaskPartsDetail"/>
+        where order_on in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <insert id="insertTTransportTaskParts" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskPartsModel">
+        insert into t_transport_task_parts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="orderOn != null">order_on,</if>
+            <if test="type != null">type,</if>
+            <if test="partsCode != null">parts_code,</if>
+            <if test="partsName != null">parts_name,</if>
+            <if test="partsType != null">parts_type,</if>
+            <if test="partsCount != null">parts_count,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="orderOn != null">#{orderOn},</if>
+            <if test="type != null">#{type},</if>
+            <if test="partsCode != null">#{partsCode},</if>
+            <if test="partsName != null">#{partsName},</if>
+            <if test="partsType != null">#{partsType},</if>
+            <if test="partsCount != null">#{partsCount},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+
+    <!--    批量插入-->
+    <insert id="insertOrderList" parameterType="java.util.List">
+        insert into t_transport_task_parts (
+        id, task_id, shipment_xid, order_on, type
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.ID,jdbcType=VARCHAR},
+            #{item.SHIPMENT_GID,jdbcType=VARCHAR},
+            #{item.shipmentXid,jdbcType=VARCHAR},
+            #{item.ORDER_MOVEMENT_GID,jdbcType=VARCHAR},
+            (select dict_value from sys_dict_data where sys_dict_data.dict_type = 't_transport_task_parts_type' and sys_dict_data.dict_value = #{item.BUSINESS_TYPE}),
+            )
+        </foreach>
+
+    </insert>
+
+    <!--    批量插入-->
+    <insert id="insertOrderPartsList" parameterType="java.util.List">
+        insert into t_transport_task_parts (
+        id, task_id, shipment_xid, order_on, type
+        , parts_code, parts_name, parts_type, parts_count
+        , delete_flag
+        ,create_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.ID,jdbcType=VARCHAR},
+            #{item.SHIPMENT_GID,jdbcType=VARCHAR},
+            #{item.shipmentXid,jdbcType=VARCHAR},
+            #{item.ORDER_MOVEMENT_XID,jdbcType=VARCHAR},
+
+            #{item.PACKAGED_ITEM_XID,jdbcType=VARCHAR},
+            #{item.PACKAGED_ITEM_NAME,jdbcType=VARCHAR},
+
+            #{item.PACKAGE_ITEM_COUNT,jdbcType=VARCHAR},
+            1,
+            now()
+            )
+        </foreach>
+
+    </insert>
+
+    <update id="updateTTransportTaskParts" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskPartsModel">
+        update t_transport_task_parts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="orderOn != null">order_on = #{orderOn},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="partsCode != null">parts_code = #{partsCode},</if>
+            <if test="partsName != null">parts_name = #{partsName},</if>
+            <if test="partsType != null">parts_type = #{partsType},</if>
+            <if test="partsCount != null">parts_count = #{partsCount},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskPartsById" parameterType="String">
+        delete from t_transport_task_parts where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskPartsByIds" parameterType="String">
+        delete from t_transport_task_parts where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertOTMTransportTaskParts">
+        insert into t_transport_task_parts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">id,</if>
+            <if test="SHIPMENT_GID != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="PACKAGED_ITEM_XID != null">order_on,</if>
+            <if test="BUSINESS_TYPE != null">type,</if>
+            <if test="PACKAGED_ITEM_XID != null">parts_code,</if>
+            <if test="PACKAGED_ITEM_NAME != null">parts_name,</if>
+            <if test="PACKAGED_ITEM_TYPE != null">parts_type,</if>
+            <if test="PACKAGE_ITEM_COUNT != null">parts_count,</if>
+            delete_flag,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">#{TEMPLATE_ID},</if>
+            <if test="SHIPMENT_GID != null">#{SHIPMENT_GID},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="PACKAGED_ITEM_XID != null">#{PACKAGED_ITEM_XID},</if>
+            <if test="BUSINESS_TYPE != null">
+                (select dict_value from sys_dict_data where sys_dict_data.dict_type = 't_transport_task_parts_type' and sys_dict_data.dict_value = #{BUSINESS_TYPE}),
+            </if>
+            <if test="PACKAGED_ITEM_XID != null">#{PACKAGED_ITEM_XID},</if>
+            <if test="PACKAGED_ITEM_NAME != null">#{PACKAGED_ITEM_NAME},</if>
+            <if test="PACKAGED_ITEM_TYPE != null">
+                (select dict_value from sys_dict_data where sys_dict_data.dict_type = 't_transport_task_parts_parts_type' and sys_dict_data.dict_value = #{PACKAGED_ITEM_TYPE}),
+            </if>
+            <if test="PACKAGE_ITEM_COUNT != null">#{PACKAGE_ITEM_COUNT},</if>
+            1,
+            now()
+        </trim>
+    </insert>
+
+</mapper>

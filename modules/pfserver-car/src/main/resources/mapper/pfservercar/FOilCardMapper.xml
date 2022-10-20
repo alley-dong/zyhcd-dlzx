@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.FOilCardMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.FOilCard" id="FOilCardResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="oilCardNumber"    column="oil_card_number"    />
+        <result property="oils"    column="oils"    />
+        <result property="cardTime"    column="card_time"    />
+        <result property="dueTime"    column="due_time"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFOilCardVo">
+        select id, vehicle_id, license_plate, oil_card_number, oils, card_time, due_time, delete_flag, create_by, create_time, update_by, update_time from f_oil_card
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+    <select id="selectFOilCardList" parameterType="com.dlzx.pfservercar.domain.FOilCard" resultMap="FOilCardResult">
+        <include refid="selectFOilCardVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="oilCardNumber != null  and oilCardNumber != ''"> and oil_card_number like concat('%', #{oilCardNumber}, '%')</if>
+            <if test="oils != null  and oils != ''"> and oils = #{oils}</if>
+            <if test="cardTime != null "> and card_time = #{cardTime}</if>
+            <if test="dueTime != null "> and due_time = #{dueTime}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by due_time asc
+    </select>
+
+
+    <select id="importList" parameterType="com.dlzx.pfservercar.domain.FOilCard" resultMap="FOilCardResult">
+        <include refid="selectFOilCardVo"/>
+        <where>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="oilCardNumber != null  and oilCardNumber != ''"> and oil_card_number = #{oilCardNumber}</if>
+            <if test="oils != null  and oils != ''"> and oils = #{oils}</if>
+            <if test="cardTime != null "> and card_time = #{cardTime}</if>
+            <if test="dueTime != null "> and due_time = #{dueTime}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by due_time asc
+    </select>
+
+
+<!--    精确查询-->
+    <select id="queryFOilCardList" parameterType="com.dlzx.pfservercar.domain.FOilCard" resultMap="FOilCardResult">
+        <include refid="selectFOilCardVo"/>
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="oilCardNumber != null  and oilCardNumber != ''"> and oil_card_number = #{oilCardNumber}</if>
+            <if test="oils != null  and oils != ''"> and oils = #{oils}</if>
+            <if test="cardTime != null "> and card_time = #{cardTime}</if>
+            <if test="dueTime != null "> and due_time = #{dueTime}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by due_time asc
+    </select>
+    
+    <select id="selectFOilCardById" parameterType="String" resultMap="FOilCardResult">
+        <include refid="selectFOilCardVo"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+
+    <select id="selectFOilCardByCardNumber" resultType="com.dlzx.pfservercar.domain.FOilCard">
+        <include refid="selectFOilCardVo"/>
+        where oil_card_number = #{oilCardNumber} and delete_flag = 1
+    </select>
+
+    <insert id="insertFOilCard" parameterType="com.dlzx.pfservercar.domain.FOilCard">
+        insert into f_oil_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="oilCardNumber != null">oil_card_number,</if>
+            <if test="oils != null">oils,</if>
+            <if test="cardTime != null">card_time,</if>
+            <if test="dueTime != null">due_time,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="oilCardNumber != null">#{oilCardNumber},</if>
+            <if test="oils != null">#{oils},</if>
+            <if test="cardTime != null">#{cardTime},</if>
+            <if test="dueTime != null">#{dueTime},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+    <insert id="insertList" parameterType="java.util.List">
+
+        insert into f_oil_card (id, vehicle_id, license_plate, oil_card_number, oils, card_time, due_time, delete_flag,
+        create_time )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.vehicleId},
+            #{item.licensePlate},
+            #{item.oilCardNumber},
+            #{item.oils},
+            #{item.cardTime},
+            #{item.dueTime},
+            #{item.deleteFlag},
+            #{item.createTime}
+            )
+        </foreach>
+
+    </insert>
+
+    <update id="updateFOilCard" parameterType="com.dlzx.pfservercar.domain.FOilCard">
+        update f_oil_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="oilCardNumber != null">oil_card_number = #{oilCardNumber},</if>
+            <if test="oils != null">oils = #{oils},</if>
+            <if test="cardTime != null">card_time = #{cardTime},</if>
+            <if test="dueTime != null">due_time = #{dueTime},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFOilCardById" parameterType="String">
+        delete from f_oil_card where id = #{id}
+    </delete>
+
+    <update id="deleteFOilCardByIds" parameterType="String">
+        update f_oil_card set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

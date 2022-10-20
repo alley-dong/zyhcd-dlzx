@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DPerformanceOvertimeRecordMapper">
+    
+    <resultMap type="DPerformanceOvertimeRecord" id="DPerformanceOvertimeRecordResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="performanceDate"    column="performance_date"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="amount"    column="amount"    />
+        <result property="mainVehicleId"    column="main_vehicle_id"    />
+        <result property="mainLicensePlate"    column="main_license_plate"    />
+        <result property="hangVehicleId"    column="hang_vehicle_id"    />
+        <result property="hangLicensePlate"    column="hang_license_plate"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDPerformanceOvertimeRecordVo">
+        select id, task_id, performance_date, driver_id, driver_name, amount, main_vehicle_id, main_license_plate, hang_vehicle_id, hang_license_plate, delete_flag, create_by, create_time, update_by, update_time from d_performance_overtime_record
+    </sql>
+
+    <select id="selectDPerformanceOvertimeRecordList" parameterType="DPerformanceOvertimeRecord" resultMap="DPerformanceOvertimeRecordResult">
+        <include refid="selectDPerformanceOvertimeRecordVo"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="bTime != null "> and performance_date >= #{bTime}</if>
+            <if test="eTime != null "> and performance_date &lt;= #{eTime}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="mainVehicleId != null  and mainVehicleId != ''"> and main_vehicle_id = #{mainVehicleId}</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate = #{mainLicensePlate}</if>
+            <if test="hangVehicleId != null  and hangVehicleId != ''"> and hang_vehicle_id = #{hangVehicleId}</if>
+            <if test="hangLicensePlate != null  and hangLicensePlate != ''"> and hang_license_plate = #{hangLicensePlate}</if>
+             and delete_flag = '1'
+        </where>
+    </select>
+    
+    <select id="selectDPerformanceOvertimeRecordById" parameterType="String" resultMap="DPerformanceOvertimeRecordResult">
+        <include refid="selectDPerformanceOvertimeRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDPerOverTimeList" parameterType="DPerformanceOvertimeRecord" resultMap="DPerformanceOvertimeRecordResult">
+        select driver_id,sum(amount) as amo from d_performance_overtime_record
+        <where>
+            <if test="bTime != null "> and performance_date &gt;= #{bTime}</if>
+            <if test="eTime != null "> and performance_date &lt;= #{eTime}</if>
+            and delete_flag = '1'
+        </where>
+        GROUP BY driver_id
+    </select>
+        
+    <insert id="insertDPerformanceOvertimeRecord" parameterType="DPerformanceOvertimeRecord">
+        insert into d_performance_overtime_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="performanceDate != null">performance_date,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="amount != null">amount,</if>
+            <if test="mainVehicleId != null">main_vehicle_id,</if>
+            <if test="mainLicensePlate != null">main_license_plate,</if>
+            <if test="hangVehicleId != null">hang_vehicle_id,</if>
+            <if test="hangLicensePlate != null">hang_license_plate,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="performanceDate != null">#{performanceDate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="mainVehicleId != null">#{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">#{mainLicensePlate},</if>
+            <if test="hangVehicleId != null">#{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">#{hangLicensePlate},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDPerformanceOvertimeRecord" parameterType="DPerformanceOvertimeRecord">
+        update d_performance_overtime_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="performanceDate != null">performance_date = #{performanceDate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="mainVehicleId != null">main_vehicle_id = #{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">main_license_plate = #{mainLicensePlate},</if>
+            <if test="hangVehicleId != null">hang_vehicle_id = #{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">hang_license_plate = #{hangLicensePlate},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDPerformanceOvertimeRecordById" parameterType="String">
+        delete from d_performance_overtime_record where id = #{id}
+    </delete>
+
+    <delete id="deleteDPerformanceOvertimeRecordByIds" parameterType="String">
+        delete from d_performance_overtime_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

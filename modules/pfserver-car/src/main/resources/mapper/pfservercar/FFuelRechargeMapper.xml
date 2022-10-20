@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.FFuelRechargeMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.FFuelRecharge" id="FFuelRechargeResult">
+        <result property="id"    column="id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="frameNumber"    column="frame_number"    />
+        <result property="cardNumber"    column="card_number"    />
+        <result property="rechargeElectricity"    column="recharge_electricity"    />
+        <result property="rechargeAmount"    column="recharge_amount"    />
+        <result property="rechargeDuration"    column="recharge_duration"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="overTime"    column="over_time"    />
+        <result property="needleElectricity"    column="needle_electricity"    />
+        <result property="peakElectricity"    column="peak_electricity"    />
+        <result property="flatElectricity"    column="flat_electricity"    />
+        <result property="grainElectricity"    column="grain_electricity"    />
+        <result property="startSoc"    column="start_soc"    />
+        <result property="overSoc"    column="over_soc"    />
+        <result property="stopCause"    column="stop_cause"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFFuelRechargeVo">
+        select id, license_plate, vehicle_id, frame_number, card_number, recharge_electricity, recharge_amount, recharge_duration, start_time, over_time, needle_electricity, peak_electricity, flat_electricity, grain_electricity, start_soc, over_soc, stop_cause, delete_flag, create_by, create_time, update_by, update_time from f_fuel_recharge
+    </sql>
+
+    <select id="selectFFuelRechargeList" parameterType="com.dlzx.pfservercar.domain.FFuelRecharge" resultMap="FFuelRechargeResult">
+        <include refid="selectFFuelRechargeVo"/>
+        <where>  
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="frameNumber != null  and frameNumber != ''"> and frame_number like concat('%',#{frameNumber},'%')</if>
+            <if test="cardNumber != null  and cardNumber != ''"> and card_number like concat('%',#{cardNumber},'%')</if>
+            <if test="beginTimes != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(start_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTimes != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(over_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTimes}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="rechargeElectricity != null "> and recharge_electricity = #{rechargeElectricity}</if>
+            <if test="rechargeAmount != null "> and recharge_amount = #{rechargeAmount}</if>
+            <if test="rechargeDuration != null "> and recharge_duration = #{rechargeDuration}</if>
+            <if test="needleElectricity != null "> and needle_electricity = #{needleElectricity}</if>
+            <if test="peakElectricity != null "> and peak_electricity = #{peakElectricity}</if>
+            <if test="flatElectricity != null "> and flat_electricity = #{flatElectricity}</if>
+            <if test="grainElectricity != null "> and grain_electricity = #{grainElectricity}</if>
+            <if test="startSoc != null  and startSoc != ''"> and start_soc = #{startSoc}</if>
+            <if test="overSoc != null  and overSoc != ''"> and over_soc = #{overSoc}</if>
+            <if test="stopCause != null  and stopCause != ''"> and stop_cause = #{stopCause}</if>
+            and delete_flag = 1
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectFFuelRechargeById" parameterType="String" resultMap="FFuelRechargeResult">
+        <include refid="selectFFuelRechargeVo"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+        
+    <insert id="insertFFuelRecharge" parameterType="com.dlzx.pfservercar.domain.FFuelRecharge">
+        insert into f_fuel_recharge
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="frameNumber != null">frame_number,</if>
+            <if test="cardNumber != null">card_number,</if>
+            <if test="rechargeElectricity != null">recharge_electricity,</if>
+            <if test="rechargeAmount != null">recharge_amount,</if>
+            <if test="rechargeDuration != null">recharge_duration,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="overTime != null">over_time,</if>
+            <if test="needleElectricity != null">needle_electricity,</if>
+            <if test="peakElectricity != null">peak_electricity,</if>
+            <if test="flatElectricity != null">flat_electricity,</if>
+            <if test="grainElectricity != null">grain_electricity,</if>
+            <if test="startSoc != null">start_soc,</if>
+            <if test="overSoc != null">over_soc,</if>
+            <if test="stopCause != null">stop_cause,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="frameNumber != null">#{frameNumber},</if>
+            <if test="cardNumber != null">#{cardNumber},</if>
+            <if test="rechargeElectricity != null">#{rechargeElectricity},</if>
+            <if test="rechargeAmount != null">#{rechargeAmount},</if>
+            <if test="rechargeDuration != null">#{rechargeDuration},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="overTime != null">#{overTime},</if>
+            <if test="needleElectricity != null">#{needleElectricity},</if>
+            <if test="peakElectricity != null">#{peakElectricity},</if>
+            <if test="flatElectricity != null">#{flatElectricity},</if>
+            <if test="grainElectricity != null">#{grainElectricity},</if>
+            <if test="startSoc != null">#{startSoc},</if>
+            <if test="overSoc != null">#{overSoc},</if>
+            <if test="stopCause != null">#{stopCause},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <!--    批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into f_fuel_recharge (
+        id, license_plate, vehicle_id, frame_number, card_number, recharge_electricity,
+        recharge_amount, recharge_duration, start_time, over_time, needle_electricity,
+        peak_electricity, flat_electricity, grain_electricity, start_soc, over_soc, stop_cause,
+        delete_flag, create_by, create_time, update_by, update_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.licensePlate,jdbcType=VARCHAR},
+            #{item.vehicleId,jdbcType=VARCHAR},
+            #{item.frameNumber,jdbcType=VARCHAR},
+            #{item.cardNumber,jdbcType=VARCHAR},
+            #{item.rechargeElectricity,jdbcType=DECIMAL},
+            #{item.rechargeAmount,jdbcType=DECIMAL},
+            #{item.rechargeDuration,jdbcType=INTEGER},
+            #{item.startTime,jdbcType=TIMESTAMP},
+            #{item.overTime,jdbcType=TIMESTAMP},
+            #{item.needleElectricity,jdbcType=DECIMAL},
+            #{item.peakElectricity,jdbcType=DECIMAL},
+            #{item.flatElectricity,jdbcType=DECIMAL},
+            #{item.grainElectricity,jdbcType=DECIMAL},
+            #{item.startSoc,jdbcType=VARCHAR},
+            #{item.overSoc,jdbcType=VARCHAR},
+            #{item.stopCause,jdbcType=VARCHAR},
+            #{item.deleteFlag,jdbcType=INTEGER},
+            #{item.createBy,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateFFuelRecharge" parameterType="com.dlzx.pfservercar.domain.FFuelRecharge">
+        update f_fuel_recharge
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="frameNumber != null">frame_number = #{frameNumber},</if>
+            <if test="cardNumber != null">card_number = #{cardNumber},</if>
+            <if test="rechargeElectricity != null">recharge_electricity = #{rechargeElectricity},</if>
+            <if test="rechargeAmount != null">recharge_amount = #{rechargeAmount},</if>
+            <if test="rechargeDuration != null">recharge_duration = #{rechargeDuration},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="overTime != null">over_time = #{overTime},</if>
+            <if test="needleElectricity != null">needle_electricity = #{needleElectricity},</if>
+            <if test="peakElectricity != null">peak_electricity = #{peakElectricity},</if>
+            <if test="flatElectricity != null">flat_electricity = #{flatElectricity},</if>
+            <if test="grainElectricity != null">grain_electricity = #{grainElectricity},</if>
+            <if test="startSoc != null">start_soc = #{startSoc},</if>
+            <if test="overSoc != null">over_soc = #{overSoc},</if>
+            <if test="stopCause != null">stop_cause = #{stopCause},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFFuelRechargeById" parameterType="String">
+        delete from f_fuel_recharge where id = #{id}
+    </delete>
+
+    <delete id="deleteFFuelRechargeByIds" parameterType="String">
+        delete from f_fuel_recharge where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

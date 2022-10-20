@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.job.mapper.DTrainingUserMapper">
+
+    <resultMap type="DTrainingAp" id="DTrainingApResult">
+        <result property="id"    column="id"    />
+        <result property="trainingId"    column="training_id"    />
+        <result property="title"    column="title"    />
+        <result property="trainingEndTime"    column="training_end_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <update id="updateDTrainingStatus" parameterType="DTrainingAp">
+        update d_training_user_record a
+        left join d_training b on a.training_id = b.id
+        set a.status = '3' where b.training_end_time &lt; #{dangTime} and a.status = '1'
+    </update>
+
+</mapper>

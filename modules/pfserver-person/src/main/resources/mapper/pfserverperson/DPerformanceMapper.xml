@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DPerformanceMapper">
+    
+    <resultMap type="DPerformance" id="DPerformanceResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="name"    column="name"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="chargeType"    column="charge_type"    />
+        <result property="vehicleType"    column="vehicle_type"    />
+        <result property="vehicleTypeName"    column="vehicle_type_name"    />
+        <result property="driverTypeId"    column="driver_type_id"    />
+        <result property="driverTypeName"    column="driver_type_name"    />
+        <result property="isVice"    column="is_vice"    />
+        <result property="amount"    column="amount"    />
+        <result property="tarpaulin"    column="tarpaulin"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDPerformanceVo">
+        select id, type, name, route_id, route_name, charge_type, vehicle_type, vehicle_type_name, driver_type_id, driver_type_name, is_vice, amount, tarpaulin,delete_flag, create_by, create_time, update_by, update_time from d_performance
+    </sql>
+
+    <select id="selectDPerformanceList" parameterType="DPerformance" resultMap="DPerformanceResult">
+        <include refid="selectDPerformanceVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="chargeType != null "> and charge_type = #{chargeType}</if>
+            <if test="vehicleType != null  and vehicleType != ''"> and vehicle_type = #{vehicleType}</if>
+            <if test="vehicleTypeName != null  and vehicleTypeName != ''"> and vehicle_type_name like concat('%', #{vehicleTypeName}, '%')</if>
+            <if test="driverTypeId != null  and driverTypeId != ''"> and driver_type_id = #{driverTypeId}</if>
+            <if test="driverTypeName != null  and driverTypeName != ''"> and driver_type_name like concat('%', #{driverTypeName}, '%')</if>
+            <if test="isVice != null "> and is_vice = #{isVice}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="tarpaulin != null "> and tarpaulin = #{tarpaulin}</if>
+             and delete_flag = '1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectDPerformanceListJiXiao" parameterType="DPerformance" resultMap="DPerformanceResult">
+        select id,  name from d_performance
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+
+    <select id="selectDPerformanceById" parameterType="String" resultMap="DPerformanceResult">
+        <include refid="selectDPerformanceVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDPerformanceByName" parameterType="String" resultMap="DPerformanceResult">
+        <include refid="selectDPerformanceVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <insert id="insertDPerformance" parameterType="DPerformance">
+        insert into d_performance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="name != null">name,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="chargeType != null">charge_type,</if>
+            <if test="vehicleType != null">vehicle_type,</if>
+            <if test="vehicleTypeName != null">vehicle_type_name,</if>
+            <if test="driverTypeId != null">driver_type_id,</if>
+            <if test="driverTypeName != null">driver_type_name,</if>
+            <if test="isVice != null">is_vice,</if>
+            <if test="amount != null">amount,</if>
+            <if test="tarpaulin != null">tarpaulin,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="name != null">#{name},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="chargeType != null">#{chargeType},</if>
+            <if test="vehicleType != null">#{vehicleType},</if>
+            <if test="vehicleTypeName != null">#{vehicleTypeName},</if>
+            <if test="driverTypeId != null">#{driverTypeId},</if>
+            <if test="driverTypeName != null">#{driverTypeName},</if>
+            <if test="isVice != null">#{isVice},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="tarpaulin != null">#{tarpaulin},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDPerformanceC" parameterType="DPerformanceChang">
+        insert into d_performance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="name != null">name,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="chargeType != null">charge_type,</if>
+            <if test="vehicleType != null">vehicle_type,</if>
+            <if test="vehicleTypeName != null">vehicle_type_name,</if>
+            <if test="isVice != null">is_vice,</if>
+            <if test="amount != null">amount,</if>
+            <if test="tarpaulin != null">tarpaulin,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="name != null">#{name},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="chargeType != null">#{chargeType},</if>
+            <if test="vehicleType != null">#{vehicleType},</if>
+            <if test="vehicleTypeName != null">#{vehicleTypeName},</if>
+            <if test="isVice != null">#{isVice},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="tarpaulin != null">#{tarpaulin},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="insertDPerformanceD" parameterType="DPerformanceDuan">
+        insert into d_performance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="name != null">name,</if>
+            <if test="driverTypeId != null">driver_type_id,</if>
+            <if test="driverTypeName != null">driver_type_name,</if>
+            <if test="amount != null">amount,</if>
+            <if test="tarpaulin != null">tarpaulin,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="name != null">#{name},</if>
+            <if test="driverTypeId != null">#{driverTypeId},</if>
+            <if test="driverTypeName != null">#{driverTypeName},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="tarpaulin != null">#{tarpaulin},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDPerformance" parameterType="DPerformance">
+        update d_performance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="chargeType != null">charge_type = #{chargeType},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="vehicleTypeName != null">vehicle_type_name = #{vehicleTypeName},</if>
+            <if test="driverTypeId != null">driver_type_id = #{driverTypeId},</if>
+            <if test="driverTypeName != null">driver_type_name = #{driverTypeName},</if>
+            <if test="isVice != null">is_vice = #{isVice},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="tarpaulin != null">tarpaulin = #{tarpaulin},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateDPerformanceC" parameterType="DPerformanceChang">
+        update d_performance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="chargeType != null">charge_type = #{chargeType},</if>
+            <if test="vehicleType != null">vehicle_type = #{vehicleType},</if>
+            <if test="vehicleTypeName != null">vehicle_type_name = #{vehicleTypeName},</if>
+            <if test="isVice != null">is_vice = #{isVice},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="tarpaulin != null">tarpaulin = #{tarpaulin},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateDPerformanceD" parameterType="DPerformanceDuan">
+        update d_performance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="driverTypeId != null">driver_type_id = #{driverTypeId},</if>
+            <if test="driverTypeName != null">driver_type_name = #{driverTypeName},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="tarpaulin != null">tarpaulin = #{tarpaulin},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+    <delete id="deleteDPerformanceById" parameterType="String">
+        delete from d_performance where id = #{id}
+    </delete>
+
+    <delete id="deleteDPerformanceByIds" parameterType="String">
+        delete from d_performance where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <select id="queryPerformance" resultMap="DPerformanceResult">
+        <include refid="selectDPerformanceVo"/>
+        where vehicle_type = #{vehicleType} and route_id = #{routeId} and is_vice = #{isVice}
+    </select>
+
+</mapper>

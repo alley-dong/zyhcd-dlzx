@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.system.mapper.RGarageMapper">
+    
+    <resultMap type="RGarage" id="RGarageResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="tel"    column="tel"    />
+        <result property="address"    column="address"    />
+        <result property="isFixed"    column="is_fixed"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_By"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_By"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRGarageVo">
+        select id, name, tel, address, is_fixed, delete_flag, create_By, create_time, update_By, update_time from r_garage
+    </sql>
+
+    <select id="selectRGarageList" parameterType="RGarage" resultMap="RGarageResult">
+        <include refid="selectRGarageVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="tel != null  and tel != ''"> and tel = #{tel}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="isFixed != null "> and is_fixed = #{isFixed}</if>
+            and delete_flag = '1'
+            <if test="createBy != null  and createBy != ''"> and create_By = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_By = #{updateBy}</if>
+        </where>
+    </select>
+
+    <select id="selectRGarageListRG"  resultMap="RGarageResult">
+        select id, name from r_garage
+        <where>
+           and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectRGarageListL" resultMap="RGarageResult">
+        select  name from r_garage
+
+    </select>
+
+    <select id="selectIdByName" resultType="string">
+        select  id from r_garage
+        where name = #{name}
+
+    </select>
+
+    <select id="selectRGarageById" parameterType="String" resultMap="RGarageResult">
+        <include refid="selectRGarageVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRGarage" parameterType="RGarage">
+        insert into r_garage
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="tel != null">tel,</if>
+            <if test="address != null">address,</if>
+            <if test="isFixed != null">is_fixed,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_By,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_By,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="address != null">#{address},</if>
+            <if test="isFixed != null">#{isFixed},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRGarage" parameterType="RGarage">
+        update r_garage
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="tel != null">tel = #{tel},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="isFixed != null">is_fixed = #{isFixed},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_By = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_By = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRGarageById" parameterType="String">
+        delete from r_garage where id = #{id}
+    </delete>
+
+    <delete id="deleteRGarageByIds" parameterType="String">
+        delete from r_garage where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

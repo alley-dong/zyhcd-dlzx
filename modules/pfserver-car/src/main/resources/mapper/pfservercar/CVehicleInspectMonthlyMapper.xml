@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CVehicleInspectMonthlyMapper">
+    
+    <resultMap type="CVehicleInspectMonthly" id="CVehicleInspectMonthlyResult">
+        <result property="id"    column="id"    />
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="totalNumber"    column="total_number"    />
+        <result property="completeNumber"    column="complete_number"    />
+        <result property="incompleteNumber"    column="incomplete_number"    />
+    </resultMap>
+
+    <sql id="selectCVehicleInspectMonthlyVo">
+        select id, inspect_date, total_number, complete_number, incomplete_number from c_vehicle_inspect_monthly
+    </sql>
+
+    <select id="selectCVehicleInspectMonthlyList" parameterType="CVehicleInspectMonthly" resultMap="CVehicleInspectMonthlyResult">
+        <include refid="selectCVehicleInspectMonthlyVo"/>
+        <where>  
+            <if test="inspectDate != null "> and DATE_FORMAT(inspect_date,'%Y-%m') = DATE_FORMAT(#{inspectDate},'%Y-%m')</if>
+            <if test="totalNumber != null "> and total_number = #{totalNumber}</if>
+            <if test="completeNumber != null "> and complete_number = #{completeNumber}</if>
+            <if test="incompleteNumber != null "> and incomplete_number = #{incompleteNumber}</if>
+        </where>
+    </select>
+    
+    <select id="selectCVehicleInspectMonthlyById" parameterType="String" resultMap="CVehicleInspectMonthlyResult">
+        <include refid="selectCVehicleInspectMonthlyVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCVehicleInspectMonthlyByInspectDate" parameterType="String" resultMap="CVehicleInspectMonthlyResult">
+        <include refid="selectCVehicleInspectMonthlyVo"/>
+        where
+        DATE_FORMAT(inspect_date, '%Y-%m') = #{inspectDate}
+        ORDER BY inspect_date ASC
+    </select>
+        
+    <insert id="insertCVehicleInspectMonthly" parameterType="CVehicleInspectMonthly">
+        insert into c_vehicle_inspect_monthly
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="inspectDate != null">inspect_date,</if>
+            <if test="totalNumber != null">total_number,</if>
+            <if test="completeNumber != null">complete_number,</if>
+            <if test="incompleteNumber != null">incomplete_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="inspectDate != null">#{inspectDate},</if>
+            <if test="totalNumber != null">#{totalNumber},</if>
+            <if test="completeNumber != null">#{completeNumber},</if>
+            <if test="incompleteNumber != null">#{incompleteNumber},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCVehicleInspectMonthly" parameterType="CVehicleInspectMonthly">
+        update c_vehicle_inspect_monthly
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inspectDate != null">inspect_date = #{inspectDate},</if>
+            <if test="totalNumber != null">total_number = #{totalNumber},</if>
+            <if test="completeNumber != null">complete_number = #{completeNumber},</if>
+            <if test="incompleteNumber != null">incomplete_number = #{incompleteNumber},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateCVehicleInspectMonthlyDate" >
+        update c_vehicle_inspect_monthly set complete_number = IFNULL(complete_number,0)+1,
+        incomplete_number = IFNULL(incomplete_number,0)-1
+        where inspect_date=#{inspectDate}
+    </update>
+
+    <update id="updateCVehicleInspectMonthlyDateNo" >
+        update c_vehicle_inspect_monthly set complete_number = IFNULL(complete_number,0)+1
+        , incomplete_number = IFNULL(incomplete_number,0)+1
+        where inspect_date=#{inspectDate}
+    </update>
+
+    <delete id="deleteCVehicleInspectMonthlyById" parameterType="String">
+        delete from c_vehicle_inspect_monthly where id = #{id}
+    </delete>
+
+    <delete id="deleteCVehicleInspectMonthlyByIds" parameterType="String">
+        delete from c_vehicle_inspect_monthly where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

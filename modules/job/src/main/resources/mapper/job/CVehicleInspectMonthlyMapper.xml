@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.job.mapper.CVehicleInspectMonthlyMapper">
+    
+    <resultMap type="CVehicleInspectMonthly" id="CVehicleInspectMonthlyResult">
+        <result property="id"    column="id"    />
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="totalNumber"    column="total_number"    />
+        <result property="completeNumber"    column="complete_number"    />
+        <result property="incompleteNumber"    column="incomplete_number"    />
+    </resultMap>
+
+    <sql id="selectCVehicleInspectMonthlyVo">
+        select id, inspect_date, total_number, complete_number, incomplete_number from c_vehicle_inspect_monthly
+    </sql>
+
+    <insert id="insertCVehicleInspectMonthly" parameterType="CVehicleInspectMonthly">
+        insert into c_vehicle_inspect_monthly
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="inspectDate != null">inspect_date,</if>
+            <if test="totalNumber != null">total_number,</if>
+            <if test="completeNumber != null">complete_number,</if>
+            <if test="incompleteNumber != null">incomplete_number,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="inspectDate != null">#{inspectDate},</if>
+            <if test="totalNumber != null">#{totalNumber},</if>
+            <if test="completeNumber != null">#{completeNumber},</if>
+            <if test="incompleteNumber != null">#{incompleteNumber},</if>
+         </trim>
+    </insert>
+
+</mapper>

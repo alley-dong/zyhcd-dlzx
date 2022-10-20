@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RTransportTaskCostMapper">
+    
+    <resultMap type="RTransportTaskCost" id="RTransportTaskCostResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="orderId"    column="order_id"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="mainLicensePlate"    column="main_license_plate"    />
+        <result property="hangLicensePlate"    column="hang_license_plate"    />
+        <result property="driverPay"    column="driver_pay"    />
+        <result property="adminPay"    column="admin_pay"    />
+        <result property="serviceCost"    column="service_cost"    />
+        <result property="etcCost"    column="etc_cost"    />
+        <result property="fuelCost"    column="fuel_cost"    />
+        <result property="inspectionFee"    column="inspection_fee"    />
+        <result property="insurance"    column="insurance"    />
+        <result property="maintenanceCost"    column="maintenance_cost"    />
+        <result property="trieCost"    column="trie_cost"    />
+        <result property="consumablesCost"    column="consumables_cost"    />
+        <result property="depreciationCost"    column="depreciation_cost"    />
+        <result property="systemCost"    column="system_cost"    />
+        <result property="totalCost"    column="total_cost"    />
+        <result property="feeType"    column="fee_type"    />
+        <result property="taskCost"    column="task_cost"    />
+        <result property="profitStatus"    column="profit_status"    />
+        <result property="profitAndLoss"    column="profit_and_loss"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="ureaCost" column="urea_cost"/>
+        <result property="taskEndTime" column="task_end_time"/>
+    </resultMap>
+
+    <sql id="selectRTransportTaskCostVo">
+        select id, task_id, shipment_xid, order_id, order_number, route_name, business_type, main_license_plate, hang_license_plate, driver_pay, admin_pay, service_cost, etc_cost, fuel_cost, inspection_fee, insurance, maintenance_cost, trie_cost, consumables_cost, depreciation_cost, system_cost, total_cost, fee_type, task_cost, profit_status, profit_and_loss, create_by, create_time,urea_cost,task_end_time from r_transport_task_cost
+    </sql>
+
+    <select id="selectRTransportTaskCostList" parameterType="RTransportTaskCost" resultMap="RTransportTaskCostResult">
+        <include refid="selectRTransportTaskCostVo"/>
+        <where>  
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate = #{mainLicensePlate} OR hang_license_plate = #{mainLicensePlate}</if>
+            <if test="startTime != null">
+                and task_end_time <![CDATA[ >= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d')
+            </if>
+            <if test="finshTime != null">
+                and task_end_time <![CDATA[ <= ]]> DATE_FORMAT(#{finshTime},'%Y-%m-%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectRTransportTaskCostById" parameterType="String" resultMap="RTransportTaskCostResult">
+        <include refid="selectRTransportTaskCostVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRTransportTaskCost" parameterType="RTransportTaskCost">
+        insert into r_transport_task_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="orderId != null">order_id,</if>
+            <if test="orderNumber != null">order_number,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="mainLicensePlate != null">main_license_plate,</if>
+            <if test="hangLicensePlate != null">hang_license_plate,</if>
+            <if test="driverPay != null">driver_pay,</if>
+            <if test="adminPay != null">admin_pay,</if>
+            <if test="serviceCost != null">service_cost,</if>
+            <if test="etcCost != null">etc_cost,</if>
+            <if test="fuelCost != null">fuel_cost,</if>
+            <if test="inspectionFee != null">inspection_fee,</if>
+            <if test="insurance != null">insurance,</if>
+            <if test="maintenanceCost != null">maintenance_cost,</if>
+            <if test="trieCost != null">trie_cost,</if>
+            <if test="consumablesCost != null">consumables_cost,</if>
+            <if test="depreciationCost != null">depreciation_cost,</if>
+            <if test="systemCost != null">system_cost,</if>
+            <if test="totalCost != null">total_cost,</if>
+            <if test="feeType != null">fee_type,</if>
+            <if test="taskCost != null">task_cost,</if>
+            <if test="profitStatus != null">profit_status,</if>
+            <if test="profitAndLoss != null">profit_and_loss,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="ureaCost != null">urea_cost,</if>
+            <if test="taskEndTime != null">task_end_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="orderId != null">#{orderId},</if>
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="businessType != null">#{businessType},</if>
+            <if test="mainLicensePlate != null">#{mainLicensePlate},</if>
+            <if test="hangLicensePlate != null">#{hangLicensePlate},</if>
+            <if test="driverPay != null">#{driverPay},</if>
+            <if test="adminPay != null">#{adminPay},</if>
+            <if test="serviceCost != null">#{serviceCost},</if>
+            <if test="etcCost != null">#{etcCost},</if>
+            <if test="fuelCost != null">#{fuelCost},</if>
+            <if test="inspectionFee != null">#{inspectionFee},</if>
+            <if test="insurance != null">#{insurance},</if>
+            <if test="maintenanceCost != null">#{maintenanceCost},</if>
+            <if test="trieCost != null">#{trieCost},</if>
+            <if test="consumablesCost != null">#{consumablesCost},</if>
+            <if test="depreciationCost != null">#{depreciationCost},</if>
+            <if test="systemCost != null">#{systemCost},</if>
+            <if test="totalCost != null">#{totalCost},</if>
+            <if test="feeType != null">#{feeType},</if>
+            <if test="taskCost != null">#{taskCost},</if>
+            <if test="profitStatus != null">#{profitStatus},</if>
+            <if test="profitAndLoss != null">#{profitAndLoss},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="ureaCost != null">#{ureaCost},</if>
+            <if test="taskEndTime != null">#{taskEndTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="RTransportTaskCost">
+        insert into r_transport_task_cost(id,task_id,shipment_xid,order_id,order_number,route_name,business_type,
+    main_license_plate,hang_license_plate,driver_pay,admin_pay,service_cost,urea_cost,etc_cost,fuel_cost,inspection_fee,insurance,maintenance_cost,trie_cost,
+    consumables_cost,depreciation_cost,system_cost,total_cost,fee_type,task_cost,profit_status,profit_and_loss,create_by,create_time,task_end_time) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.taskId},#{item.shipmentXid},#{item.orderId},#{item.orderNumber},#{item.routeName},#{item.businessType},#{item.mainLicensePlate},
+            #{item.hangLicensePlate},#{item.driverPay},#{item.adminPay},#{item.serviceCost},#{item.ureaCost},#{item.etcCost},#{item.fuelCost},#{item.inspectionFee}
+            ,#{item.insurance},#{item.maintenanceCost},#{item.trieCost},#{item.consumablesCost},#{item.depreciationCost},#{item.systemCost},#{item.totalCost},#{item.feeType}
+            ,#{item.taskCost},#{item.profitStatus},#{item.profitAndLoss},#{item.createBy},#{item.createTime},#{item.taskEndTime})
+        </foreach>
+    </insert>
+
+    <update id="updateRTransportTaskCost" parameterType="RTransportTaskCost">
+        update r_transport_task_cost
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="orderId != null">order_id = #{orderId},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="businessType != null">business_type = #{businessType},</if>
+            <if test="mainLicensePlate != null">main_license_plate = #{mainLicensePlate},</if>
+            <if test="hangLicensePlate != null">hang_license_plate = #{hangLicensePlate},</if>
+            <if test="driverPay != null">driver_pay = #{driverPay},</if>
+            <if test="adminPay != null">admin_pay = #{adminPay},</if>
+            <if test="serviceCost != null">service_cost = #{serviceCost},</if>
+            <if test="etcCost != null">etc_cost = #{etcCost},</if>
+            <if test="fuelCost != null">fuel_cost = #{fuelCost},</if>
+            <if test="inspectionFee != null">inspection_fee = #{inspectionFee},</if>
+            <if test="insurance != null">insurance = #{insurance},</if>
+            <if test="maintenanceCost != null">maintenance_cost = #{maintenanceCost},</if>
+            <if test="trieCost != null">trie_cost = #{trieCost},</if>
+            <if test="consumablesCost != null">consumables_cost = #{consumablesCost},</if>
+            <if test="depreciationCost != null">depreciation_cost = #{depreciationCost},</if>
+            <if test="systemCost != null">system_cost = #{systemCost},</if>
+            <if test="totalCost != null">total_cost = #{totalCost},</if>
+            <if test="feeType != null">fee_type = #{feeType},</if>
+            <if test="taskCost != null">task_cost = #{taskCost},</if>
+            <if test="profitStatus != null">profit_status = #{profitStatus},</if>
+            <if test="profitAndLoss != null">profit_and_loss = #{profitAndLoss},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="ureaCost != null">urea_cost =#{ureaCost},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRTransportTaskCostById" parameterType="String">
+        delete from r_transport_task_cost where id = #{id}
+    </delete>
+
+    <delete id="deleteRTransportTaskCostByIds" parameterType="String">
+        delete from r_transport_task_cost where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

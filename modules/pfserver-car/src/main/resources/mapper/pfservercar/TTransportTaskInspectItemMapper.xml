@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskInspectItemMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskInspectItemVm" id="TTransportTaskInspectItemResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="inspectId"    column="inspect_id"    />
+        <result property="type"    column="type"    />
+        <result property="status"    column="status"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="files"    column="files"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskInspectItemVo">
+        select id, task_id, shipment_xid, inspect_id, type, status, remarks, files, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_inspect_item
+    </sql>
+
+    <sql id="selectTTransportTaskInspectItemDetail">
+        SELECT
+	item.id,
+	item.task_id,
+	item.shipment_xid,
+	item.inspect_id,
+	item.type,
+	item.STATUS,
+	item.remarks,
+	item.files,
+	item.delete_flag,
+	item.create_by,
+	item.create_time,
+	item.update_by,
+	item.update_time,
+	sysStatus.dict_label AS statusEnum,
+IF
+	( inspect.type = 1, sysStartType.dict_label, IF ( inspect.type = 2, sysProcessType.dict_label, sysEndType.dict_label ) ) AS typeEnum
+FROM
+	t_transport_task_inspect_item AS item
+	LEFT JOIN t_transport_task_inspect inspect ON inspect.id = item.inspect_id
+	LEFT JOIN sys_dict_data sysStatus ON item.STATUS = sysStatus.dict_value
+	AND sysStatus.dict_type = 't_transport_task_inspect_item_status'
+	LEFT JOIN sys_dict_data sysStartType ON item.type = sysStartType.dict_value
+	AND sysStartType.dict_type = 't_transport_task_inspect_item_start_type'
+	LEFT JOIN sys_dict_data sysProcessType ON item.type = sysProcessType.dict_value
+	AND sysProcessType.dict_type = 't_transport_task_inspect_item_process_type'
+	LEFT JOIN sys_dict_data sysEndType ON item.type = sysEndType.dict_value
+	AND sysEndType.dict_type = 't_transport_task_inspect_item_end_type'
+    </sql>
+
+    <select id="selectTTransportTaskInspectItemList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskInspectItemModel" resultMap="TTransportTaskInspectItemResult">
+        <include refid="selectTTransportTaskInspectItemDetail"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and item.task_id = #{taskId}</if>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and item.shipment_xid = #{shipmentXid}</if>
+            <if test="inspectId != null  and inspectId != ''"> and item.inspect_id = #{inspectId}</if>
+            <if test="type != null "> and item.type = #{type}</if>
+            <if test="status != null "> and item.status = #{status}</if>
+            <if test="remarks != null  and remarks != ''"> and item.remarks = #{remarks}</if>
+            <if test="files != null  and files != ''"> and item.files = #{files}</if>
+            and item.delete_flag = 1
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskInspectItemById" parameterType="String" resultMap="TTransportTaskInspectItemResult">
+        <include refid="selectTTransportTaskInspectItemDetail"/>
+        where item.id = #{id} and item.delete_flag = 1
+    </select>
+
+<!--    根据点检ID查询检查项目-->
+    <select id="queryTransportTaskInspectItemList" resultMap="TTransportTaskInspectItemResult">
+        <include refid="selectTTransportTaskInspectItemDetail"/>
+        where item.inspect_id in
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertTTransportTaskInspectItem" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskInspectItemModel">
+        insert into t_transport_task_inspect_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="inspectId != null">inspect_id,</if>
+            <if test="type != null">type,</if>
+            <if test="status != null">status,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="files != null">files,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="inspectId != null">#{inspectId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="files != null">#{files},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskInspectItem" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskInspectItemModel">
+        update t_transport_task_inspect_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="inspectId != null">inspect_id = #{inspectId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="files != null">files = #{files},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskInspectItemById" parameterType="String">
+        delete from t_transport_task_inspect_item where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskInspectItemByIds" parameterType="String">
+        delete from t_transport_task_inspect_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into t_transport_task_inspect_item (
+        id, task_id, shipment_xid, inspect_id, type, status, remarks, files, delete_flag, create_by, create_time, update_by, update_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.taskId,jdbcType=VARCHAR},
+            #{item.shipmentXid,jdbcType=VARCHAR},
+            #{item.inspectId,jdbcType=VARCHAR},
+            #{item.type,jdbcType=INTEGER},
+            #{item.status,jdbcType=INTEGER},
+            #{item.remarks,jdbcType=VARCHAR},
+            #{item.files,jdbcType=VARCHAR},
+            #{item.deleteFlag,jdbcType=INTEGER},
+            #{item.createBy,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+
+    </insert>
+
+</mapper>

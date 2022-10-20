@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CVehicleInspectMonthlyItemMapper">
+    
+    <resultMap type="CVehicleInspectMonthlyItem" id="CVehicleInspectMonthlyItemResult">
+        <result property="id"    column="id"    />
+        <result property="monthlyId"    column="monthly_id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="status"    column="status"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCVehicleInspectMonthlyItemVo">
+        select id, monthly_id, vehicle_id, license_plate, driver_id, driver_name, inspect_date, status, delete_flag, create_by, create_time, update_by, update_time from c_vehicle_inspect_monthly_item
+    </sql>
+
+    <select id="selectCVehicleInspectMonthlyItemList" parameterType="CVehicleInspectMonthlyItem" resultMap="CVehicleInspectMonthlyItemResult">
+        <include refid="selectCVehicleInspectMonthlyItemVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="status != null"> and status = #{status}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            and delete_flag = '1'and monthly_id = #{monthlyId}
+        </where>
+    </select>
+
+    <select id="selectCVehicleInspectMonthlyItemByVehicleId" parameterType="CVehicleInspectMonthlyItem" resultType="String">
+        select id from c_vehicle_inspect_monthly_item
+        <where>
+            delete_flag = '1'
+            and vehicle_id = #{vehicleId}
+            and license_plate = #{licensePlate}
+        </where>
+        ORDER BY create_time desc
+    </select>
+    
+    <select id="selectCVehicleInspectMonthlyItemById" parameterType="String" resultMap="CVehicleInspectMonthlyItemResult">
+        <include refid="selectCVehicleInspectMonthlyItemVo"/>
+        where id = #{id} and delete_flag = '1'
+    </select>
+
+    <select id="selectItemByCVid" parameterType="CVehicleInspectMonthlyItem" resultMap="CVehicleInspectMonthlyItemResult">
+        <include refid="selectCVehicleInspectMonthlyItemVo"/>
+        where monthly_id = #{monthlyId} AND vehicle_id = #{vehicleId} AND status = '1' and delete_flag = '1'
+        <if test="inspect != null and inspect != ''">and DATE_FORMAT(create_time, '%Y-%m') = #{inspect}</if>
+    </select>
+
+    <insert id="insertCVehicleInspectMonthlyItem" parameterType="CVehicleInspectMonthlyItem">
+        insert into c_vehicle_inspect_monthly_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="monthlyId != null">monthly_id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="inspectDate != null">inspect_date,</if>
+            <if test="status != null">status,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="monthlyId != null">#{monthlyId},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="inspectDate != null">#{inspectDate},</if>
+            <if test="status != null">#{status},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into c_vehicle_inspect_monthly_item (id, monthly_id, vehicle_id, license_plate, status, delete_flag, create_time)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=VARCHAR},
+            #{item.monthlyId,jdbcType=VARCHAR},
+            #{item.vehicleId,jdbcType=VARCHAR},
+            #{item.licensePlate,jdbcType=VARCHAR},
+            1,
+            1,
+            now())
+        </foreach>
+    </insert>
+
+    <update id="updateCVehicleInspectMonthlyItem" parameterType="CVehicleInspectMonthlyItem">
+        update c_vehicle_inspect_monthly_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="monthlyId != null">monthly_id = #{monthlyId},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="inspectDate != null">inspect_date = #{inspectDate},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCVehicleInspectMonthlyItemById" parameterType="String">
+        delete from c_vehicle_inspect_monthly_item where id = #{id}
+    </delete>
+
+    <delete id="deleteCVehicleInspectMonthlyItemByIds" parameterType="String">
+        delete from c_vehicle_inspect_monthly_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

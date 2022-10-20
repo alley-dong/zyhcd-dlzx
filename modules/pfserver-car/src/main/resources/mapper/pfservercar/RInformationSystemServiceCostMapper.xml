@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RInformationSystemServiceCostMapper">
+    
+    <resultMap type="RInformationSystemServiceCost" id="RInformationSystemServiceCostResult">
+        <result property="id"    column="id"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="closeTime"    column="close_time"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="systemName"    column="system_name"    />
+        <result property="amount"    column="amount"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRInformationSystemServiceCostVo">
+        select id, start_time, close_time, vehicle_id, license_plate, system_name, amount, delete_flag, create_by, create_time, update_by, update_time from r_information_system_service_cost
+    </sql>
+
+    <select id="selectRInformationSystemServiceCostList" parameterType="RInformationSystemServiceCost" resultMap="RInformationSystemServiceCostResult">
+        <include refid="selectRInformationSystemServiceCostVo"/>
+        <where>  
+            <if test="startTime != null "> and start_time >= #{startTime}</if>
+            <if test="closeTime != null "> and close_time &lt;= #{closeTime}</if>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="systemName != null  and systemName != ''"> and system_name like concat('%', #{systemName}, '%')</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+             and delete_flag = '1'
+        </where>
+    </select>
+    
+    <select id="selectRInformationSystemServiceCostById" parameterType="String" resultMap="RInformationSystemServiceCostResult">
+        <include refid="selectRInformationSystemServiceCostVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertRInformationSystemServiceCost" parameterType="RInformationSystemServiceCost">
+        insert into r_information_system_service_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="closeTime != null">close_time,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="systemName != null">system_name,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="closeTime != null">#{closeTime},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="systemName != null">#{systemName},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRInformationSystemServiceCost" parameterType="RInformationSystemServiceCost">
+        update r_information_system_service_cost
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="closeTime != null">close_time = #{closeTime},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="systemName != null">system_name = #{systemName},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRInformationSystemServiceCostById" parameterType="String">
+        delete from r_information_system_service_cost where id = #{id}
+    </delete>
+
+    <delete id="deleteRInformationSystemServiceCostByIds" parameterType="String">
+        delete from r_information_system_service_cost where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+<!--    ERP费用-->
+    <select id="queryERPInformationSystemServiceCostList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel"
+            resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+        select id, start_time as startTime, close_time as closeTime, vehicle_id, license_plate as licensePlate, system_name as systemName, amount as amount, delete_flag
+        , create_by, create_time, update_by, update_time from r_information_system_service_cost
+        <where>
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(start_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(close_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            and delete_flag = '1'
+        </where>
+
+    </select>
+
+</mapper>

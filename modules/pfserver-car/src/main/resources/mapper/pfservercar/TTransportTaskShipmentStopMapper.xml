@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskShipmentStopMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskShipmentStopVm" id="TTransportTaskShipmentStopResult">
+        <result property="id"    column="id"    />
+        <result property="shipmentStopId"    column="shipment_stop_id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="stopNum"    column="stop_num"    />
+        <result property="shipmentStopXid"    column="shipment_stop_xid"    />
+        <result property="shipmentStopName"    column="shipment_stop_name"    />
+        <result property="plannedDeparture"    column="planned_departure"    />
+        <result property="plannedArrival"    column="planned_arrival"    />
+        <result property="locationProvince"    column="location_province"    />
+        <result property="locationCity"    column="location_city"    />
+        <result property="locationDistrict"    column="location_district"    />
+        <result property="locationAddress"    column="location_address"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskShipmentStopVo">
+        select id, shipment_stop_id, task_id, stop_num, shipment_stop_xid, shipment_stop_name, planned_departure, planned_arrival, location_province, location_city, location_district, location_address, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_shipment_stop
+    </sql>
+
+    <select id="selectTTransportTaskShipmentStopList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskShipmentStopModel" resultMap="TTransportTaskShipmentStopResult">
+        <include refid="selectTTransportTaskShipmentStopVo"/>
+        <where>  
+            <if test="shipmentStopId != null  and shipmentStopId != ''"> and shipment_stop_id = #{shipmentStopId}</if>
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="stopNum != null  and stopNum != ''"> and stop_num = #{stopNum}</if>
+            <if test="shipmentStopXid != null  and shipmentStopXid != ''"> and shipment_stop_xid = #{shipmentStopXid}</if>
+            <if test="shipmentStopName != null  and shipmentStopName != ''"> and shipment_stop_name like concat('%', #{shipmentStopName}, '%')</if>
+            <if test="plannedDeparture != null "> and planned_departure = #{plannedDeparture}</if>
+            <if test="plannedArrival != null "> and planned_arrival = #{plannedArrival}</if>
+            <if test="locationProvince != null  and locationProvince != ''"> and location_province = #{locationProvince}</if>
+            <if test="locationCity != null  and locationCity != ''"> and location_city = #{locationCity}</if>
+            <if test="locationDistrict != null  and locationDistrict != ''"> and location_district = #{locationDistrict}</if>
+            <if test="locationAddress != null  and locationAddress != ''"> and location_address = #{locationAddress}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskShipmentStopById" parameterType="String" resultMap="TTransportTaskShipmentStopResult">
+        <include refid="selectTTransportTaskShipmentStopVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTTransportTaskShipmentStop" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskShipmentStopModel">
+        insert into t_transport_task_shipment_stop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="shipmentStopId != null">shipment_stop_id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="stopNum != null">stop_num,</if>
+            <if test="shipmentStopXid != null">shipment_stop_xid,</if>
+            <if test="shipmentStopName != null">shipment_stop_name,</if>
+            <if test="plannedDeparture != null">planned_departure,</if>
+            <if test="plannedArrival != null">planned_arrival,</if>
+            <if test="locationProvince != null">location_province,</if>
+            <if test="locationCity != null">location_city,</if>
+            <if test="locationDistrict != null">location_district,</if>
+            <if test="locationAddress != null">location_address,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="shipmentStopId != null">#{shipmentStopId},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="stopNum != null">#{stopNum},</if>
+            <if test="shipmentStopXid != null">#{shipmentStopXid},</if>
+            <if test="shipmentStopName != null">#{shipmentStopName},</if>
+            <if test="plannedDeparture != null">#{plannedDeparture},</if>
+            <if test="plannedArrival != null">#{plannedArrival},</if>
+            <if test="locationProvince != null">#{locationProvince},</if>
+            <if test="locationCity != null">#{locationCity},</if>
+            <if test="locationDistrict != null">#{locationDistrict},</if>
+            <if test="locationAddress != null">#{locationAddress},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskShipmentStop" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskShipmentStopModel">
+        update t_transport_task_shipment_stop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shipmentStopId != null">shipment_stop_id = #{shipmentStopId},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="stopNum != null">stop_num = #{stopNum},</if>
+            <if test="shipmentStopXid != null">shipment_stop_xid = #{shipmentStopXid},</if>
+            <if test="shipmentStopName != null">shipment_stop_name = #{shipmentStopName},</if>
+            <if test="plannedDeparture != null">planned_departure = #{plannedDeparture},</if>
+            <if test="plannedArrival != null">planned_arrival = #{plannedArrival},</if>
+            <if test="locationProvince != null">location_province = #{locationProvince},</if>
+            <if test="locationCity != null">location_city = #{locationCity},</if>
+            <if test="locationDistrict != null">location_district = #{locationDistrict},</if>
+            <if test="locationAddress != null">location_address = #{locationAddress},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskShipmentStopById" parameterType="String">
+        delete from t_transport_task_shipment_stop where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskShipmentStopByIds" parameterType="String">
+        delete from t_transport_task_shipment_stop where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertOTMTransportTaskShipmentStop">
+        insert into t_transport_task_shipment_stop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">id,</if>
+            <if test="SHIPMENT_STOP_ID != null">shipment_stop_id,</if>
+            <if test="SHIPMENT_GID != null">task_id,</if>
+            <if test="STOP_NUM != null">stop_num,</if>
+            <if test="SHIPMENT_STOP_XID != null">shipment_stop_xid,</if>
+            <if test="SHIPMENT_STOP_NAME != null">shipment_stop_name,</if>
+            <if test="PLANNED_DEPARTURE != null">planned_departure,</if>
+            <if test="PLANNED_ARRIVAL != null">planned_arrival,</if>
+            <if test="LOCATION_PROVINCE != null">location_province,</if>
+            <if test="LOCATION_CITY != null">location_city,</if>
+            <if test="LOCATION_DISTRICT != null">location_district,</if>
+            <if test="LOCATION_ADDRESS != null">location_address,</if>
+            delete_flag,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">#{TEMPLATE_ID},</if>
+            <if test="SHIPMENT_STOP_ID != null">#{SHIPMENT_STOP_ID},</if>
+            <if test="SHIPMENT_GID != null">#{SHIPMENT_GID},</if>
+            <if test="STOP_NUM != null">#{STOP_NUM},</if>
+            <if test="SHIPMENT_STOP_XID != null">#{SHIPMENT_STOP_XID},</if>
+            <if test="SHIPMENT_STOP_NAME != null">#{SHIPMENT_STOP_NAME},</if>
+            <if test="PLANNED_DEPARTURE != null">#{PLANNED_DEPARTURE},</if>
+            <if test="PLANNED_ARRIVAL != null">#{PLANNED_ARRIVAL},</if>
+            <if test="LOCATION_PROVINCE != null">#{LOCATION_PROVINCE},</if>
+            <if test="LOCATION_CITY != null">#{LOCATION_CITY},</if>
+            <if test="LOCATION_DISTRICT != null">#{LOCATION_DISTRICT},</if>
+            <if test="LOCATION_ADDRESS != null">#{LOCATION_ADDRESS},</if>
+            1,
+            now()
+        </trim>
+    </insert>
+
+</mapper>

@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.dlzx.common.security.service.TokenService,\
+  com.dlzx.common.security.service.DriverTokenService,\
+  com.dlzx.common.security.aspect.PreAuthorizeAspect,\
+  com.dlzx.common.security.handler.GlobalExceptionHandler

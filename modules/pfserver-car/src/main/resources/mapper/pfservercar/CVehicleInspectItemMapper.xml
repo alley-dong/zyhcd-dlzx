@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CVehicleInspectItemMapper">
+    
+    <resultMap type="CVehicleInspectItem" id="CVehicleInspectItemResult">
+        <result property="id"    column="id"    />
+        <result property="inspectId"    column="inspect_id"    />
+        <result property="type"    column="type"    />
+        <result property="itemType"    column="item_type"    />
+        <result property="name"    column="name"    />
+        <result property="status"    column="status"    />
+        <result property="files"    column="files"    />
+    </resultMap>
+
+    <sql id="selectCVehicleInspectItemVo">
+        select id, inspect_id, type, item_type, name, status, files from c_vehicle_inspect_item
+    </sql>
+
+    <sql id="selectMainCVehicleInspectItemVoOrderBy">
+        select item.id, item.inspect_id, item.type, item.item_type, item.name, item.status, item.files
+        from c_vehicle_inspect_item item
+        left join sys_dict_data sys on item.item_type = sys.dict_value AND sys.dict_type = 'c_vehicle_inspect_main'
+    </sql>
+
+    <sql id="selectHangCVehicleInspectItemVoOrderBy">
+        select item.id, item.inspect_id, item.type, item.item_type, item.name, item.status, item.files
+        from c_vehicle_inspect_item item
+        left join sys_dict_data sys on item.item_type = sys.dict_value AND sys.dict_type = 'c_vehicle_inspect_hang'
+    </sql>
+
+    <select id="selectCVehicleInspectItemList" parameterType="CVehicleInspectItem" resultMap="CVehicleInspectItemResult">
+        <include refid="selectCVehicleInspectItemVo"/>
+        <where>  
+            <if test="inspectId != null  and inspectId != ''"> and inspect_id = #{inspectId}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="itemType != null "> and item_type = #{itemType}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="files != null  and files != ''"> and files = #{files}</if>
+        </where>
+    </select>
+    
+    <select id="selectCVehicleInspectItemById" parameterType="String" resultMap="CVehicleInspectItemResult">
+        <include refid="selectCVehicleInspectItemVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCVehicleInspectItemByInspectId" parameterType="String" resultMap="CVehicleInspectItemResult">
+        <include refid="selectCVehicleInspectItemVo"/>
+        where inspect_id = #{id}
+    </select>
+
+    <select id="selectCMainVehicleInspectItemByInspectId" parameterType="String" resultMap="CVehicleInspectItemResult">
+        <include refid="selectMainCVehicleInspectItemVoOrderBy"/>
+        where item.inspect_id = #{id}
+    </select>
+
+    <select id="selectCHangVehicleInspectItemByInspectId" parameterType="String" resultMap="CVehicleInspectItemResult">
+        <include refid="selectHangCVehicleInspectItemVoOrderBy"/>
+        where item.inspect_id = #{id}
+    </select>
+
+    <insert id="insertCVehicleInspectItem" parameterType="CVehicleInspectItem">
+        insert into c_vehicle_inspect_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="inspectId != null">inspect_id,</if>
+            <if test="type != null">type,</if>
+            <if test="itemType != null">item_type,</if>
+            <if test="name != null">name,</if>
+            <if test="status != null">status,</if>
+            <if test="files != null">files,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="inspectId != null">#{inspectId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="itemType != null">#{itemType},</if>
+            <if test="name != null">#{name},</if>
+            <if test="status != null">#{status},</if>
+            <if test="files != null">#{files},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into c_vehicle_inspect_item (
+        id, inspect_id, type, item_type, name, status, files
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=VARCHAR},
+            #{item.inspectId,jdbcType=VARCHAR},
+            #{item.type,jdbcType=INTEGER},
+            #{item.itemType,jdbcType=INTEGER},
+            #{item.name,jdbcType=VARCHAR},
+            #{item.status,jdbcType=INTEGER},
+            #{item.files,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <update id="updateCVehicleInspectItem" parameterType="CVehicleInspectItem">
+        update c_vehicle_inspect_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inspectId != null">inspect_id = #{inspectId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="itemType != null">item_type = #{itemType},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="files != null">files = #{files},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCVehicleInspectItemById" parameterType="String">
+        delete from c_vehicle_inspect_item where id = #{id}
+    </delete>
+
+    <delete id="deleteCVehicleInspectItemByIds" parameterType="String">
+        delete from c_vehicle_inspect_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteCVehicleInspectItemByinspectId">
+        delete from c_vehicle_inspect_item where inspect_id = #{id}
+    </delete>
+
+</mapper>

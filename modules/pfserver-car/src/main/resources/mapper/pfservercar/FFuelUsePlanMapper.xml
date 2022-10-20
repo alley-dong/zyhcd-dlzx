@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.FFuelUsePlanMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.FFuelUsePlan" id="FFuelUsePlanResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="vehicleModel"    column="vehicle_model"    />
+        <result property="vehicleModelName"    column="vehicle_model_name"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="planDate"    column="plan_date"    />
+        <result property="fuelQuota"    column="fuel_quota"    />
+        <result property="planQuantity"    column="plan_quantity"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="fuelPrice"    column="fuel_price"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="fuelType"    column="fuel_type"    />
+        <result property="ballastQuota"    column="ballast_quota"    />
+        <result property="pourQuota"    column="pour_quota"    />
+        <result property="ballastQuotaPrice"    column="ballast_quota_price"    />
+        <result property="pourQuotaPrice"    column="pour_quota_price"    />
+    </resultMap>
+
+    <sql id="selectFFuelUsePlanVo">
+        select id, vehicle_id, license_plate, vehicle_model,vehicle_model_name, route_id, route_name, plan_date, fuel_quota, plan_quantity,
+        unit_price, fuel_price,ballast_quota,pour_quota,ballast_quota_price,pour_quota_price,fuel.delete_flag, fuel.create_by, fuel.create_time, fuel.update_by, fuel.update_time,fuel_type,
+        sysType.dict_label as fuelTypeEnum
+        from f_fuel_use_plan fuel
+        LEFT JOIN sys_dict_data sysType on fuel.fuel_type = sysType.dict_value and sysType.dict_type = 'f_fuel_quota_type'
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+    <select id="selectFFuelUsePlanList" parameterType="com.dlzx.pfservercar.domain.FFuelUsePlan" resultMap="FFuelUsePlanResult">
+        SELECT
+	COUNT( distinct license_plate ) as carQuantity,
+	COALESCE(SUM( fuel_price ),0) as fuelPriceTotal,
+        COALESCE(SUM( ballast_quota_price ),0) as ballastQuotaPriceTotal,
+        COALESCE(SUM( pour_quota_price ),0) as pourQuotaPriceTotal,
+	plan_date
+FROM
+	f_fuel_use_plan
+WHERE
+	delete_flag = 1
+	<if test="planDate != null ">
+        and	DATE_FORMAT(plan_date, '%Y-%m') = DATE_FORMAT(#{planDate}, '%Y-%m')
+	</if>
+GROUP BY
+	DATE_FORMAT(plan_date, '%Y-%m')
+ORDER BY
+	plan_date DESC
+
+    </select>
+    
+    <select id="selectFFuelUsePlanById" parameterType="String" resultMap="FFuelUsePlanResult">
+        <include refid="selectFFuelUsePlanVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="queryCarFFuelUsePlanList" parameterType="com.dlzx.pfservercar.domain.FFuelUsePlan" resultMap="FFuelUsePlanResult">
+        select id, vehicle_id, license_plate, vehicle_model,vehicle_model_name, route_id, route_name, plan_date, fuel_quota, plan_quantity,
+        unit_price, fuel_price, ballast_quota,pour_quota,ballast_quota_price,pour_quota_price,fuel.delete_flag, fuel.create_by, fuel.create_time, fuel.update_by, fuel.update_time,fuel_type,
+        sysType.dict_label as fuelTypeEnum
+        from f_fuel_use_plan fuel
+        LEFT JOIN sys_dict_data sysType on fuel.fuel_type = sysType.dict_value and sysType.dict_type = 'f_fuel_quota_type'
+        <where>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="vehicleModel != null  and vehicleModel != ''"> and vehicle_model = #{vehicleModel}</if>
+            <if test="vehicleModelName != null  and vehicleModelName != ''"> and vehicle_model_name like concat('%', #{vehicleModelName}, '%')</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="planDate != null ">
+                <![CDATA[
+				and	DATE_FORMAT(plan_date, '%Y-%m') = DATE_FORMAT(#{planDate}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="fuelQuota != null "> and fuel_quota = #{fuelQuota}</if>
+            <if test="planQuantity != null "> and plan_quantity = #{planQuantity}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="fuelPrice != null "> and fuel_price = #{fuelPrice}</if>
+            <include refid="deleteFlag"/>
+        </where>
+     group by license_plate
+    </select>
+
+
+    <select id="fuelUsePlanList" parameterType="com.dlzx.pfservercar.domain.FFuelUsePlan" resultMap="FFuelUsePlanResult">
+        select id, vehicle_id, license_plate, vehicle_model,vehicle_model_name, route_id, route_name, plan_date, fuel_quota, plan_quantity,
+        unit_price, fuel_price, ballast_quota,pour_quota,ballast_quota_price,pour_quota_price,fuel.delete_flag, fuel.create_by, fuel.create_time, fuel.update_by, fuel.update_time,fuel_type,
+        sysType.dict_label as fuelTypeEnum
+        from f_fuel_use_plan fuel
+        LEFT JOIN sys_dict_data sysType on fuel.fuel_type = sysType.dict_value and sysType.dict_type = 'f_fuel_quota_type'
+        <where>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="vehicleModel != null  and vehicleModel != ''"> and vehicle_model = #{vehicleModel}</if>
+            <if test="vehicleModelName != null  and vehicleModelName != ''"> and vehicle_model_name like concat('%', #{vehicleModelName}, '%')</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="planDate != null ">
+                <![CDATA[
+				and	DATE_FORMAT(plan_date, '%Y-%m') = DATE_FORMAT(#{planDate}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="fuelQuota != null "> and fuel_quota = #{fuelQuota}</if>
+            <if test="planQuantity != null "> and plan_quantity = #{planQuantity}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="fuelPrice != null "> and fuel_price = #{fuelPrice}</if>
+            <include refid="deleteFlag"/>
+        </where>
+    </select>
+
+
+    <insert id="insertFFuelUsePlan" parameterType="com.dlzx.pfservercar.domain.FFuelUsePlan">
+        insert into f_fuel_use_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="vehicleModel != null">vehicle_model,</if>
+            <if test="vehicleModelName != null">vehicle_model_name,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="planDate != null">plan_date,</if>
+            <if test="fuelQuota != null">fuel_quota,</if>
+            <if test="planQuantity != null">plan_quantity,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="fuelPrice != null">fuel_price,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="fuelType != null">fuel_type,</if>
+            <if test="ballastQuota != null">ballast_quota,</if>
+            <if test="pourQuota != null">pour_quota,</if>
+            <if test="ballastQuotaPrice != null">ballast_quota_price,</if>
+            <if test="pourQuotaPrice != null">pour_quota_price,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="vehicleModel != null">#{vehicleModel},</if>
+            <if test="vehicleModelName != null">#{vehicleModelName},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="planDate != null">#{planDate},</if>
+            <if test="fuelQuota != null">#{fuelQuota},</if>
+            <if test="planQuantity != null">#{planQuantity},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="fuelPrice != null">#{fuelPrice},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="fuelType != null">#{fuelType},</if>
+            <if test="ballastQuota != null">#{ballastQuota},</if>
+            <if test="pourQuota != null">#{pourQuota},</if>
+            <if test="ballastQuotaPrice != null">#{ballastQuotaPrice},</if>
+            <if test="pourQuotaPrice != null">#{pourQuotaPrice},</if>
+         </trim>
+    </insert>
+    <insert id="insertInsertCVehicleList" parameterType="java.util.List">
+
+        insert into f_fuel_use_plan (id, vehicle_id, license_plate, vehicle_model,vehicle_model_name, route_id, route_name
+        , plan_date, fuel_quota, plan_quantity, unit_price, fuel_price, delete_flag, create_by, create_time,fuel_type,ballast_quota,pour_quota,ballast_quota_price,pour_quota_price)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.vehicleId,jdbcType=VARCHAR},
+            #{item.licensePlate,jdbcType=VARCHAR},
+            #{item.vehicleModel,jdbcType=VARCHAR},
+            #{item.vehicleModelName,jdbcType=VARCHAR},
+            #{item.routeId,jdbcType=VARCHAR},
+            #{item.routeName,jdbcType=VARCHAR},
+            #{item.planDate,jdbcType=TIMESTAMP},
+            #{item.fuelQuota,jdbcType=DECIMAL},
+            #{item.planQuantity,jdbcType=BIGINT},
+            #{item.unitPrice,jdbcType=DECIMAL},
+            #{item.fuelPrice,jdbcType=DECIMAL},
+            #{item.deleteFlag,jdbcType=BIGINT},
+            #{item.createBy,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.fuelType,jdbcType=INTEGER},
+            #{item.ballastQuota,jdbcType=DECIMAL},
+            #{item.pourQuota,jdbcType=DECIMAL},
+            #{item.ballastQuotaPrice,jdbcType=DECIMAL},
+            #{item.pourQuotaPrice,jdbcType=DECIMAL}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateFFuelUsePlan" parameterType="com.dlzx.pfservercar.domain.FFuelUsePlan">
+        update f_fuel_use_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="vehicleModelName != null">vehicle_model_name = #{vehicleModelName},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="planDate != null">plan_date = #{planDate},</if>
+            <if test="fuelQuota != null">fuel_quota = #{fuelQuota},</if>
+            <if test="planQuantity != null">plan_quantity = #{planQuantity},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="fuelPrice != null">fuel_price = #{fuelPrice},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="fuelType != null">fuel_type = #{fuelType},</if>
+            <if test="ballastQuota != null">ballast_quota = #{ballastQuota},</if>
+            <if test="pourQuota != null">pour_quota = #{pourQuota},</if>
+            <if test="ballastQuotaPrice != null">ballast_quota_price = #{ballastQuotaPrice},</if>
+            <if test="pourQuotaPrice != null">pour_quota_price = #{pourQuotaPrice},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="deleteFFuelUsePlanById" parameterType="String">
+        update f_fuel_use_plan set delete_flag = 2 where id = #{id}
+    </update>
+
+    <update id="deleteFFuelUsePlanBylicensePlate" parameterType="com.dlzx.pfservercar.domain.FFuelUsePlan">
+        update f_fuel_use_plan set delete_flag = 2 where license_plate =#{licensePlate} and DATE_FORMAT(plan_date, '%Y-%m') = DATE_FORMAT(#{planDate}, '%Y-%m')
+    </update>
+
+    <update id="deleteFFuelUsePlanByIds" parameterType="String">
+        update f_fuel_use_plan set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+
+
+</mapper>

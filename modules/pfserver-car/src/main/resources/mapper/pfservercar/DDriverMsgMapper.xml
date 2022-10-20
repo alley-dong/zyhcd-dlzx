@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.DDriverMsgMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.DDriverMsg" id="DDriverMsgResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="relationId"    column="relation_id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="title"    column="title"    />
+        <result property="content"    column="content"    />
+        <result property="status"    column="status"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDDriverMsgVo">
+        select id, type, relation_id, driver_id, title, content, status, delete_flag, create_by, create_time, update_by, update_time from d_driver_msg
+    </sql>
+
+    <select id="selectDDriverMsgList" parameterType="com.dlzx.pfservercar.domain.DDriverMsg" resultMap="DDriverMsgResult">
+        <include refid="selectDDriverMsgVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="relationId != null  and relationId != ''"> and relation_id = #{relationId}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectDDriverMsgById" parameterType="String" resultMap="DDriverMsgResult">
+        <include refid="selectDDriverMsgVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDDriverMsg" parameterType="com.dlzx.pfservercar.domain.DDriverMsg">
+        insert into d_driver_msg
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="relationId != null">relation_id,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="status != null">status,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="relationId != null">#{relationId},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="status != null">#{status},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDDriverMsg" parameterType="com.dlzx.pfservercar.domain.DDriverMsg">
+        update d_driver_msg
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="relationId != null">relation_id = #{relationId},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverMsgById" parameterType="String">
+        delete from d_driver_msg where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverMsgByIds" parameterType="String">
+        delete from d_driver_msg where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!--   =========分割线=======APP===========   -->
+
+    <sql id="selectAppDDriverMsg">
+        dd.id, dd.type, dd.relation_id, dd.driver_id, dd.title, dd.content, dd.status, dd.delete_flag, dd.create_by, dd.create_time, dd.update_by, dd.update_time
+    </sql>
+
+<!--    App 个人消息-消息列表接口 -->
+    <select id="queryDriverMsgList" parameterType="String" resultMap="DDriverMsgResult">
+        select
+        <include refid="selectAppDDriverMsg"/>
+        ,sdd.dict_label as typeEnum
+        from d_driver_msg dd left join sys_dict_data sdd on dd.type = sdd.dict_value and sdd.dict_type = 'd_driver_msg_type'
+        order by dd.status , dd.create_time desc
+    </select>
+
+    <!--    App 个人消息-工作台未读消息列表 -->
+    <select id="queryDriverUnreadList" parameterType="String" resultMap="DDriverMsgResult">
+       SELECT DISTINCT
+	ddm.type,
+	IFNULL( tb.typeCount, 0 ) AS typeCount,
+	sdd.dict_label AS typeEnum
+FROM
+	d_driver_msg ddm
+	LEFT JOIN (
+			SELECT id, type, count( 0 ) AS typeCount FROM d_driver_msg WHERE driver_id = #{userid} AND delete_flag = 1 GROUP BY type
+			 ) AS tb ON ddm.id = tb.id
+	LEFT JOIN sys_dict_data sdd ON ddm.type = sdd.dict_value
+	AND sdd.dict_type = 'd_driver_msg_type' GROUP BY ddm.type
+    </select>
+</mapper>

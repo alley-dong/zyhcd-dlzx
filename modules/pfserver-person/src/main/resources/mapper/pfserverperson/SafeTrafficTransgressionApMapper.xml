@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.SafeTrafficTransgressionApMapper">
+    
+    <resultMap type="SafeTrafficTransgressionAp" id="SafeTrafficTransgressionApResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="wzsj"    column="wzsj"    />
+        <result property="wzdd"    column="wzdd"    />
+        <result property="wzxw"    column="wzxw"    />
+        <result property="wzfk"    column="wzfk"    />
+        <result property="wzjf"    column="wzjf"    />
+        <result property="csmc"    column="csmc"    />
+        <result property="csdm"    column="csdm"    />
+        <result property="wfdm"    column="wfdm"    />
+        <result property="cjjg"    column="cjjg"    />
+        <result property="jdsbh"    column="jdsbh"    />
+        <result property="jkbh"    column="jkbh"    />
+        <result property="orderOn"    column="order_on"    />
+        <result property="status"    column="status"    />
+        <result property="deadline"    column="deadline"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="completeTime"    column="complete_time"    />
+    </resultMap>
+
+    <sql id="selectSafeTrafficTransgressionVo">
+        select id, vehicle_id, license_plate, driver_id, driver_name, wzsj, wzdd, wzxw, wzfk, wzjf, csmc, csdm, wfdm, cjjg, jdsbh, jkbh, order_on, status, deadline, delete_flag, create_by, create_time, update_by, update_time, complete_time from safe_traffic_transgression
+    </sql>
+
+    <select id="selectSafeTrafficTransgressionList" parameterType="SafeTrafficTransgressionAp" resultMap="SafeTrafficTransgressionApResult">
+        <include refid="selectSafeTrafficTransgressionVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="wzsj != null  and wzsj != ''"> and wzsj = #{wzsj}</if>
+            <if test="wzdd != null "> and wzdd = #{wzdd}</if>
+            <if test="wzxw != null  and wzxw != ''"> and wzxw = #{wzxw}</if>
+            <if test="wzfk != null  and wzfk != ''"> and wzfk = #{wzfk}</if>
+            <if test="wzjf != null  and wzjf != ''"> and wzjf = #{wzjf}</if>
+            <if test="csmc != null  and csmc != ''"> and csmc = #{csmc}</if>
+            <if test="csdm != null  and csdm != ''"> and csdm = #{csdm}</if>
+            <if test="wfdm != null  and wfdm != ''"> and wfdm = #{wfdm}</if>
+            <if test="cjjg != null  and cjjg != ''"> and cjjg = #{cjjg}</if>
+            <if test="jdsbh != null  and jdsbh != ''"> and jdsbh = #{jdsbh}</if>
+            <if test="jkbh != null  and jkbh != ''"> and jkbh = #{jkbh}</if>
+            <if test="orderOn != null  and orderOn != ''"> and order_on = #{orderOn}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="deadline != null "> and deadline = #{deadline}</if>
+            <if test="completeTime != null "> and complete_time = #{completeTime}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectSafeTrafficTransgressionListDriver" parameterType="SafeTrafficTransgressionAp" resultMap="SafeTrafficTransgressionApResult">
+        <include refid="selectSafeTrafficTransgressionVo"/>
+        <where>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            and delete_flag = '1'
+
+        </where>
+    </select>
+
+    <select id="selectSafeTrafficTransgressionById" parameterType="String" resultMap="SafeTrafficTransgressionApResult">
+        <include refid="selectSafeTrafficTransgressionVo"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+        
+    <insert id="insertSafeTrafficTransgression" parameterType="SafeTrafficTransgressionAp">
+        insert into safe_traffic_transgression
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="wzsj != null">wzsj,</if>
+            <if test="wzdd != null">wzdd,</if>
+            <if test="wzxw != null">wzxw,</if>
+            <if test="wzfk != null">wzfk,</if>
+            <if test="wzjf != null">wzjf,</if>
+            <if test="csmc != null">csmc,</if>
+            <if test="csdm != null">csdm,</if>
+            <if test="wfdm != null">wfdm,</if>
+            <if test="cjjg != null">cjjg,</if>
+            <if test="jdsbh != null">jdsbh,</if>
+            <if test="jkbh != null">jkbh,</if>
+            <if test="orderOn != null">order_on,</if>
+            <if test="status != null">status,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="completeTime != null">complete_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="wzsj != null">#{wzsj},</if>
+            <if test="wzdd != null">#{wzdd},</if>
+            <if test="wzxw != null">#{wzxw},</if>
+            <if test="wzfk != null">#{wzfk},</if>
+            <if test="wzjf != null">#{wzjf},</if>
+            <if test="csmc != null">#{csmc},</if>
+            <if test="csdm != null">#{csdm},</if>
+            <if test="wfdm != null">#{wfdm},</if>
+            <if test="cjjg != null">#{cjjg},</if>
+            <if test="jdsbh != null">#{jdsbh},</if>
+            <if test="jkbh != null">#{jkbh},</if>
+            <if test="orderOn != null">#{orderOn},</if>
+            <if test="status != null">#{status},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSafeTrafficTransgression" parameterType="SafeTrafficTransgressionAp">
+        update safe_traffic_transgression
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="wzsj != null">wzsj = #{wzsj},</if>
+            <if test="wzdd != null">wzdd = #{wzdd},</if>
+            <if test="wzxw != null">wzxw = #{wzxw},</if>
+            <if test="wzfk != null">wzfk = #{wzfk},</if>
+            <if test="wzjf != null">wzjf = #{wzjf},</if>
+            <if test="csmc != null">csmc = #{csmc},</if>
+            <if test="csdm != null">csdm = #{csdm},</if>
+            <if test="wfdm != null">wfdm = #{wfdm},</if>
+            <if test="cjjg != null">cjjg = #{cjjg},</if>
+            <if test="jdsbh != null">jdsbh = #{jdsbh},</if>
+            <if test="jkbh != null">jkbh = #{jkbh},</if>
+            <if test="orderOn != null">order_on = #{orderOn},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafeTrafficTransgressionById" parameterType="String">
+        delete from safe_traffic_transgression where id = #{id}
+    </delete>
+
+    <delete id="deleteSafeTrafficTransgressionByIds" parameterType="String">
+        delete from safe_traffic_transgression where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverGroupMapper">
+    
+    <resultMap type="DDriverGroup" id="DDriverGroupResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDDriverGroupVo">
+        select id, name, delete_flag, create_by, create_time, update_by, update_time from d_driver_group
+    </sql>
+
+    <select id="selectDDriverGroupList" parameterType="DDriverGroup" resultMap="DDriverGroupResult">
+        <include refid="selectDDriverGroupVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+             and delete_flag = '1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectDDriverGroupListQunZu" parameterType="String" resultMap="DDriverGroupResult">
+        <include refid="selectDDriverGroupVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectDDriverGroupById" parameterType="String" resultMap="DDriverGroupResult">
+        <include refid="selectDDriverGroupVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDDriverGroup" parameterType="DDriverGroup">
+        insert into d_driver_group
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDDriverGroup" parameterType="DDriverGroup">
+        update d_driver_group
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverGroupById" parameterType="String">
+        delete from d_driver_group where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverGroupByIds" parameterType="String">
+        delete from d_driver_group where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

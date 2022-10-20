@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CInsuranceVehicleMapper">
+    
+    <resultMap type="CInsuranceVehicle" id="CInsuranceVehicleResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="frameNumber"    column="frame_number"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="totalPremium"    column="total_premium"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="insuranceId"    column="insurance_id"    />
+        <result property="insuranceTypeId"    column="insurance_type_id"    />
+        <result property="insuranceTypeName"    column="insurance_type_name"    />
+        <result property="insuranceItemId"    column="insurance_item_id"    />
+        <result property="insuranceItemName"    column="insurance_item_name"    />
+        <result property="insuranceQuota"    column="insurance_quota"    />
+        <result property="insuranceCost"    column="insurance_cost"    />
+        <result property="insuranceStartDate"    column="insurance_start_date"    />
+        <result property="insuranceEndDate"    column="insurance_end_date"    />
+        <result property="insuranceHandleTime"    column="insurance_handle_time"    />
+        <result property="CIVIID"    column="CIVIID"    />
+        <result property="CIVGlicensePlate"    column="CIVGlicensePlate"    />
+        <result property="vehicleId" column="vehicle_id" />
+    </resultMap>
+
+    <sql id="selectCInsuranceVehicleVo">
+        select id, type, frame_number, license_plate, remarks, total_premium, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time,vehicle_id from c_insurance_vehicle
+    </sql>
+
+    <sql id="selectCInsuranceVehicleVoOrCIVI">
+        SELECT civ.id, civ.type, civ.frame_number, civ.remarks, civ.license_plate
+        , civ.total_premium, civ.status, civ.review_time, civ.review_user, civ.review_remarks
+        , civ.delete_flag, civ.create_by, civ.create_time, civ.update_by, civ.update_time
+        , civi.id as CIVIID, civi.insurance_type_id, civi.insurance_type_name, civi.insurance_item_id, civi.insurance_item_name
+        , civi.insurance_quota, civi.insurance_cost, civg.license_plate as CIVGlicensePlate
+        FROM c_insurance_vehicle as civ
+    </sql>
+
+    <select id="selectCInsuranceVehicleList" parameterType="CInsuranceVehicle" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVoOrCIVI"/>
+        left join c_insurance_vehicle_item as civi
+        on  civi.insurance_id =civ.id
+        left join c_insurance_vehicle_googds as civg
+        on  civg.insurance_id =civ.id
+        where civ.delete_flag = '1' and civi.delete_flag = '1'
+        <if test="id != null"> and civ.id = #{id}</if>
+        <if test="type != null "> and type = #{type}</if>
+        <if test="frameNumber != null  and frameNumber != ''"> and frame_number = #{frameNumber}</if>
+        <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+        <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+        <if test="totalPremium != null "> and total_premium = #{totalPremium}</if>
+        <if test="status != null "> and civ.status = #{status}</if>
+        <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+        <if test="reviewUser != null  and reviewUser != ''"> and review_user = #{reviewUser}</if>
+        <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+        <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        group by civi.id
+    </select>
+
+    <select id="selectCInsuranceVehicleInfo" parameterType="String" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVoOrCIVI"/>
+        left join c_insurance_vehicle_item as civi
+        on  civi.insurance_id =civ.id
+        left join c_insurance_vehicle_googds as civg
+        on  civg.insurance_id =civ.id
+        where civ.delete_flag = '1' and civi.delete_flag = '1'
+        and civ.id = #{id}
+        group by civi.id
+    </select>
+
+    <sql id="selectCInsuranceVehicleVoOrCIVG">
+        SELECT civ.id, civ.type, civ.frame_number, civ.license_plate, civ.remarks
+        , civ.total_premium, civ.status, civ.review_time, civ.review_user, civ.review_remarks
+        , civ.delete_flag, civ.create_by, civ.create_time, civ.update_by, civ.update_time
+        , civg.insurance_start_date, civg.insurance_end_date, civg.insurance_handle_time,civi.insurance_type_id
+        , civi.insurance_type_name, civi.insurance_item_id, civi.insurance_item_name
+        , civi.insurance_quota, civi.insurance_cost
+        FROM c_insurance_vehicle as civ
+    </sql>
+
+    <select id="selectCInsuranceVehicleORCIVG" parameterType="CInsuranceVehicle" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVoOrCIVG"/>
+        join c_insurance_vehicle_googds as civg
+        on civg.insurance_id = civ.id
+        join c_insurance_vehicle_item as civi
+        on civi.insurance_id = civ.id
+        <where>
+            civ.delete_flag = '1'
+            <if test="insuranceTypeId != null "> and civi.insurance_type_id = #{insuranceTypeId}</if>
+            <if test="insuranceTypeName != null "> and civi.insurance_type_name = #{insuranceTypeName}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="frameNumber != null  and frameNumber != ''"> and frame_number = #{frameNumber}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and civ.license_plate = #{licensePlate}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="totalPremium != null "> and total_premium = #{totalPremium}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            <if test="insuranceStartDate != null ">
+                and civg.insurance_start_date &gt;= #{insuranceStartDate}
+            </if>
+            <if test="insuranceEndDate != null ">
+                and civg.insurance_end_date &lt;= #{insuranceEndDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCInsuranceVehicleList1" parameterType="CInsuranceVehicle" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVo"/>
+        <where>  
+            <if test="type != null "> and type = #{type}</if>
+            <if test="frameNumber != null  and frameNumber != ''"> and frame_number = #{frameNumber}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="totalPremium != null "> and total_premium = #{totalPremium}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+    
+    <select id="selectCInsuranceVehicleById" parameterType="String" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCInsuranceVe" parameterType="CInsuranceVehicle" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVo"/>
+        <where>
+        <if test="frameNumber != null  and frameNumber != ''"> and frame_number LIKE concat('%',#{frameNumber},'%')</if>
+        <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="type != null and type != ''"> and type = #{type}</if>
+        <if test="status != null "> and status = #{status}</if>
+            <if test="startTime != null">
+				    and	create_time &gt;= #{startTime}
+            </if>
+            <if test="finshTime != null">
+				    and	create_time &lt;= #{finshTime}
+            </if>
+              and delete_flag = '1' and type &lt;&gt; '3'
+        </where>
+        ORDER BY field(`status`,1,2,3), create_time desc
+    </select>
+
+    <select id="selectCInsuranceGe" parameterType="CInsuranceVehicle" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVo"/>
+        <where>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="startTime != null">
+                and	create_time &gt;= #{startTime}
+            </if>
+            <if test="finshTime != null">
+                and	create_time &lt;= #{finshTime}
+            </if>
+            and type = '3' and delete_flag= '1'
+        </where>
+        ORDER BY field(`status`,1,2,3), create_time desc
+    </select>
+
+    <select id="selectCInsuranceLastList" parameterType="String" resultMap="CInsuranceVehicleResult">
+        <include refid="selectCInsuranceVehicleVo"/>
+        where type = '1' and delete_flag = '1' and vehicle_id = #{id}
+        ORDER BY create_time DESC  limit 1
+    </select>
+
+    <select id="selectCostIn" parameterType="CInsuranceVehicle" resultMap="CInsuranceVehicleResult">
+        SELECT
+        a.type,
+        b.license_plate,
+        b.insurance_start_date,
+        b.insurance_handle_time,
+        b.insurance_end_date,
+        c.insurance_type_name,
+        sum( c.insurance_cost ) AS insurance_cost
+        FROM
+        c_insurance_vehicle a
+        LEFT JOIN c_insurance_vehicle_googds b ON a.id = b.insurance_id
+        LEFT JOIN c_insurance_vehicle_item c ON b.insurance_id = c.insurance_id
+       <where>
+           <if test="licensePlates != null and licensePlates.size() != 0">
+               and b.license_plate IN
+               <foreach collection="licensePlates" item="licensePlate" index="index" open="(" close=")" separator=",">
+                   #{licensePlate}
+               </foreach>
+           </if>
+        <if test="typeId != null and typeId != ''">and c.insurance_type_id = #{typeId}</if>
+        <if test="startTime != null">
+            <![CDATA[
+				    and	DATE_FORMAT(b.insurance_handle_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+			    ]]>
+        </if>
+        <if test="finshTime != null">
+            <![CDATA[
+				    and	DATE_FORMAT(b.insurance_handle_time, '%Y-%m-%d') <= DATE_FORMAT(#{finshTime}, '%Y-%m-%d')
+			    ]]>
+        </if>
+          AND a.`status` = '2'
+           AND a.delete_flag = '1'
+           AND c.delete_flag = '1'
+</where>
+        GROUP BY b.license_plate,
+        a.type,
+        c.insurance_type_id,
+        b.insurance_start_date,
+        b.insurance_handle_time,
+        b.insurance_end_date
+        ORDER BY b.insurance_handle_time DESC
+    </select>
+        
+    <insert id="insertCInsuranceVehicle" parameterType="CInsuranceVehicle">
+        insert into c_insurance_vehicle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="frameNumber != null">frame_number,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="totalPremium != null">total_premium,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="frameNumber != null">#{frameNumber},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="totalPremium != null">#{totalPremium},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCInsuranceVehicle" parameterType="CInsuranceVehicle">
+        update c_insurance_vehicle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="frameNumber != null">frame_number = #{frameNumber},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="totalPremium != null">total_premium = #{totalPremium},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="checkCInsuranceVehicle" parameterType="CInsuranceVehicle">
+        update c_insurance_vehicle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCInsuranceVehicleById" parameterType="String">
+        delete from c_insurance_vehicle where id = #{id}
+    </delete>
+
+    <delete id="deleteCInsuranceVehicleByIds" parameterType="String">
+        delete from c_insurance_vehicle where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    ERP费用-->
+    <select id="queryERPInsuranceCostList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel" resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+
+        SELECT
+        if(a.type = 1,'新车保险',if(a.type = 2,'车辆续保','货物保险')) as typeName,
+        b.license_plate as licensePlate,
+        b.insurance_start_date as insuranceStartDateExport,
+        b.insurance_handle_time as insuranceEndDateExport,
+        b.insurance_end_date as insuranceHandleTimeExport,
+        c.insurance_type_name as insuranceTypeName,
+        sum( c.insurance_cost ) AS insuranceCost
+        FROM
+        c_insurance_vehicle a
+        LEFT JOIN c_insurance_vehicle_googds b ON a.id = b.insurance_id
+        LEFT JOIN c_insurance_vehicle_item c ON b.insurance_id = c.insurance_id
+        <where>
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(b.insurance_handle_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(b.insurance_handle_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            AND a.`status` = '2'
+            AND a.delete_flag = '1'
+            AND c.delete_flag = '1'
+        </where>
+        GROUP BY b.license_plate,
+        a.type,
+        c.insurance_type_id,
+        b.insurance_start_date,
+        b.insurance_handle_time,
+        b.insurance_end_date
+        ORDER BY b.insurance_handle_time DESC
+
+    </select>
+
+</mapper>

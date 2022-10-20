@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.system.mapper.SysExamineTaskMapper">
+    
+    <resultMap type="com.dlzx.system.domain.SysExamineTask" id="SysExamineTaskResult">
+        <result property="id"    column="id"    />
+        <result property="type"    column="type"    />
+        <result property="relationId"    column="relation_id"    />
+        <result property="level"    column="level"    />
+        <result property="roleId"    column="role_id"    />
+        <result property="roleName"    column="role_name"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="taskStatus"    column="task_status"    />
+        <result property="userType"    column="user_type"    />
+        <result property="isShow"    column="is_show"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysExamineTaskVo">
+        select id, type, relation_id, level, role_id, role_name, user_id, user_name, task_status, user_type, status, review_time, review_remarks, delete_flag, create_by, create_time, update_by, update_time,is_show from sys_examine_task
+    </sql>
+
+    <sql id="selectSysExamineTask">
+        select sys.id, sys.type, sys.relation_id, sys.level, sys.role_id, sys.role_name, sys.user_id,
+        sys.user_name, sys.task_status, sys.user_type, sys.status, sys.review_time, sys.review_remarks,
+        sys.delete_flag, sys.create_by, sys.create_time, sys.update_by, sys.update_time, sys.is_show
+    </sql>
+
+    <select id="selectSysExamineTaskList" parameterType="com.dlzx.system.domain.SysExamineTask" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysTaskStatus.dict_label as taskStatusEnum
+        ,sysUserType.dict_label as userTypeEnum
+        ,sysStatus.dict_label as statusEnum
+        ,sysType.dict_label as typeEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysTaskStatus ON sysTaskStatus.dict_value = sys.task_status AND sysTaskStatus.dict_type = 'sys_examine_task_task_status'
+        LEFT JOIN sys_dict_data sysUserType ON sysUserType.dict_value = sys.user_type AND sysUserType.dict_type = 'sys_examine_task_user_type'
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = sys.status AND sysStatus.dict_type = 'sys_examine_task_status'
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        <where>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="relationId != null  and relationId != ''"> and relation_id = #{relationId}</if>
+            <if test="level != null "> and level = #{level}</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="roleName != null  and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
+            <if test="userId != null "> and sys.user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="taskStatus != null "> and sys.task_status = #{taskStatus}</if>
+            <if test="userType != null "> and user_type = #{userType}</if>
+            <if test="status != null "> and sys.status = #{status}</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            and delete_flag = 1
+        </where>
+        order by level asc, user_type asc , create_time desc
+    </select>
+
+    <select id="checkExistenceStatus" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTaskVo"/>
+        where relation_id = #{relationId} and delete_flag = '1' and type = #{type}
+    </select>
+    
+    <select id="selectSysExamineTaskById" parameterType="String" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTaskVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectSysExamineTaskReview" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTaskVo"/>
+        where relation_id = #{relationId} and user_id = #{userId} and delete_flag = '1' and task_status = '1' and user_type = '1'
+    </select>
+
+    <select id="selectSysExamineTaskCopy" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTaskVo"/>
+        where relation_id = #{relationId} and level = #{level} and type = #{type} and delete_flag = '1' and user_type = '2'
+    </select>
+
+    <select id="selectSysExamineTaskReviewNextLevel" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTaskVo"/>
+        where relation_id = #{relationId} and level = #{level} and delete_flag = '1' and status = '1' and user_type = '1'
+    </select>
+
+    <select id="selectSysExamineTaskReviewRefuse" parameterType="String" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTaskVo"/>
+        where relation_id = #{relationId} and delete_flag = '1' and task_status = '1' and user_type = '1'
+    </select>
+
+    <!--管理员app-审批待办列表-->
+    <select id="querySysExamineTaskBacklogList" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysType.dict_label as typeEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        WHERE sys.status = 1 AND sys.user_id = #{userId} and sys.user_type = 1 and task_status = 1
+        AND sys.delete_flag = 1
+        order by sys.create_time DESC
+    </select>
+
+    <!--管理员app-审批记录-->
+    <select id="queryExamineList" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysType.dict_label as typeEnum
+        ,sysStatus.dict_label as statusEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = sys.status AND sysStatus.dict_type = 'sys_examine_task_status'
+        WHERE sys.status  <![CDATA[ <> ]]> 1 AND sys.user_id = #{userId} and sys.user_type = 1
+        AND sys.delete_flag = 1
+        <if test="type != null "> and sys.type = #{type}</if>
+        <if test="status != null "> and sys.status = #{status}</if>
+        order by sys.create_time DESC
+    </select>
+
+    <!--管理员app-抄送记录-->
+    <select id="querySendDuplicateList" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysType.dict_label as typeEnum
+        ,sysStatus.dict_label as statusEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = sys.status AND sysStatus.dict_type = 'sys_examine_task_status'
+        WHERE sys.status  <![CDATA[ <> ]]> 1 and sys.user_id = #{userId} and sys.user_type = 2
+        AND sys.delete_flag = 1
+        <if test="type != null "> and sys.type = #{type}</if>
+        <if test="status != null "> and sys.status = #{status}</if>
+        order by sys.create_time DESC
+    </select>
+
+
+
+    <!--管理员app-审批记录未查看条数-->
+    <select id="queryExamineCount" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysType.dict_label as typeEnum
+        ,sysStatus.dict_label as statusEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = sys.status AND sysStatus.dict_type = 'sys_examine_task_status'
+        WHERE sys.status  <![CDATA[ <> ]]> 1 AND sys.user_id = #{userId} and sys.user_type = 1
+        AND sys.delete_flag = 1 and is_show = 1
+        <if test="type != null "> and sys.type = #{type}</if>
+        <if test="status != null "> and sys.status = #{status}</if>
+        order by sys.create_time DESC
+    </select>
+
+    <!--管理员app-抄送记录未查看条数-->
+    <select id="querySendDuplicateCount" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysType.dict_label as typeEnum
+        ,sysStatus.dict_label as statusEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = sys.status AND sysStatus.dict_type = 'sys_examine_task_status'
+        WHERE sys.status  <![CDATA[ <> ]]> 1 and sys.user_id = #{userId} and sys.user_type = 2
+        AND sys.delete_flag = 1 and is_show = 1
+        <if test="type != null "> and sys.type = #{type}</if>
+        <if test="status != null "> and sys.status = #{status}</if>
+        order by sys.create_time DESC
+    </select>
+
+
+    <insert id="insertSysExamineTaskBatch" parameterType="com.dlzx.system.domain.SysExamineTask">
+        insert into sys_examine_task(id,type,relation_id,level,role_id,role_name,user_id,user_name,task_status,user_type,status,
+        review_time,review_remarks,delete_flag,create_by,create_time,update_by,update_time) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.type},#{item.relationId},#{item.level},#{item.roleId},#{item.roleName},#{item.userId},#{item.userName},#{item.taskStatus},
+            #{item.userType},#{item.status},#{item.reviewTime},#{item.reviewRemarks},#{item.deleteFlag},#{item.createBy},
+            #{item.createTime},#{item.updateBy},#{item.updateTime})
+        </foreach>
+    </insert>
+        
+    <insert id="insertSysExamineTask" parameterType="com.dlzx.system.domain.SysExamineTask">
+        insert into sys_examine_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="type != null">type,</if>
+            <if test="relationId != null">relation_id,</if>
+            <if test="level != null">level,</if>
+            <if test="roleId != null">role_id,</if>
+            <if test="roleName != null">role_name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="taskStatus != null">task_status,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isShow != null">is_show,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="type != null">#{type},</if>
+            <if test="relationId != null">#{relationId},</if>
+            <if test="level != null">#{level},</if>
+            <if test="roleId != null">#{roleId},</if>
+            <if test="roleName != null">#{roleName},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="taskStatus != null">#{taskStatus},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isShow != null">#{isShow},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysExamineTask" parameterType="com.dlzx.system.domain.SysExamineTask">
+        update sys_examine_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+            <if test="relationId != null">relation_id = #{relationId},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="roleId != null">role_id = #{roleId},</if>
+            <if test="roleName != null">role_name = #{roleName},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="taskStatus != null">task_status = #{taskStatus},</if>
+            <if test="userType != null">user_type = #{userType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateSysExamineTaskBatch" parameterType="String">
+        update sys_examine_task SET delete_flag = '2'
+        where relation_id = #{id}
+
+    </update>
+
+    <delete id="deleteSysExamineTaskById" parameterType="String">
+        delete from sys_examine_task where id = #{id}
+    </delete>
+
+    <delete id="deleteSysExamineTaskByIds" parameterType="String">
+        delete from sys_examine_task where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="deleteExamineTaskByRelationId" parameterType="java.lang.String">
+        update sys_examine_task set delete_flag = 2 where relation_id = #{relationId}
+    </update>
+
+
+    <!-- 管理员app 审核修改-->
+    <update id="checkExamineTask" parameterType="com.dlzx.system.domain.SysExamineTask">
+        update sys_examine_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="isFixedUpdate" parameterType="com.dlzx.system.domain.SysExamineTask">
+        UPDATE sys_examine_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+        </trim>
+        where relation_id = #{id} and type = '8' and delete_flag = '1'
+    </update>
+
+
+    <update id="updateSysExamineTaskReadStatus" parameterType="com.dlzx.system.domain.SysExamineTask">
+        update sys_examine_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isShow != null">is_show = #{isShow},</if>
+        </trim>
+        <where>
+        <if test="userId != null "> and user_id = #{userId}</if>
+        <if test="id != null "> and id = #{id}</if>
+        </where>
+    </update>
+
+    <update id="updateStationStatus">
+        UPDATE sys_examine_task set
+            status = 1,
+            review_time = NULL ,
+            review_remarks = NULL,
+            task_status = 1
+        where relation_id = #{relationId} and type = '8' and delete_flag = '1'
+    </update>
+
+    <update id="updateTaskStatus">
+        UPDATE sys_examine_task set
+        task_status = 2
+        where relation_id = #{relationId} and type = '8' and delete_flag = '1' and level &lt;&gt; 1
+    </update>
+
+
+    <select id="sysExamineTaskDriverList" parameterType="com.dlzx.system.domain.SysExamineTask" resultMap="SysExamineTaskResult">
+        <include refid="selectSysExamineTask"/>
+        ,sysTaskStatus.dict_label as taskStatusEnum
+        ,sysUserType.dict_label as userTypeEnum
+        ,sysStatus.dict_label as statusEnum
+        ,sysType.dict_label as typeEnum
+        from sys_examine_task sys
+        LEFT JOIN sys_dict_data sysTaskStatus ON sysTaskStatus.dict_value = sys.task_status AND sysTaskStatus.dict_type = 'sys_examine_task_task_status'
+        LEFT JOIN sys_dict_data sysUserType ON sysUserType.dict_value = sys.user_type AND sysUserType.dict_type = 'sys_examine_task_user_type'
+        LEFT JOIN sys_dict_data sysStatus ON sysStatus.dict_value = sys.status AND sysStatus.dict_type = 'sys_examine_task_status'
+        LEFT JOIN sys_dict_data sysType ON sysType.dict_value = sys.type AND sysType.dict_type = 'sys_examine_config_type'
+        <where>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="relationId != null  and relationId != ''"> and relation_id = #{relationId}</if>
+            <if test="level != null "> and level = #{level}</if>
+            <if test="roleId != null "> and role_id = #{roleId}</if>
+            <if test="roleName != null  and roleName != ''"> and role_name like concat('%', #{roleName}, '%')</if>
+            <if test="userId != null "> and sys.user_id = #{userId}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="taskStatus != null "> and sys.task_status = #{taskStatus}</if>
+            <if test="userType != null "> and user_type = #{userType}</if>
+            <if test="status != null "> and sys.status = #{status}</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            and delete_flag = 1
+        </where>
+        order by level asc, user_type asc
+    </select>
+
+</mapper>

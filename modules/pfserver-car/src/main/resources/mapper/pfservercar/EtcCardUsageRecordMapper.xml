@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.EtcCardUsageRecordMapper">
+    
+    <resultMap type="EtcCardUsageRecord" id="EtcCardUsageRecordResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="etcCardId"    column="etc_card_id"    />
+        <result property="etcCardNumber"    column="etc_card_number"    />
+        <result property="amount"    column="amount"    />
+        <result property="inboundTime"    column="inbound_time"    />
+        <result property="outboundTime"    column="outbound_time"    />
+        <result property="firstTime"    column="firstTime"    />
+        <result property="finishTime"    column="finishTime"    />
+        <result property="roadSection"    column="road_section"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectEtcCardUsageRecordVo">
+        select id, vehicle_id, license_plate, etc_card_id, etc_card_number, amount, inbound_time, outbound_time, road_section, delete_flag, create_by, create_time, update_by, update_time from etc_card_usage_record
+    </sql>
+
+    <select id="selectEtcCardUsageRecordList" parameterType="EtcCardUsageRecord" resultMap="EtcCardUsageRecordResult">
+        <include refid="selectEtcCardUsageRecordVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%', #{licensePlate}, '%')</if>
+            <if test="etcCardId != null  and etcCardId != ''"> and etc_card_id = #{etcCardId}</if>
+            <if test="etcCardNumber != null  and etcCardNumber != ''"> and etc_card_number like concat('%', #{etcCardNumber}, '%')</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="inboundTime != null "> and inbound_time = #{inboundTime}</if>
+            <if test="outboundTime != null "> and outbound_time = #{outboundTime}</if>
+            <if test="roadSection != null  and roadSection != ''"> and road_section = #{roadSection}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+
+    <select id="selectEtcCardUsageRecordListTime" parameterType="EtcCardUsageRecord" resultMap="EtcCardUsageRecordResult">
+        <include refid="selectEtcCardUsageRecordVo"/>
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="etcCardNumber != null  and etcCardNumber != ''"> and etc_card_number = #{etcCardNumber}</if>
+            <if test="firstTime != null "> and date_format(inbound_time,'%Y-%m-%d') &gt;= date_format(#{firstTime},'%Y-%m-%d')</if>
+            <if test="finishTime != null "> and date_format(outbound_time,'%Y-%m-%d') &lt;= date_format(#{finishTime},'%Y-%m-%d')</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY outbound_time DESC
+    </select>
+
+    <select id="selectEtcCardUsageRecordListAll" resultMap="EtcCardUsageRecordResult">
+        <include refid="selectEtcCardUsageRecordVo"/>
+        <where>
+            delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectEtcCardUsageRecordById" parameterType="String" resultMap="EtcCardUsageRecordResult">
+        <include refid="selectEtcCardUsageRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectEtcRecordCost" parameterType="String" resultType="BigDecimal">
+        select sum(amount) from etc_card_usage_record where task_id = #{id}
+    </select>
+        
+    <insert id="insertEtcCardUsageRecord" parameterType="EtcCardUsageRecord">
+        insert into etc_card_usage_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="etcCardId != null">etc_card_id,</if>
+            <if test="etcCardNumber != null">etc_card_number,</if>
+            <if test="amount != null">amount,</if>
+            <if test="inboundTime != null">inbound_time,</if>
+            <if test="outboundTime != null">outbound_time,</if>
+            <if test="roadSection != null">road_section,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="taskId != null">task_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="etcCardId != null">#{etcCardId},</if>
+            <if test="etcCardNumber != null">#{etcCardNumber},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="inboundTime != null">#{inboundTime},</if>
+            <if test="outboundTime != null">#{outboundTime},</if>
+            <if test="roadSection != null">#{roadSection},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="taskId != null">#{taskId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateEtcCardUsageRecord" parameterType="EtcCardUsageRecord">
+        update etc_card_usage_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="etcCardId != null">etc_card_id = #{etcCardId},</if>
+            <if test="etcCardNumber != null">etc_card_number = #{etcCardNumber},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="inboundTime != null">inbound_time = #{inboundTime},</if>
+            <if test="outboundTime != null">outbound_time = #{outboundTime},</if>
+            <if test="roadSection != null">road_section = #{roadSection},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEtcCardUsageRecordById" parameterType="String">
+        delete from etc_card_usage_record where id = #{id}
+    </delete>
+
+    <delete id="deleteEtcCardUsageRecordByIds" parameterType="String">
+        delete from etc_card_usage_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.PContractEvaluateMetricsMapper">
+    
+    <resultMap type="com.dlzx.pfserverperson.domain.PContractEvaluateMetrics" id="PContractEvaluateMetricsResult">
+        <result property="id"    column="id"    />
+        <result property="metricsId"    column="metrics_id"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="type"    column="type"    />
+        <result property="dimension"    column="dimension"    />
+        <result property="content"    column="content"    />
+        <result property="method"    column="method"    />
+        <result property="score"    column="score"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPContractEvaluateMetricsVo">
+        select id, metrics_id, type_id, type_name, type, dimension, content, method, score, delete_flag, create_by, create_time, update_by, update_time from p_contract_evaluate_metrics
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+
+    <sql id="selectPContractEvaluateMetrics">
+        p.id, p.metrics_id, p.type_id,p.type_name, p.type, p.dimension, p.content, p.method, p.score, p.delete_flag, p.create_by, p.create_time, p.update_by, p.update_time
+    </sql>
+
+    <select id="selectPContractEvaluateMetricsList" parameterType="com.dlzx.pfserverperson.domain.PContractEvaluateMetrics" resultMap="PContractEvaluateMetricsResult">
+        select
+        <include refid="selectPContractEvaluateMetrics"/>
+        ,sys.dict_label as typeEnum
+        from p_contract_evaluate_metrics p
+        left join sys_dict_data sys ON sys.dict_value = p.type AND sys.dict_type = 'p_contract_metrics_type'
+        <where>  
+            <if test="metricsId != null  and metricsId != ''"> and p.metrics_id = #{metricsId}</if>
+            <if test="typeId != null  and typeId != ''"> and p.type_id = #{typeId}</if>
+            <if test="typeName != null  and typeName != ''"> and p.type_name like concat('%', #{typeName}, '%')</if>
+            <if test="type != null "> and type = #{p.type}</if>
+            <if test="dimension != null  and dimension != ''"> and p.dimension = #{dimension}</if>
+            <if test="content != null  and content != ''"> and p.content = #{content}</if>
+            <if test="method != null  and method != ''"> and p.method = #{method}</if>
+            <if test="score != null "> and p.score = #{score}</if>
+            and p.delete_flag = 1
+        </where>
+    </select>
+    
+    <select id="selectPContractEvaluateMetricsById" parameterType="String" resultMap="PContractEvaluateMetricsResult">
+        <include refid="selectPContractEvaluateMetricsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPContractEvaluateMetrics" parameterType="com.dlzx.pfserverperson.domain.PContractEvaluateMetrics">
+        insert into p_contract_evaluate_metrics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="metricsId != null">metrics_id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="type != null">type,</if>
+            <if test="dimension != null">dimension,</if>
+            <if test="content != null">content,</if>
+            <if test="method != null">method,</if>
+            <if test="score != null">score,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="metricsId != null">#{metricsId},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="type != null">#{type},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="content != null">#{content},</if>
+            <if test="method != null">#{method},</if>
+            <if test="score != null">#{score},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into p_contract_evaluate_metrics (
+        id, metrics_id, type_id, type_name, type, dimension, content, method, score, delete_flag, create_by, create_time, update_by, update_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.metricsId,jdbcType=VARCHAR},
+            #{item.typeId,jdbcType=VARCHAR},
+            #{item.typeName,jdbcType=VARCHAR},
+            #{item.type,jdbcType=INTEGER},
+            #{item.dimension,jdbcType=VARCHAR},
+            #{item.content,jdbcType=VARCHAR},
+            #{item.method,jdbcType=VARCHAR},
+            #{item.score,jdbcType=INTEGER},
+            #{item.deleteFlag,jdbcType=INTEGER},
+            #{item.createBy,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+
+    </insert>
+    <update id="updatePContractEvaluateMetrics" parameterType="com.dlzx.pfserverperson.domain.PContractEvaluateMetrics">
+        update p_contract_evaluate_metrics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="metricsId != null">metrics_id = #{metricsId},</if>
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="method != null">method = #{method},</if>
+            <if test="score != null">score = #{score},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePContractEvaluateMetricsById" parameterType="String">
+        delete from p_contract_evaluate_metrics where id = #{id}
+    </delete>
+
+    <delete id="deletePContractEvaluateMetricsByIds" parameterType="String">
+        update p_contract_evaluate_metrics set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

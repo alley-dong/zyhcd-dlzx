@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverTypeMapper">
+    
+    <resultMap type="DDriverType" id="DDriverTypeResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="basicSalary"    column="basic_salary"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDDriverTypeVo">
+        select id, name, type, basic_salary, delete_flag, create_user, create_time, update_user, update_time from d_driver_type
+    </sql>
+
+    <select id="selectDDriverTypeList" parameterType="DDriverType" resultMap="DDriverTypeResult">
+        <include refid="selectDDriverTypeVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY create_time desc
+    </select>
+    
+    <select id="selectDDriverTypeById" parameterType="String" resultMap="DDriverTypeResult">
+        <include refid="selectDDriverTypeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDDriverType" parameterType="DDriverType">
+        insert into d_driver_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="type != null">type,</if>
+            <if test="basicSalary != null">basic_salary,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="basicSalary != null">#{basicSalary},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDDriverType" parameterType="DDriverType">
+        update d_driver_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="basicSalary != null">basic_salary = #{basicSalary},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverTypeById" parameterType="String">
+        delete from d_driver_type where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverTypeByIds" parameterType="String">
+        delete from d_driver_type where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

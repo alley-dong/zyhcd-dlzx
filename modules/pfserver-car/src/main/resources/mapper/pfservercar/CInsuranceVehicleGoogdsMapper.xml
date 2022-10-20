@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CInsuranceVehicleGoogdsMapper">
+    
+    <resultMap type="CInsuranceVehicleGoogds" id="CInsuranceVehicleGoogdsResult">
+        <result property="id"    column="id"    />
+        <result property="insuranceId"    column="insurance_id"    />
+        <result property="type"    column="type"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="frameNumber"    column="frame_number"    />
+        <result property="insuranceStartDate"    column="insurance_start_date"    />
+        <result property="insuranceEndDate"    column="insurance_end_date"    />
+        <result property="insuranceHandleTime"    column="insurance_handle_time"    />
+        <result property="insuranceTypeId"    column="insurance_type_id"    />
+        <result property="insuranceTypeName"    column="insurance_type_name"    />
+        <result property="insuranceItemId"    column="insurance_item_id"    />
+        <result property="insuranceItemName"    column="insurance_item_name"    />
+        <result property="insuranceQuota"    column="insurance_quota"    />
+        <result property="insuranceCost"    column="insurance_cost"    />
+        <result property="totalPremium"    column="total_premium"    />
+        <result property="CIVGD"    column="CIVGD"    />
+        <result property="CIVID"    column="CIVID"    />
+    </resultMap>
+
+    <sql id="selectCInsuranceVehicleGoogdsVo">
+        select id, insurance_id, vehicle_id, license_plate, frame_number
+        , insurance_start_date, insurance_end_date, insurance_handle_time from c_insurance_vehicle_googds
+    </sql>
+
+    <sql id="selectCVehicleVoAndCIV1">
+        SELECT civg.id as CIVGD, civg.insurance_id, civg.vehicle_id, civg.license_plate, civg.frame_number
+        , civg.insurance_start_date, civg.insurance_end_date, civg.insurance_handle_time, civ.id as CIVID, civ.type
+        , civ.remarks, civ.total_premium, civ.status
+        , civ.review_time, civ.review_user, civ.review_remarks, civ.delete_flag, civ.create_by
+        , civ.create_time, civ.update_by, civ.update_time, civi.id as CIVIID, civi.insurance_type_id
+        , civi.insurance_type_name, civi.insurance_item_id, civi.insurance_item_name, civi.insurance_quota, civi.insurance_cost
+        FROM c_insurance_vehicle_googds as civg
+    </sql>
+
+    <select id="selectCInsuranceVehicleGoogdAndCIV" parameterType="CInsuranceVehicleGoogds" resultMap="CInsuranceVehicleGoogdsResult">
+        SELECT
+        a.id,
+	a.license_plate,
+	a.insurance_id,
+	a.vehicle_id,
+	a.insurance_start_date,
+	a.insurance_end_date,
+	a.insurance_handle_time,
+        ( SELECT SUM( insurance_cost ) AS k FROM c_insurance_vehicle_item WHERE insurance_id = a.insurance_id GROUP BY insurance_id ) AS total_premium
+        FROM
+	c_insurance_vehicle_googds a
+	LEFT JOIN c_insurance_vehicle_item b ON a.insurance_id = b.insurance_id
+	LEFT JOIN c_insurance_vehicle c ON c.id = b.insurance_id
+WHERE
+	b.delete_flag = '1' and a.vehicle_id = #{id} and c.status = '2'
+        <if test="insuranceHandleTime != null">and a.insurance_handle_time = #{insuranceHandleTime}</if>
+	 GROUP BY a.insurance_id
+	 ORDER BY a.insurance_handle_time DESC
+    </select>
+
+    <select id="selectCInsuranceVehicleGoogdInfo" parameterType="String" resultMap="CInsuranceVehicleGoogdsResult">
+        <include refid="selectCVehicleVoAndCIV1" />
+        left join c_insurance_vehicle as civ
+        on civ.id=civg.insurance_id
+        left join c_insurance_vehicle_item as civi
+        on civi.insurance_id=civ.id
+        where civg.id = #{id} and civi.delete_flag= '1' and civ.delete_flag= '1'
+        group by civg.license_plate
+        ORDER BY civg.insurance_handle_time desc
+    </select>
+
+    <select id="selectCInsuranceVehicleGoogdsList" parameterType="CInsuranceVehicleGoogds" resultMap="CInsuranceVehicleGoogdsResult">
+        <include refid="selectCVehicleVoAndCIV1"/>
+        left join c_insurance_vehicle as civ
+        on civ.id=civg.insurance_id
+        left join c_insurance_vehicle_item as civi
+        on civi.insurance_id=civ.id
+        <where>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="type != null and type != ''"> and civ.type=#{type}</if>
+            <if test="insuranceStartDate != null"> and civg.insurance_start_date &gt;=
+                DATE_FORMAT(#{insuranceStartDate},'%Y-%m-%d')
+            </if>
+            <if test="insuranceEndDate != null"> and civg.insurance_end_date &lt;=
+                DATE_FORMAT(#{insuranceEndDate},'%Y-%m-%d')
+            </if>
+            and civi.delete_flag= '1' and civ.delete_flag= '1'
+        </where>
+        group by civg.license_plate
+        ORDER BY civg.insurance_handle_time desc
+    </select>
+    
+    <select id="selectCInsuranceVehicleGoogdsById" parameterType="String" resultMap="CInsuranceVehicleGoogdsResult">
+        <include refid="selectCInsuranceVehicleGoogdsVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCIGByCId" parameterType="String" resultMap="CInsuranceVehicleGoogdsResult">
+        <include refid="selectCInsuranceVehicleGoogdsVo"/>
+        where insurance_id = #{id}
+    </select>
+        
+    <insert id="insertCInsuranceVehicleGoogds" parameterType="CInsuranceVehicleGoogds">
+        insert into c_insurance_vehicle_googds
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="insuranceId != null and insuranceId != ''">insurance_id,</if>
+            <if test="vehicleId != null and vehicleId != ''">vehicle_id,</if>
+            <if test="licensePlate != null and licensePlate != ''">license_plate,</if>
+            <if test="frameNumber != null and frameNumber != ''">frame_number,</if>
+            <if test="insuranceStartDate != null and insuranceStartDate != ''">insurance_start_date,</if>
+            <if test="insuranceEndDate != null and insuranceEndDate != ''">insurance_end_date,</if>
+            <if test="insuranceHandleTime != null and insuranceHandleTime != ''">insurance_handle_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="insuranceId != null and insuranceId != ''">#{insuranceId},</if>
+            <if test="vehicleId != null and vehicleId != ''">#{vehicleId},</if>
+            <if test="licensePlate != null and licensePlate != ''">#{licensePlate},</if>
+            <if test="frameNumber != null and frameNumber != ''">#{frameNumber},</if>
+            <if test="insuranceStartDate != null and insuranceStartDate != ''">#{insuranceStartDate},</if>
+            <if test="insuranceEndDate != null and insuranceEndDate != ''">#{insuranceEndDate},</if>
+            <if test="insuranceHandleTime != null and insuranceHandleTime != ''">#{insuranceHandleTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="CInsuranceVehicleGoogds">
+        insert into c_insurance_vehicle_googds(id,insurance_id,vehicle_id,license_plate,frame_number,insurance_start_date,
+        insurance_end_date,insurance_handle_time) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},
+            #{item.insuranceId},
+            #{item.vehicleId},
+            #{item.licensePlate},
+            #{item.frameNumber},
+            #{item.insuranceStartDate},
+            #{item.insuranceEndDate},
+            #{item.insuranceHandleTime})
+        </foreach>
+    </insert>
+
+    <update id="updateCInsuranceVehicleGoogds" parameterType="CInsuranceVehicleGoogds">
+        update c_insurance_vehicle_googds
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="insuranceId != null and insuranceId != ''">insurance_id = #{insuranceId},</if>
+            <if test="vehicleId != null and vehicleId != ''">vehicle_id = #{vehicleId},</if>
+            <if test="insuranceStartDate != null">insurance_start_date = #{insuranceStartDate},</if>
+            <if test="insuranceEndDate != null">insurance_end_date = #{insuranceEndDate},</if>
+            <if test="insuranceHandleTime != null">insurance_handle_time = #{insuranceHandleTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCInsuranceVehicleGoogdsById" parameterType="String">
+        delete from c_insurance_vehicle_googds where id = #{id}
+    </delete>
+
+    <delete id="deleteCInsuranceVehicleGoogdsByIds" parameterType="String">
+        delete from c_insurance_vehicle_googds where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

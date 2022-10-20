@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DExamPaperProblemMapper">
+    
+    <resultMap type="DExamPaperProblem" id="DExamPaperProblemResult">
+        <result property="id"    column="id"    />
+        <result property="paperId"    column="paper_id"    />
+        <result property="problemId"    column="problem_id"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="optionA"    column="option_a"    />
+        <result property="optionB"    column="option_b"    />
+        <result property="optionC"    column="option_c"    />
+        <result property="optionD"    column="option_d"    />
+        <result property="answer"    column="answer"    />
+        <result property="score"    column="score"    />
+    </resultMap>
+
+    <sql id="selectDExamPaperProblemVo">
+        select id, paper_id, problem_id, name, type, option_a, option_b, option_c, option_d, answer, score from d_exam_paper_problem
+    </sql>
+
+    <select id="selectDExamPaperProblemList" parameterType="DExamPaperProblem" resultMap="DExamPaperProblemResult">
+        <include refid="selectDExamPaperProblemVo"/>
+        <where>  
+            <if test="paperId != null  and paperId != ''"> and paper_id = #{paperId}</if>
+            <if test="problemId != null  and problemId != ''"> and problem_id = #{problemId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="optionA != null  and optionA != ''"> and option_a = #{optionA}</if>
+            <if test="optionB != null  and optionB != ''"> and option_b = #{optionB}</if>
+            <if test="optionC != null  and optionC != ''"> and option_c = #{optionC}</if>
+            <if test="optionD != null  and optionD != ''"> and option_d = #{optionD}</if>
+            <if test="answer != null  and answer != ''"> and answer = #{answer}</if>
+            <if test="score != null  and score != ''"> and score = #{score}</if>
+        </where>
+    </select>
+    
+    <select id="selectDExamPaperProblemById" parameterType="String" resultMap="DExamPaperProblemResult">
+        <include refid="selectDExamPaperProblemVo"/>
+        where paper_id = #{id}
+    </select>
+
+    <select id="selectDExamPaperProblemByPaperId" parameterType="String" resultMap="DExamPaperProblemResult">
+        <include refid="selectDExamPaperProblemVo"/>
+        where paper_id = #{id}
+    </select>
+
+    <select id="selectDExamPaperProblemByIdPaper" parameterType="String" resultMap="DExamPaperProblemResult">
+        <include refid="selectDExamPaperProblemVo"/>
+        where paper_id = #{id}
+    </select>
+
+    <insert id="insertDExamPaperProblem" parameterType="DExamPaperProblem">
+        insert into d_exam_paper_problem
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="paperId != null">paper_id,</if>
+            <if test="problemId != null">problem_id,</if>
+            <if test="name != null">name,</if>
+            <if test="type != null">type,</if>
+            <if test="optionA != null">option_a,</if>
+            <if test="optionB != null">option_b,</if>
+            <if test="optionC != null">option_c,</if>
+            <if test="optionD != null">option_d,</if>
+            <if test="answer != null">answer,</if>
+            <if test="score != null">score,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="paperId != null">#{paperId},</if>
+            <if test="problemId != null">#{problemId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="optionA != null">#{optionA},</if>
+            <if test="optionB != null">#{optionB},</if>
+            <if test="optionC != null">#{optionC},</if>
+            <if test="optionD != null">#{optionD},</if>
+            <if test="answer != null">#{answer},</if>
+            <if test="score != null">#{score},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDExamPaperProblemList">
+        insert into d_exam_paper_problem( id, paper_id, problem_id, name, type, option_a, option_b, option_c, option_d, answer, score) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.paperId},#{item.problemId},#{item.name},#{item.type},#{item.optionA},#{item.optionB},#{item.optionC},#{item.optionD},#{item.answer},#{item.score})
+        </foreach>
+    </insert>
+
+    <update id="updateDExamPaperProblem" parameterType="DExamPaperProblem">
+        update d_exam_paper_problem
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="paperId != null">paper_id = #{paperId},</if>
+            <if test="problemId != null">problem_id = #{problemId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="optionA != null">option_a = #{optionA},</if>
+            <if test="optionB != null">option_b = #{optionB},</if>
+            <if test="optionC != null">option_c = #{optionC},</if>
+            <if test="optionD != null">option_d = #{optionD},</if>
+            <if test="answer != null">answer = #{answer},</if>
+            <if test="score != null">score = #{score},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDExamPaperProblemById" parameterType="String">
+        delete from d_exam_paper_problem where id = #{id}
+    </delete>
+
+    <delete id="deleteDExamPaperProblemByIds" parameterType="String">
+        delete from d_exam_paper_problem where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

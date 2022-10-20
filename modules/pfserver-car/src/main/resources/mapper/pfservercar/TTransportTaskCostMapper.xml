@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskCostMapper">
+
+    <resultMap type="TTransportTaskCost" id="TTransportTaskCostResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="paymentType"    column="payment_type"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="servprovName"    column="servprov_name"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="feeType"    column="fee_type"    />
+        <result property="totalAmount"    column="total_amount"    />
+        <result property="taxRate"    column="tax_rate"    />
+        <result property="amount"    column="amount"    />
+        <result property="settleNum"    column="settle_num"    />
+        <result property="documentNumber"    column="document_number"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskCostVo">
+        select id, task_id, shipment_xid, payment_type, customer_name, servprov_name, business_type, fee_type, total_amount, tax_rate, amount, settle_num, document_number, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_cost
+    </sql>
+
+    <select id="selectTTransportTaskCostList" parameterType="TTransportTaskCost" resultMap="TTransportTaskCostResult">
+        <include refid="selectTTransportTaskCostVo"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and shipment_xid = #{shipmentXid}</if>
+            <if test="paymentType != null  and paymentType != ''"> and payment_type = #{paymentType}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="servprovName != null  and servprovName != ''"> and servprov_name like concat('%', #{servprovName}, '%')</if>
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="feeType != null  and feeType != ''"> and fee_type = #{feeType}</if>
+            <if test="totalAmount != null "> and total_amount = #{totalAmount}</if>
+            <if test="taxRate != null "> and tax_rate = #{taxRate}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="settleNum != null  and settleNum != ''"> and settle_num = #{settleNum}</if>
+            <if test="documentNumber != null  and documentNumber != ''"> and document_number = #{documentNumber}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskCostById" parameterType="String" resultMap="TTransportTaskCostResult">
+        <include refid="selectTTransportTaskCostVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTTransportTaskCost" parameterType="TTransportTaskCost">
+        insert into t_transport_task_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="paymentType != null">payment_type,</if>
+            <if test="customerName != null">customer_name,</if>
+            <if test="servprovName != null">servprov_name,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="feeType != null">fee_type,</if>
+            <if test="totalAmount != null">total_amount,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="amount != null">amount,</if>
+            <if test="settleNum != null">settle_num,</if>
+            <if test="documentNumber != null">document_number,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="paymentType != null">#{paymentType},</if>
+            <if test="customerName != null">#{customerName},</if>
+            <if test="servprovName != null">#{servprovName},</if>
+            <if test="businessType != null">#{businessType},</if>
+            <if test="feeType != null">#{feeType},</if>
+            <if test="totalAmount != null">#{totalAmount},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="settleNum != null">#{settleNum},</if>
+            <if test="documentNumber != null">#{documentNumber},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskCost" parameterType="TTransportTaskCost">
+        update t_transport_task_cost
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="paymentType != null">payment_type = #{paymentType},</if>
+            <if test="customerName != null">customer_name = #{customerName},</if>
+            <if test="servprovName != null">servprov_name = #{servprovName},</if>
+            <if test="businessType != null">business_type = #{businessType},</if>
+            <if test="feeType != null">fee_type = #{feeType},</if>
+            <if test="totalAmount != null">total_amount = #{totalAmount},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="settleNum != null">settle_num = #{settleNum},</if>
+            <if test="documentNumber != null">document_number = #{documentNumber},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskCostById" parameterType="String">
+        delete from t_transport_task_cost where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskCostByIds" parameterType="String">
+        delete from t_transport_task_cost where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <insert id="insertOTMTransportTaskCost">
+        insert into t_transport_task_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">id,</if>
+            <if test="SHIPMENT_GID != null">task_id,</if>
+            <if test="shipment_xid != null">shipment_xid,</if>
+            <if test="PAYMENT_TYPE != null">payment_type,</if>
+            <if test="CUSTOMER_NAME != null">customer_name,</if>
+            <if test="SERVPROV_NAME != null">servprov_name,</if>
+            <if test="BUSINESS_TYPE != null">business_type,</if>
+            <if test="FEE_TYPE != null">fee_type,</if>
+            <if test="TOTAL_AMOUNT != null">total_amount,</if>
+            <if test="TAX_RATE != null">tax_rate,</if>
+            <if test="AMOUNT != null">amount,</if>
+            <if test="SETTLE_NUM != null">settle_num,</if>
+            <if test="DOCUMENT_NUMBER != null">document_number,</if>
+            delete_flag,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">#{TEMPLATE_ID},</if>
+            <if test="SHIPMENT_GID != null">#{SHIPMENT_GID},</if>
+            <if test="shipment_xid != null">#{shipment_xid},</if>
+            <if test="PAYMENT_TYPE != null">#{PAYMENT_TYPE},</if>
+            <if test="CUSTOMER_NAME != null">#{CUSTOMER_NAME},</if>
+            <if test="SERVPROV_NAME != null">#{SERVPROV_NAME},</if>
+            <if test="BUSINESS_TYPE != null">#{BUSINESS_TYPE},</if>
+            <if test="FEE_TYPE != null">#{FEE_TYPE},</if>
+            <if test="TOTAL_AMOUNT != null">#{TOTAL_AMOUNT},</if>
+            <if test="TAX_RATE != null">#{TAX_RATE},</if>
+            <if test="AMOUNT != null">#{AMOUNT},</if>
+            <if test="SETTLE_NUM != null">#{SETTLE_NUM},</if>
+            <if test="DOCUMENT_NUMBER != null">#{DOCUMENT_NUMBER},</if>
+            1,
+            now()
+        </trim>
+    </insert>
+
+</mapper>

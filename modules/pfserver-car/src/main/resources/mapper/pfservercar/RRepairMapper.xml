@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RRepairMapper">
+    
+    <resultMap type="RRepair" id="RRepairResult">
+        <result property="id"    column="id"    />
+        <result property="code"    column="code"    />
+        <result property="type"    column="type"    />
+        <result property="repairStatus"    column="repair_status"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="mainVehicleId"    column="main_vehicle_id"    />
+        <result property="mainLicensePlate"    column="main_license_plate"    />
+        <result property="mainVehicleModel"    column="main_vehicle_model"    />
+        <result property="mainVehicleModelName"    column="main_vehicle_model_name"    />
+        <result property="hangVehicleId"    column="hang_vehicle_id"    />
+        <result property="hangLicensePlate"    column="hang_license_plate"    />
+        <result property="hangVehicleModel"    column="hang_vehicle_model"    />
+        <result property="hangVehicleModelName"    column="hang_vehicle_model_name"    />
+        <result property="mileage"    column="mileage"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="accidentLocation"    column="accident_location"    />
+        <result property="totalMass"    column="total_mass"    />
+        <result property="roadCondition"    column="road_condition"    />
+        <result property="weatherCondition"    column="weather_condition"    />
+        <result property="repairType"    column="repair_type"    />
+        <result property="isOther"    column="is_other"    />
+        <result property="accidentId"    column="accident_id"    />
+        <result property="accidentTime"    column="accident_time"    />
+        <result property="accidentVideo"    column="accident_video"    />
+        <result property="garageId"    column="garage_id"    />
+        <result property="garageName"    column="garage_name"    />
+        <result property="completeTime"    column="complete_time"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="repairDuration"  column="repair_duration"/>
+        <result property="garageStatus"  column="garage_status"/>
+        <result property="garageReviewTime"  column="garage_review_time"/>
+        <result property="garageReviewUser"  column="garage_review_user"/>
+        <result property="garageReviewRemarks"  column="garage_review_remarks"/>
+        <result property="repairDetialPhoto" column="repair_detial_photo"/>
+    </resultMap>
+
+    <sql id="selectRRepairVo">
+        select id, code, type, repair_status, driver_id, driver_name, main_vehicle_id, main_license_plate, main_vehicle_model, main_vehicle_model_name, hang_vehicle_id, hang_license_plate, hang_vehicle_model, hang_vehicle_model_name, mileage, route_id, route_name, accident_location, total_mass, road_condition, weather_condition, repair_type, is_other, accident_id, accident_time, accident_video, garage_id, garage_name, complete_time, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time,repair_duration,garage_status,garage_review_time,garage_review_user,garage_review_remarks,repair_detial_photo from r_repair
+    </sql>
+
+    <sql id="selectRRepairVoDetail">
+        select repair.id, code, type, repair_status, driver_id, driver_name, main_vehicle_id, main_license_plate, main_vehicle_model
+        , main_vehicle_model_name, hang_vehicle_id, hang_license_plate, hang_vehicle_model, hang_vehicle_model_name, mileage
+        , route_id, route_name, accident_location, total_mass, road_condition, weather_condition, repair_type, is_other, accident_id
+        , accident_time, accident_video, garage_id, garage_name, complete_time, status, review_time, review_user, review_remarks, repair.delete_flag
+        , repair.create_by, repair.create_time, repair.update_by, repair.update_time,repair_duration,garage_status,garage_review_time,garage_review_user,garage_review_remarks
+        ,repair_detial_photo
+        ,garage.address as address, garage.tel as mobile
+        from r_repair as repair left join r_garage garage ON repair.garage_id = garage.id
+    </sql>
+
+    <select id="selectRRepairList" parameterType="RRepair" resultMap="RRepairResult">
+        <include refid="selectRRepairVo"/>
+        <where>  
+            <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="hangLicensePlate != null  and hangLicensePlate != ''"> and hang_license_plate like concat('%', #{hangLicensePlate}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY field(`status`,1,2,3,4), create_time desc
+    </select>
+    
+    <select id="selectRRepairById" parameterType="String" resultMap="RRepairResult">
+        <include refid="selectRRepairVoDetail"/>
+        where repair.id = #{id} and repair.delete_flag = '1'
+    </select>
+
+    <select id="selectRRepairDriverPass" parameterType="RRepair" resultMap="RRepairResult">
+        <include refid="selectRRepairVo"/>
+        <where>
+            <if test="garageId != null and garageId != ''">and garage_id = #{garageId}</if>
+            <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="garageStatus != null and garageStatus != ''"> and garage_status = #{garageStatus}</if>
+            and (status = '2'or status = '4') and delete_flag = '1' and (garage_status = '2' or garage_status = '3' or garage_status = '4' or garage_status = '1')
+        </where>
+        ORDER BY field(`garage_status`,1,2,3,4), create_time desc
+    </select>
+
+    <select id="selectRRepairStationReview" parameterType="RRepair" resultMap="RRepairResult">
+    <include refid="selectRRepairVo"/>
+        <where>
+            <if test="code != null  and code != ''"> and code like concat('%', #{code}, '%')</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="garageStatus != null "> and garage_status = #{garageStatus}</if>
+            and status = 2 and delete_flag = '1'
+<!--        update by 2021 15.26    and garage_status = '2' or garage_status = '3' or garage_status = '4' or garage_status = '1' -->
+        </where>
+        ORDER BY field(`garage_status`,2,3,4,1), create_time desc
+    </select>
+
+    <select id="selectRRepairBook" parameterType="RRepair" resultMap="RRepairResult">
+        SELECT
+        a.id,
+        a.code,
+        a.type,
+        a.repair_status,
+        a.driver_id,
+        a.driver_name,
+        a.main_vehicle_id,
+        a.main_license_plate,
+        a.main_vehicle_model,
+        a.main_vehicle_model_name,
+        a.hang_vehicle_id,
+        a.hang_license_plate,
+        a.hang_vehicle_model,
+        a.hang_vehicle_model_name,
+        a.mileage,
+        a.route_id,
+        a.route_name,
+        a.accident_location,
+        a.total_mass,
+        a.road_condition,
+        a.weather_condition,
+        a.repair_type,
+        a.is_other,
+        a.accident_id,
+        a.accident_time,
+        a.accident_video,
+        a.garage_id,
+        a.garage_name,
+        a.complete_time,
+        a.status,
+        a.review_time,
+        a.review_user,
+        a.review_remarks,
+        a.delete_flag,
+        a.create_by,
+        a.create_time,
+        a.update_by,
+        a.update_time,
+        a.repair_duration,
+        a.garage_status,
+        a.garage_review_time,
+        a.garage_review_user,
+        a.garage_review_remarks,
+        a.repair_detial_photo,
+        b.is_fixed as isFixed
+        FROM
+        r_repair a
+        LEFT JOIN r_garage b ON a.garage_id = b.id
+        <where>
+            <if test="garageId != null and garageId != ''">and a.garage_id = #{garageId}</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and a.main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="hangLicensePlate != null  and hangLicensePlate != ''"> and a.hang_license_plate like concat('%', #{hangLicensePlate}, '%')</if>
+            <if test="type != null and type != ''">and a.type = #{type}</if>
+            <if test="repairType != null and repairType != ''">and a.repair_type = #{repairType}</if>
+            <if test="startTime != null and finshTime != null"><!-- 开始时间检索 -->
+                and a.complete_time between #{startTime} and #{finshTime}
+            </if>
+            and a.delete_flag = '1' and (a.status = '2' or a.status = '4')
+        </where> order by a.complete_time desc
+    </select>
+
+    <select id="selectRRepairAppList" parameterType="RRepair" resultMap="RRepairResult">
+    <include refid="selectRRepairVo"/>
+        <where>
+            <if test="driverId != null and driverId != ''">and driver_id = #{driverId}</if>
+            <if test="repairType != null and repairType != ''">and repair_type like concat('%',#{repairType},'%') </if>
+            <if test="status != null and status != ''">and status = #{status}</if>
+            <if test="repairStatus != null and repairStatus != ''">and repair_status = #{repairStatus}</if>
+            and delete_flag = '1'
+        </where>
+        order by create_time DESC
+    </select>
+
+
+    <select id="queryRRepairImport" parameterType="RRepair" resultType="com.dlzx.pfservercar.domain.RRepairOutExcel">
+SELECT REPAIR
+	.create_time as createTime,
+	item.NAME,
+	item.unit,
+	item.number,
+	item.unit_price as unitPrice,
+	item.duration,
+	item.amount,
+	item.vehicle_model_name as vehicleModelName,
+	repair.id as repairId,
+IF
+	( REPAIR.type = 1, REPAIR.main_license_plate, REPAIR.hang_license_plate ) as licensePlate
+FROM
+	r_repair_detailed AS item
+	LEFT JOIN r_repair AS REPAIR ON REPAIR.id = item.repair_id
+
+        <where>
+            and REPAIR.delete_flag = 1 and item.delete_flag = 1
+            <if test="garageId != null and garageId != ''">and REPAIR.garage_id = #{garageId}</if>
+            <if test="mainLicensePlate != null  and mainLicensePlate != ''"> and REPAIR.main_license_plate like concat('%', #{mainLicensePlate}, '%')</if>
+            <if test="hangLicensePlate != null  and hangLicensePlate != ''"> and REPAIR.hang_license_plate like concat('%', #{hangLicensePlate}, '%')</if>
+            <if test="type != null and type != ''">and REPAIR.type = #{type}</if>
+            <if test="repairType != null and repairType != ''">and REPAIR.repair_type = #{repairType}</if>
+            <if test="startTime != null and finshTime != null"><!-- 开始时间检索 -->
+                and REPAIR.complete_time between #{startTime} and #{finshTime}
+            </if>
+            and (REPAIR.status = '2' or REPAIR.status = '4')
+        </where>
+        ORDER BY repair.create_time desc ,repair.id asc
+    </select>
+
+    <insert id="insertRRepair" parameterType="RRepair">
+        insert into r_repair
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="code != null">code,</if>
+            <if test="type != null">type,</if>
+            <if test="repairStatus != null">repair_status,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="mainVehicleId != null">main_vehicle_id,</if>
+            <if test="mainLicensePlate != null">main_license_plate,</if>
+            <if test="mainVehicleModel != null">main_vehicle_model,</if>
+            <if test="mainVehicleModelName != null">main_vehicle_model_name,</if>
+            <if test="hangVehicleId != null">hang_vehicle_id,</if>
+            <if test="hangLicensePlate != null">hang_license_plate,</if>
+            <if test="hangVehicleModel != null">hang_vehicle_model,</if>
+            <if test="hangVehicleModelName != null">hang_vehicle_model_name,</if>
+            <if test="mileage != null">mileage,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="accidentLocation != null">accident_location,</if>
+            <if test="totalMass != null">total_mass,</if>
+            <if test="roadCondition != null">road_condition,</if>
+            <if test="weatherCondition != null">weather_condition,</if>
+            <if test="repairType != null">repair_type,</if>
+            <if test="isOther != null">is_other,</if>
+            <if test="accidentId != null">accident_id,</if>
+            <if test="accidentTime != null">accident_time,</if>
+            <if test="accidentVideo != null">accident_video,</if>
+            <if test="garageId != null">garage_id,</if>
+            <if test="garageName != null">garage_name,</if>
+            <if test="completeTime != null">complete_time,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="repairDuration != null">repair_duration,</if>
+            <if test="garageStatus != null">garage_status,</if>
+            <if test="garageReviewTime != null">garage_review_time,</if>
+            <if test="garageReviewUser != null">garage_review_user,</if>
+            <if test="garageReviewRemarks != null">garage_review_remarks,</if>
+            <if test="repairDetialPhoto != null">repair_detial_photo,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="code != null">#{code},</if>
+            <if test="type != null">#{type},</if>
+            <if test="repairStatus != null">#{repairStatus},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="mainVehicleId != null">#{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">#{mainLicensePlate},</if>
+            <if test="mainVehicleModel != null">#{mainVehicleModel},</if>
+            <if test="mainVehicleModelName != null">#{mainVehicleModelName},</if>
+            <if test="hangVehicleId != null">#{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">#{hangLicensePlate},</if>
+            <if test="hangVehicleModel != null">#{hangVehicleModel},</if>
+            <if test="hangVehicleModelName != null">#{hangVehicleModelName},</if>
+            <if test="mileage != null">#{mileage},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="accidentLocation != null">#{accidentLocation},</if>
+            <if test="totalMass != null">#{totalMass},</if>
+            <if test="roadCondition != null">#{roadCondition},</if>
+            <if test="weatherCondition != null">#{weatherCondition},</if>
+            <if test="repairType != null">#{repairType},</if>
+            <if test="isOther != null">#{isOther},</if>
+            <if test="accidentId != null">#{accidentId},</if>
+            <if test="accidentTime != null">#{accidentTime},</if>
+            <if test="accidentVideo != null">#{accidentVideo},</if>
+            <if test="garageId != null">#{garageId},</if>
+            <if test="garageName != null">#{garageName},</if>
+            <if test="completeTime != null">#{completeTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="repairDuration != null">#{repairDuration},</if>
+            <if test="garageStatus != null">#{garageStatus},</if>
+            <if test="garageReviewTime != null">#{garageReviewTime},</if>
+            <if test="garageReviewUser != null">#{garageReviewUser},</if>
+            <if test="garageReviewRemarks != null">#{garageReviewRemarks},</if>
+            <if test="repairDetialPhoto != null">#{repairDetialPhoto},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRRepair" parameterType="RRepair">
+        update r_repair
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="repairStatus != null">repair_status = #{repairStatus},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="mainVehicleId != null">main_vehicle_id = #{mainVehicleId},</if>
+            <if test="mainLicensePlate != null">main_license_plate = #{mainLicensePlate},</if>
+            <if test="mainVehicleModel != null">main_vehicle_model = #{mainVehicleModel},</if>
+            <if test="mainVehicleModelName != null">main_vehicle_model_name = #{mainVehicleModelName},</if>
+            <if test="hangVehicleId != null">hang_vehicle_id = #{hangVehicleId},</if>
+            <if test="hangLicensePlate != null">hang_license_plate = #{hangLicensePlate},</if>
+            <if test="hangVehicleModel != null">hang_vehicle_model = #{hangVehicleModel},</if>
+            <if test="hangVehicleModelName != null">hang_vehicle_model_name = #{hangVehicleModelName},</if>
+            <if test="mileage != null">mileage = #{mileage},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="accidentLocation != null">accident_location = #{accidentLocation},</if>
+            <if test="totalMass != null">total_mass = #{totalMass},</if>
+            <if test="roadCondition != null">road_condition = #{roadCondition},</if>
+            <if test="weatherCondition != null">weather_condition = #{weatherCondition},</if>
+            <if test="repairType != null">repair_type = #{repairType},</if>
+            <if test="isOther != null">is_other = #{isOther},</if>
+            <if test="accidentId != null">accident_id = #{accidentId},</if>
+            <if test="accidentTime != null">accident_time = #{accidentTime},</if>
+            <if test="accidentVideo != null">accident_video = #{accidentVideo},</if>
+            <if test="garageId != null">garage_id = #{garageId},</if>
+            <if test="garageName != null">garage_name = #{garageName},</if>
+            <if test="completeTime != null">complete_time = #{completeTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="repairDuration != null">repair_duration = #{repairDuration},</if>
+            <if test="garageStatus != null">garage_status = #{garageStatus},</if>
+            <if test="garageReviewTime != null">garage_review_time = #{garageReviewTime},</if>
+            <if test="garageReviewUser != null">garage_review_user = #{garageReviewUser},</if>
+            <if test="garageReviewRemarks != null">garage_review_remarks = #{garageReviewRemarks},</if>
+            <if test="repairDetialPhoto != null">repair_detial_photo = #{repairDetialPhoto},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRRepairById" parameterType="String">
+        delete from r_repair where id = #{id}
+    </delete>
+
+    <delete id="deleteRRepairByIds" parameterType="String">
+        delete from r_repair where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

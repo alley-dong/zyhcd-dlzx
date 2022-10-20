@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CVehicleInspectRecordMapper">
+    
+    <resultMap type="CVehicleInspectRecord" id="CVehicleInspectRecordResult">
+        <result property="id"    column="id"    />
+        <result property="truckId"    column="truck_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="inspectDate"    column="inspect_date"    />
+        <result property="registerDate"    column="register_date"    />
+        <result property="vehiceInspectCost"    column="vehice_inspect_cost"    />
+        <result property="operateInspectCost"    column="operate_inspect_cost"    />
+        <result property="reviewCost"    column="review_cost"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="nextInspectDate"  column="next_inspect_date" />
+        <result property="totalCost" column="total_cost" />
+        <result property="files" column="files" />
+    </resultMap>
+
+    <sql id="selectCVehicleInspectRecordVo">
+        select id, truck_id, license_plate, inspect_date, register_date, vehice_inspect_cost, operate_inspect_cost, review_cost, remarks, delete_flag, create_by, create_time, update_by, update_time,next_inspect_date,total_cost,files from c_vehicle_inspect_record
+    </sql>
+
+    <select id="selectCVehicleInspectRecordList" parameterType="CVehicleInspectRecord" resultMap="CVehicleInspectRecordResult">
+        <include refid="selectCVehicleInspectRecordVo"/>
+        <where>  
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate like concat('%',#{licensePlate},'%')</if>
+            <if test="startTime != null">
+                and inspect_date <![CDATA[ >= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d')
+            </if>
+            <if test="finshTime != null">
+                and inspect_date <![CDATA[ <= ]]> DATE_FORMAT(#{finshTime},'%Y-%m-%d')
+            </if>
+            and delete_flag = '1'
+        </where>
+        order by next_inspect_date DESC
+    </select>
+
+    <select id="selectCVehicleInspectRecordInfoList" parameterType="CVehicleInspectRecord" resultMap="CVehicleInspectRecordResult" >
+        <include refid="selectCVehicleInspectRecordVo"/>
+        <where>
+            <if test="startTime != null "> and inspect_date 	&gt;= #{startTime}</if>
+            <if test="finshTime != null "> and inspect_date 	&lt;= #{finshTime}</if>
+        and truck_id = #{truckId} and delete_flag = '1'
+        </where>
+        ORDER BY next_inspect_date DESC
+    </select>
+    
+    <select id="selectCVehicleInspectRecordById" parameterType="String" resultMap="CVehicleInspectRecordResult">
+        <include refid="selectCVehicleInspectRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCVehicleInspectRecord" parameterType="CVehicleInspectRecord">
+        insert into c_vehicle_inspect_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="truckId != null">truck_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="inspectDate != null">inspect_date,</if>
+            <if test="registerDate != null">register_date,</if>
+            <if test="vehiceInspectCost != null">vehice_inspect_cost,</if>
+            <if test="operateInspectCost != null">operate_inspect_cost,</if>
+            <if test="reviewCost != null">review_cost,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="nextInspectDate != null">next_inspect_date,</if>
+            <if test="totalCost != null">total_cost,</if>
+            <if test="files != null">files,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="truckId != null">#{truckId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="inspectDate != null">#{inspectDate},</if>
+            <if test="registerDate != null">#{registerDate},</if>
+            <if test="vehiceInspectCost != null">#{vehiceInspectCost},</if>
+            <if test="operateInspectCost != null">#{operateInspectCost},</if>
+            <if test="reviewCost != null">#{reviewCost},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="nextInspectDate != null">#{nextInspectDate},</if>
+            <if test="totalCost != null">#{totalCost},</if>
+            <if test="files != null">#{files},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCVehicleInspectRecord" parameterType="CVehicleInspectRecord">
+        update c_vehicle_inspect_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="truckId != null">truck_id = #{truckId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="inspectDate != null">inspect_date = #{inspectDate},</if>
+            <if test="registerDate != null">register_date = #{registerDate},</if>
+            <if test="vehiceInspectCost != null">vehice_inspect_cost = #{vehiceInspectCost},</if>
+            <if test="operateInspectCost != null">operate_inspect_cost = #{operateInspectCost},</if>
+            <if test="reviewCost != null">review_cost = #{reviewCost},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="nextInspectDate != null">next_inspect_date = #{nextInspectDate},</if>
+            <if test="totalCost != null">total_cost = #{totalCost},</if>
+            <if test="files != null">files = #{files},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCVehicleInspectRecordById" parameterType="String">
+        delete from c_vehicle_inspect_record where id = #{id}
+    </delete>
+
+    <delete id="deleteCVehicleInspectRecordByIds" parameterType="String">
+        delete from c_vehicle_inspect_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+<!--    ERP费用-->
+    <select id="queryERPInspectRecordList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel" resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+
+        select id, truck_id, license_plate, inspect_date as inspectDate, register_date
+        , vehice_inspect_cost as vehiceInspectCost, operate_inspect_cost as operateInspectCost, review_cost as reviewCost, remarks
+        , delete_flag, create_by, create_time, update_by, update_time
+        ,next_inspect_date,total_cost as totalCost
+        from c_vehicle_inspect_record
+        <where>
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(inspect_date, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(inspect_date, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            and delete_flag = '1'
+        </where>
+        order by inspect_date DESC
+
+    </select>
+
+</mapper>

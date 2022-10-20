@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.job.mapper.RVehicleConsumeMonthMapper">
+    
+    <resultMap type="RVehicleConsumeMonth" id="RVehicleConsumeMonthResult">
+        <result property="id"    column="id"    />
+        <result property="month"    column="month"    />
+        <result property="number"    column="number"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="monthEndMileage"    column="month_end_mileage"    />
+        <result property="lastMonthEndMileage"    column="last_month_end_mileage"    />
+        <result property="monthFuelVolume"    column="month_fuel_volume"    />
+        <result property="monthUreaVolume"    column="month_urea_volume"    />
+        <result property="kmFuel"    column="km_fuel"    />
+        <result property="kmUrea"    column="km_urea"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRVehicleConsumeMonthVo">
+        select id, month, license_plate, vehicle_id, month_end_mileage, last_month_end_mileage, month_fuel_volume, month_urea_volume, km_fuel, km_urea, delete_flag, create_by, create_time, update_by, update_time from r_vehicle_consume_month
+    </sql>
+
+    <insert id="insertRVehicleConsumeMonthList">
+        insert into r_vehicle_consume_month( id, month, license_plate, vehicle_id, month_fuel_volume, month_urea_volume, delete_flag,create_time,create_by,last_month_end_mileage) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.month},#{item.licensePlate},#{item.vehicleId},#{item.monthFuelVolume},#{item.monthUreaVolume},#{item.deleteFlag},#{item.createTime},#{item.createBy},#{item.lastMonthEndMileage})
+        </foreach>
+    </insert>
+
+    <select id="selectRVehicleConsumeMonthList" parameterType="RVehicleConsumeMonth" resultMap="RVehicleConsumeMonthResult">
+        <include refid="selectRVehicleConsumeMonthVo"/>
+        <where>
+            <if test="month != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(month, '%Y-%m') = DATE_FORMAT(#{month}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+</mapper>

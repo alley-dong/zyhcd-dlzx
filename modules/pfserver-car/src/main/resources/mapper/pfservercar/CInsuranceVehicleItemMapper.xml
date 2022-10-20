@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CInsuranceVehicleItemMapper">
+    
+    <resultMap type="CInsuranceVehicleItem" id="CInsuranceVehicleItemResult">
+        <result property="id"    column="id"    />
+        <result property="insuranceId"    column="insurance_id"    />
+        <result property="insuranceTypeId"    column="insurance_type_id"    />
+        <result property="insuranceTypeName"    column="insurance_type_name"    />
+        <result property="insuranceItemId"    column="insurance_item_id"    />
+        <result property="insuranceItemName"    column="insurance_item_name"    />
+        <result property="insuranceQuota"    column="insurance_quota"    />
+        <result property="insuranceCost"    column="insurance_cost"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCInsuranceVehicleItemVo">
+        select id, insurance_id, insurance_type_id, insurance_type_name, insurance_item_id, insurance_item_name, insurance_quota, insurance_cost, delete_flag, create_by, create_time, update_by, update_time from c_insurance_vehicle_item
+    </sql>
+
+    <select id="selectCInsuranceItemByInsuranceId" parameterType="String" resultMap="CInsuranceVehicleItemResult">
+        <include refid="selectCInsuranceVehicleItemVo"/>
+        where insurance_id = #{id} AND delete_flag = '1'
+    </select>
+
+    <select id="selectCInsuranceVehicleItemList" parameterType="CInsuranceVehicleItem" resultMap="CInsuranceVehicleItemResult">
+        <include refid="selectCInsuranceVehicleItemVo"/>
+        <where>  
+            <if test="insuranceId != null  and insuranceId != ''"> and insurance_id = #{insuranceId}</if>
+            <if test="insuranceTypeId != null  and insuranceTypeId != ''"> and insurance_type_id = #{insuranceTypeId}</if>
+            <if test="insuranceTypeName != null  and insuranceTypeName != ''"> and insurance_type_name like concat('%', #{insuranceTypeName}, '%')</if>
+            <if test="insuranceItemId != null  and insuranceItemId != ''"> and insurance_item_id = #{insuranceItemId}</if>
+            <if test="insuranceItemName != null  and insuranceItemName != ''"> and insurance_item_name like concat('%', #{insuranceItemName}, '%')</if>
+            <if test="insuranceQuota != null "> and insurance_quota = #{insuranceQuota}</if>
+            <if test="insuranceCost != null "> and insurance_cost = #{insuranceCost}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+    
+    <select id="selectCInsuranceVehicleItemById" parameterType="String" resultMap="CInsuranceVehicleItemResult">
+        <include refid="selectCInsuranceVehicleItemVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCInsuranceVehicleItem" parameterType="CInsuranceVehicleItem">
+        insert into c_insurance_vehicle_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="insuranceId != null">insurance_id,</if>
+            <if test="insuranceTypeId != null">insurance_type_id,</if>
+            <if test="insuranceTypeName != null">insurance_type_name,</if>
+            <if test="insuranceItemId != null">insurance_item_id,</if>
+            <if test="insuranceItemName != null">insurance_item_name,</if>
+            <if test="insuranceQuota != null">insurance_quota,</if>
+            <if test="insuranceCost != null">insurance_cost,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="insuranceId != null">#{insuranceId},</if>
+            <if test="insuranceTypeId != null">#{insuranceTypeId},</if>
+            <if test="insuranceTypeName != null">#{insuranceTypeName},</if>
+            <if test="insuranceItemId != null">#{insuranceItemId},</if>
+            <if test="insuranceItemName != null">#{insuranceItemName},</if>
+            <if test="insuranceQuota != null">#{insuranceQuota},</if>
+            <if test="insuranceCost != null">#{insuranceCost},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertBatch" parameterType="CInsuranceVehicleItem">
+         insert into c_insurance_vehicle_item (id,insurance_id,insurance_type_id,insurance_type_name,insurance_item_id,insurance_item_name,
+         insurance_quota,insurance_cost,delete_flag,create_by,create_time,update_by,update_time) VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},
+            #{item.insuranceId},
+            #{item.insuranceTypeId},
+            #{item.insuranceTypeName},
+            #{item.insuranceItemId},
+            #{item.insuranceItemName},
+            #{item.insuranceQuota},
+            #{item.insuranceCost},
+            #{item.deleteFlag},
+            #{item.createBy},
+            #{item.createTime},
+            #{item.updateBy},
+            #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <update id="updateCInsuranceVehicleItem" parameterType="CInsuranceVehicleItem">
+        update c_insurance_vehicle_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="insuranceId != null">insurance_id = #{insuranceId},</if>
+            <if test="insuranceTypeId != null">insurance_type_id = #{insuranceTypeId},</if>
+            <if test="insuranceTypeName != null">insurance_type_name = #{insuranceTypeName},</if>
+            <if test="insuranceItemId != null">insurance_item_id = #{insuranceItemId},</if>
+            <if test="insuranceItemName != null">insurance_item_name = #{insuranceItemName},</if>
+            <if test="insuranceQuota != null">insurance_quota = #{insuranceQuota},</if>
+            <if test="insuranceCost != null">insurance_cost = #{insuranceCost},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCInsuranceVehicleItemById" parameterType="String">
+        delete from c_insurance_vehicle_item where id = #{id}
+    </delete>
+
+    <delete id="deleteCInsuranceVehicleItemByIds" parameterType="String">
+        delete from c_insurance_vehicle_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

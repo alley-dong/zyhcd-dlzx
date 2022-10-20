@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.CInsuranceClaimsMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.CInsuranceClaims" id="CInsuranceClaimsResult">
+        <result property="id"    column="id"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="vehicleName"    column="vehicle_name"    />
+        <result property="accidentId"    column="accident_id"    />
+        <result property="accidentTime"    column="accident_time"    />
+        <result property="accidentLocation"    column="accident_location"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="payer"    column="payer"    />
+        <result property="payAmount"    column="pay_amount"    />
+        <result property="payTime"    column="pay_time"    />
+        <result property="payEndTime"    column="pay_end_time"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectCInsuranceClaimsVo">
+        select id, vehicle_id, vehicle_name, accident_id, accident_time, accident_location, driver_id, driver_name, payer, pay_amount, pay_time,pay_end_time, delete_flag, create_by, create_time, update_by, update_time from c_insurance_claims
+    </sql>
+
+    <select id="selectCInsuranceClaimsList" parameterType="com.dlzx.pfservercar.domain.CInsuranceClaims" resultMap="CInsuranceClaimsResult">
+        <include refid="selectCInsuranceClaimsVo"/>
+        <where>  
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="vehicleName != null  and vehicleName != ''"> and vehicle_name like concat('%', #{vehicleName}, '%')</if>
+            <if test="accidentId != null  and accidentId != ''"> and accident_id = #{accidentId}</if>
+            <if test="accidentTime != null "> and accident_time = #{accidentTime}</if>
+            <if test="accidentLocation != null  and accidentLocation != ''"> and accident_location = #{accidentLocation}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="payer != null  and payer != ''"> and payer like concat('%', #{payer}, '%')</if>
+            <if test="payAmount != null "> and pay_amount = #{payAmount}</if>
+            <if test="payTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(pay_time, '%Y-%m-%d') >= DATE_FORMAT(#{payTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="payEndTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(pay_end_time, '%Y-%m-%d') <= DATE_FORMAT(#{payEndTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY accident_time DESC
+    </select>
+    
+    <select id="selectCInsuranceClaimsById" parameterType="String" resultMap="CInsuranceClaimsResult">
+        <include refid="selectCInsuranceClaimsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertCInsuranceClaims" parameterType="com.dlzx.pfservercar.domain.CInsuranceClaims">
+        insert into c_insurance_claims
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="vehicleName != null">vehicle_name,</if>
+            <if test="accidentId != null">accident_id,</if>
+            <if test="accidentTime != null">accident_time,</if>
+            <if test="accidentLocation != null">accident_location,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="payer != null">payer,</if>
+            <if test="payAmount != null">pay_amount,</if>
+            <if test="payTime != null">pay_time,</if>
+            <if test="payEndTime != null">pay_end_time,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="vehicleName != null">#{vehicleName},</if>
+            <if test="accidentId != null">#{accidentId},</if>
+            <if test="accidentTime != null">#{accidentTime},</if>
+            <if test="accidentLocation != null">#{accidentLocation},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="payer != null">#{payer},</if>
+            <if test="payAmount != null">#{payAmount},</if>
+            <if test="payEndTime != null">#{payEndTime},</if>
+            <if test="payTime != null">#{payTime},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCInsuranceClaims" parameterType="com.dlzx.pfservercar.domain.CInsuranceClaims">
+        update c_insurance_claims
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="vehicleName != null">vehicle_name = #{vehicleName},</if>
+            <if test="accidentId != null">accident_id = #{accidentId},</if>
+            <if test="accidentTime != null">accident_time = #{accidentTime},</if>
+            <if test="accidentLocation != null">accident_location = #{accidentLocation},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="payer != null">payer = #{payer},</if>
+            <if test="payAmount != null">pay_amount = #{payAmount},</if>
+            <if test="payEndTime != null">pay_end_time = #{payEndTime},</if>
+            <if test="payTime != null">pay_time = #{payTime},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCInsuranceClaimsById" parameterType="String">
+        delete from c_insurance_claims where id = #{id}
+    </delete>
+
+    <delete id="deleteCInsuranceClaimsByIds" parameterType="String">
+        delete from c_insurance_claims where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

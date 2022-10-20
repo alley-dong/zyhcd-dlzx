@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DSubsidyMapper">
+
+    <resultMap type="DSubsidy" id="DSubsidyResult">
+        <result property="id" column="id"/>
+        <result property="driverId" column="driver_id"/>
+        <result property="type" column="type"/>
+        <result property="subsidyStartDate" column="subsidy_start_date"/>
+        <result property="subsidyEndDate" column="subsidy_end_date"/>
+        <result property="remarks" column="remarks"/>
+        <result property="status" column="status"/>
+        <result property="reviewTime" column="review_time"/>
+        <result property="reviewUser" column="review_user"/>
+        <result property="reviewRemarks" column="review_remarks"/>
+        <result property="deleteFlag" column="delete_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="days" column="days"/>
+        <result property="daysStr" column="days_str"/>
+    </resultMap>
+
+    <sql id="selectDSubsidyVo">
+        select id, driver_id, type, subsidy_start_date, subsidy_end_date, remarks, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time from d_subsidy
+    </sql>
+
+    <select id="selectDSubsidyList" parameterType="DSubsidy" resultMap="DSubsidyResult">
+        <include refid="selectDSubsidyVo"/>
+        <where>
+            <if test="driverId != null  and driverId != ''">and driver_id = #{driverId}</if>
+            <if test="type != null ">and type = #{type}</if>
+            <if test="subsidyStartDate != null ">and subsidy_start_date = #{subsidyStartDate}</if>
+            <if test="subsidyEndDate != null ">and subsidy_end_date = #{subsidyEndDate}</if>
+            <if test="remarks != null  and remarks != ''">and remarks = #{remarks}</if>
+            <if test="status != null ">and status = #{status}</if>
+            <if test="reviewTime != null ">and review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''">and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''">and review_remarks = #{reviewRemarks}</if>
+            <if test="createBy != null  and createBy != ''">and create_by like concat('%', #{createBy}, '%')</if>
+            and delete_flag = '1' and status != '4'
+        </where>
+        ORDER BY field(`status`,1,2,3,4), create_time desc
+    </select>
+
+    <select id="selectDSubsidyListTong" parameterType="DSubsidy" resultMap="DSubsidyResult">
+        SELECT  COUNT(*) AS days, group_concat(distinct days.subsidy_date) AS days_str, s.*
+        FROM d_subsidy_day AS days
+        LEFT JOIN d_subsidy AS s ON s.id = days.subsidy_id
+        <where>
+            <if test="eTime != null ">
+                AND days.subsidy_date &lt;= date_format(#{eTime},'%y-%m-%d')
+            </if>
+            <if test="bTime != null ">
+                AND days.subsidy_date >= date_format(#{bTime},'%y-%m-%d')
+            </if>
+            <if test="type != null ">and s.type = #{type}</if>
+            and s.status = '2'
+            <if test="driverId != null  and driverId != ''">and s.driver_id = #{driverId}</if>
+            <if test="createBy != null  and createBy != ''">and s.create_by like concat('%', #{createBy}, '%')</if>
+        </where>
+        GROUP BY driver_id, type
+    </select>
+
+    <select id="selectDSubsidyListTongById" parameterType="String" resultMap="DSubsidyResult">
+        SELECT  COUNT(*) AS days, group_concat( days.subsidy_date ORDER BY days.subsidy_date desc) AS days_str, s.*
+        FROM d_subsidy_day AS days
+        LEFT JOIN d_subsidy AS s ON s.id = days.subsidy_id
+        <where>
+            s.id = #{id}
+        </where>
+        GROUP BY driver_id, type
+    </select>
+
+    <select id="selectDSubsidyById" parameterType="String" resultMap="DSubsidyResult">
+        SELECT group_concat(days.subsidy_date ORDER BY days.subsidy_date asc) AS days_str, s.*
+        FROM d_subsidy_day AS days
+        LEFT JOIN d_subsidy AS s ON s.id = days.subsidy_id
+        where s.id = #{id}
+    </select>
+
+    <select id="queryDriverSubsidyDate" parameterType="DSubsidy" resultMap="DSubsidyResult">
+        SELECT
+        id, driver_id, type, subsidy_start_date, subsidy_end_date
+        , remarks, status, review_time, review_user, review_remarks
+        , delete_flag, create_by, create_time, update_by, update_time
+        FROM
+        d_subsidy
+        WHERE
+        delete_flag = 1
+        AND STATUS = 2
+        AND driver_id = #{driverId} and type = #{type}
+        order by create_time desc
+    </select>
+
+    <insert id="insertDSubsidy" parameterType="DSubsidy">
+        insert into d_subsidy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="type != null">type,</if>
+            <if test="subsidyStartDate != null">subsidy_start_date,</if>
+            <if test="subsidyEndDate != null">subsidy_end_date,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="type != null">#{type},</if>
+            <if test="subsidyStartDate != null">#{subsidyStartDate},</if>
+            <if test="subsidyEndDate != null">#{subsidyEndDate},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDSubsidy" parameterType="DSubsidy">
+        update d_subsidy
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="subsidyStartDate != null">subsidy_start_date = #{subsidyStartDate},</if>
+            <if test="subsidyEndDate != null">subsidy_end_date = #{subsidyEndDate},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDSubsidyById" parameterType="String">
+        delete from d_subsidy where id = #{id}
+    </delete>
+
+    <delete id="deleteDSubsidyByIds" parameterType="String">
+        delete from d_subsidy where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateDSubsidyStatusById" parameterType="String">
+        update d_subsidy set status = '4' where id = #{id}
+    </update>
+
+</mapper>

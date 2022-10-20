@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskExceptionMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskExceptionVm" id="TTransportTaskExceptionResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="type"    column="type"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="kilometre"    column="kilometre"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskExceptionVo">
+        select id, task_id, shipment_xid, type, remarks, kilometre, driver_id, driver_name,route_id, route_name, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_exception
+    </sql>
+
+    <sql id="selectTTransportTaskExceptionDetail">
+        select id, task_id, shipment_xid, type, taskException.remarks, kilometre, driver_id, driver_name,route_id, route_name, taskException.status, review_time, review_user, review_remarks, delete_flag
+        , taskException.create_by, taskException.create_time, taskException.update_by, taskException.update_time
+        ,sysStatus.dict_label as statusEnum
+        ,sysType.dict_label as typeEnum
+        from t_transport_task_exception as taskException
+        LEFT JOIN sys_dict_data sysStatus on taskException.status = sysStatus.dict_value and sysStatus.dict_type = 't_transport_task_exception_status'
+        LEFT JOIN sys_dict_data sysType on taskException.type = sysType.dict_value and sysType.dict_type = 't_transport_task_exception_type'
+    </sql>
+
+    <select id="selectTTransportTaskExceptionList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskExceptionModel" resultMap="TTransportTaskExceptionResult">
+        <include refid="selectTTransportTaskExceptionDetail"/>
+        <where>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and shipment_xid like concat('%', #{shipmentXid}, '%')</if>
+            <if test="type != null "> and taskException.type = #{type}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name = #{routeName}</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name = #{driverName}</if>
+            <if test="status != null "> and taskException.status = #{status}</if>
+            <if test="createTimeModel != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(taskException.create_time, '%Y-%m') = DATE_FORMAT(#{createTimeModel}, '%Y-%m')
+			    ]]>
+            </if>
+
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="kilometre != null "> and kilometre = #{kilometre}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="reviewTime != null "> and review_time = #{reviewTime}</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            and delete_flag = 1
+        </where>
+        order by taskException.create_time desc
+    </select>
+    
+    <select id="selectTTransportTaskExceptionById" parameterType="String" resultMap="TTransportTaskExceptionResult">
+        <include refid="selectTTransportTaskExceptionDetail"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+        
+    <insert id="insertTTransportTaskException" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskExceptionModel">
+        insert into t_transport_task_exception
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="type != null">type,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="kilometre != null">kilometre,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="type != null">#{type},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="kilometre != null">#{kilometre},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskException" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskExceptionModel">
+        update t_transport_task_exception
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="kilometre != null">kilometre = #{kilometre},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+
+<!--    任务异常审核-->
+    <update id="checkTaskException" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskExceptionModel">
+        update t_transport_task_exception
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskExceptionById" parameterType="String">
+        delete from t_transport_task_exception where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskExceptionByIds" parameterType="String">
+        delete from t_transport_task_exception where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.PContractEvaluateMapper">
+    
+    <resultMap type="com.dlzx.pfserverperson.domain.PContractEvaluate" id="PContractEvaluateResult">
+        <result property="id"    column="id"    />
+        <result property="evaluateMonth"    column="evaluate_month"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="carrierId"    column="carrier_id"    />
+        <result property="carrierName"    column="carrier_name"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="totalScore"    column="total_score"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPContractEvaluateVo">
+        select id, evaluate_month, type_id, type_name, carrier_id, carrier_name, remarks, total_score, delete_flag, create_by, create_time, update_by, update_time from p_contract_evaluate
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+    <select id="selectPContractEvaluateList" parameterType="com.dlzx.pfserverperson.domain.PContractEvaluate" resultMap="PContractEvaluateResult">
+        <include refid="selectPContractEvaluateVo"/>
+        <where>  
+            <if test="evaluateMonth != null ">
+                <![CDATA[
+				and	DATE_FORMAT(evaluate_month, '%Y-%m') = DATE_FORMAT(#{evaluateMonth}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="typeId != null  and typeId != ''"> and type_id = #{typeId}</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="carrierId != null  and carrierId != ''"> and carrier_id = #{carrierId}</if>
+            <if test="carrierName != null  and carrierName != ''"> and carrier_name like concat('%', #{carrierName}, '%')</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="totalScore != null "> and total_score = #{totalScore}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by evaluate_month desc
+    </select>
+    
+    <select id="selectPContractEvaluateById" parameterType="String" resultMap="PContractEvaluateResult">
+        <include refid="selectPContractEvaluateVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPContractEvaluate" parameterType="com.dlzx.pfserverperson.domain.PContractEvaluate">
+        insert into p_contract_evaluate
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="evaluateMonth != null">evaluate_month,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="carrierId != null">carrier_id,</if>
+            <if test="carrierName != null">carrier_name,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="totalScore != null">total_score,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="evaluateMonth != null">#{evaluateMonth},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="carrierId != null">#{carrierId},</if>
+            <if test="carrierName != null">#{carrierName},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="totalScore != null">#{totalScore},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePContractEvaluate" parameterType="com.dlzx.pfserverperson.domain.PContractEvaluate">
+        update p_contract_evaluate
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="evaluateMonth != null">evaluate_month = #{evaluateMonth},</if>
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="carrierId != null">carrier_id = #{carrierId},</if>
+            <if test="carrierName != null">carrier_name = #{carrierName},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="totalScore != null">total_score = #{totalScore},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePContractEvaluateById" parameterType="String">
+        delete from p_contract_evaluate where id = #{id}
+    </delete>
+
+    <delete id="deletePContractEvaluateByIds" parameterType="String">
+        update p_contract_evaluate set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

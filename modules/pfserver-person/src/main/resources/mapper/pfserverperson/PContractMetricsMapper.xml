@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.PContractMetricsMapper">
+    
+    <resultMap type="com.dlzx.pfserverperson.domain.PContractMetrics" id="PContractMetricsResult">
+        <result property="id"    column="id"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="type"    column="type"    />
+        <result property="dimension"    column="dimension"    />
+        <result property="content"    column="content"    />
+        <result property="method"    column="method"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectPContractMetricsVo">
+        select id, type_id, type_name, type, dimension, content, method, delete_flag, create_by, create_time, update_by, update_time from p_contract_metrics
+    </sql>
+
+    <sql id="deleteFlag">
+       and delete_flag = 1
+    </sql>
+
+    <select id="selectPContractMetricsList" parameterType="com.dlzx.pfserverperson.domain.PContractMetrics" resultMap="PContractMetricsResult">
+        <include refid="selectPContractMetricsVo"/>
+        <where>  
+            <if test="typeId != null  and typeId != ''"> and type_id = #{typeId}</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="dimension != null  and dimension != ''"> and dimension = #{dimension}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="method != null  and method != ''"> and method = #{method}</if>
+            <include refid="deleteFlag"/>
+        </where>
+        order by create_time asc
+    </select>
+    
+    <select id="selectPContractMetricsById" parameterType="String" resultMap="PContractMetricsResult">
+        <include refid="selectPContractMetricsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertPContractMetrics" parameterType="com.dlzx.pfserverperson.domain.PContractMetrics">
+        insert into p_contract_metrics
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="typeId != null">type_id,</if>
+            <if test="typeName != null">type_name,</if>
+            <if test="type != null">type,</if>
+            <if test="dimension != null">dimension,</if>
+            <if test="content != null">content,</if>
+            <if test="method != null">method,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="typeId != null">#{typeId},</if>
+            <if test="typeName != null">#{typeName},</if>
+            <if test="type != null">#{type},</if>
+            <if test="dimension != null">#{dimension},</if>
+            <if test="content != null">#{content},</if>
+            <if test="method != null">#{method},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePContractMetrics" parameterType="com.dlzx.pfserverperson.domain.PContractMetrics">
+        update p_contract_metrics
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="typeName != null">type_name = #{typeName},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="dimension != null">dimension = #{dimension},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="method != null">method = #{method},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePContractMetricsById" parameterType="String">
+        delete from p_contract_metrics where id = #{id}
+    </delete>
+
+    <delete id="deletePContractMetricsByIds" parameterType="String">
+        update p_contract_metrics set delete_flag = 2 where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

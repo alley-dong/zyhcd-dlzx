@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskInspectMapper">
+    
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskInspectVm" id="TTransportTaskInspectResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentXid"    column="shipment_xid"    />
+        <result property="type"    column="type"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskInspectVo">
+        select id, task_id, shipment_xid, type, driver_id, driver_name,route_name, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_inspect
+    </sql>
+
+    <sql id="selectTTransportTaskInspectDetail">
+        select id, task_id, shipment_xid, inspect.type, driver_id, driver_name, route_name, delete_flag
+        , inspect.create_by, inspect.create_time, inspect.update_by, inspect.update_time
+        ,sysType.dict_label as typeEnum
+        from t_transport_task_inspect as inspect
+        LEFT JOIN sys_dict_data sysType on inspect.type = sysType.dict_value and sysType.dict_type = 't_transport_task_inspect_type'
+    </sql>
+
+    <select id="selectTTransportTaskInspectList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskInspectModel" resultMap="TTransportTaskInspectResult">
+        <include refid="selectTTransportTaskInspectDetail"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="shipmentXid != null  and shipmentXid != ''"> and shipment_xid = #{shipmentXid}</if>
+            <if test="type != null "> and inspect.type = #{type}</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            and delete_flag = 1
+        </where>
+        order by inspect.create_time desc
+    </select>
+    
+    <select id="selectTTransportTaskInspectById" parameterType="String" resultMap="TTransportTaskInspectResult">
+        <include refid="selectTTransportTaskInspectDetail"/>
+        where id = #{id} and delete_flag = 1
+    </select>
+
+<!--    根据任务ID查询点检信息-->
+    <select id="queryTTransportTaskInspectByTaskId"
+            resultMap="TTransportTaskInspectResult">
+<!--        <include refid="selectTTransportTaskInspectDetail"/>-->
+
+        (select id, task_id, shipment_xid, inspect.type, driver_id, driver_name, route_name, delete_flag
+        , inspect.create_by, inspect.create_time, inspect.update_by, inspect.update_time
+        ,sysType.dict_label as typeEnum
+        from t_transport_task_inspect as inspect
+        LEFT JOIN sys_dict_data sysType on inspect.type = sysType.dict_value and sysType.dict_type = 't_transport_task_inspect_type'
+        where task_id = #{taskId}
+        and inspect.type = 1 order by inspect.create_time desc limit 1)
+
+        UNION
+
+        (select id, task_id, shipment_xid, inspect.type, driver_id, driver_name, route_name, delete_flag
+        , inspect.create_by, inspect.create_time, inspect.update_by, inspect.update_time
+        ,sysType.dict_label as typeEnum
+        from t_transport_task_inspect as inspect
+        LEFT JOIN sys_dict_data sysType on inspect.type = sysType.dict_value and sysType.dict_type = 't_transport_task_inspect_type'
+        where task_id = #{taskId}
+        and inspect.type = 2 order by inspect.create_time )
+
+        UNION
+
+        (select id, task_id, shipment_xid, inspect.type, driver_id, driver_name, route_name, delete_flag
+        , inspect.create_by, inspect.create_time, inspect.update_by, inspect.update_time
+        ,sysType.dict_label as typeEnum
+        from t_transport_task_inspect as inspect
+        LEFT JOIN sys_dict_data sysType on inspect.type = sysType.dict_value and sysType.dict_type = 't_transport_task_inspect_type'
+        where task_id = #{taskId}
+        and inspect.type = 3 order by inspect.create_time desc limit 1)
+
+    </select>
+
+    <insert id="insertTTransportTaskInspect" parameterType="com.dlzx.pfservercar.domain.TTransportTaskInspect">
+        insert into t_transport_task_inspect
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentXid != null">shipment_xid,</if>
+            <if test="type != null">type,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentXid != null">#{shipmentXid},</if>
+            <if test="type != null">#{type},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskInspect" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskInspectModel">
+        update t_transport_task_inspect
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentXid != null">shipment_xid = #{shipmentXid},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskInspectById" parameterType="String">
+        delete from t_transport_task_inspect where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskInspectByIds" parameterType="String">
+        delete from t_transport_task_inspect where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

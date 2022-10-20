@@ -1,0 +1,584 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsReceivingRecordMapper">
+    
+    <resultMap type="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" id="GGoodsReceivingRecordResult">
+        <result property="id"    column="id"    />
+        <result property="goodsTypeId"    column="goods_type_id"    />
+        <result property="goodsTypeName"    column="goods_type_name"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="routeId"    column="route_id"    />
+        <result property="routeName"    column="route_name"    />
+        <result property="specification"    column="specification"    />
+        <result property="unit"    column="unit"    />
+        <result property="number"    column="number"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="type"    column="type"    />
+        <result property="status"    column="status"    />
+        <result property="reviewTime"    column="review_time"    />
+        <result property="reviewUser"    column="review_user"    />
+        <result property="reviewRemarks"    column="review_remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="receiveTime"    column="receive_time"    />
+        <result property="name"    column="name"    />
+        <result property="iGoodsId"    column="iGoodsId"    />
+        <result property="iGoodsName"    column="iGoodsName"    />
+        <result property="iNumber"    column="iNumber"    />
+        <result property="iGoodsTypeId"    column="iGoodsTypeId"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="amount"    column="amount"    />
+        <result property="receiveDates"    column="receiveDates"    />
+        <result property="beginTimes"    column="beginTimes"    />
+        <result property="endTimes"    column="endTimes"    />
+        <result property="recordId"    column="recordId"    />
+    </resultMap>
+
+    <sql id="selectGGoodsReceivingRecordVo">
+        select id, goods_type_id, goods_type_name, goods_id, goods_name, vehicle_id, license_plate, driver_id, route_id, route_name, specification,unit, number, remarks, type, status, review_time, review_user, review_remarks, delete_flag, create_by, create_time, update_by, update_time ,receive_time from g_goods_receiving_record
+    </sql>
+
+    <sql id="selectGGoodsReceivingRecordOrItem">
+        SELECT
+	ggrr.id,
+	ggrr.goods_type_id,
+	ggrr.goods_type_name,
+	ggrr.goods_id,
+	ggrr.goods_name,
+	ggrr.vehicle_id,
+	ggrr.license_plate,
+	ggrr.driver_id,
+	ggrr.route_id,
+	ggrr.route_name,
+	ggrr.specification,
+	ggrr.unit,
+	ggrr.number,
+	ggrr.remarks,
+	ggrr.type,
+	ggrr.STATUS,
+	ggrr.review_time,
+	ggrr.review_user,
+	ggrr.review_remarks,
+	ggrr.delete_flag,
+	ggrr.create_by,
+	ggrr.create_time,
+	ggrr.update_by,
+	ggrr.update_time,
+	ggrr.receive_time,
+	gg.unit_price,
+	gg.amount
+FROM
+	g_goods_receiving_record AS ggrr
+    </sql>
+
+    <sql id="selectGGoodsReceivingRecordOrItemGetInfo">
+        SELECT
+            ggrr.id,
+            ggrr.goods_type_id,
+            ggrr.goods_type_name,
+            ggrr.goods_id,
+            ggrr.goods_name as goodsName,
+            ggrr.vehicle_id,
+            ggrr.license_plate,
+            ggrr.driver_id,
+            ggrr.route_id,
+            ggrr.route_name,
+            ggrr.specification,
+            ggrr.unit,
+            ggrr.number,
+            ggrr.remarks,
+            ggrr.type,
+            ggrr.status,
+            ggrr.review_time,
+            ggrr.review_user,
+            ggrr.review_remarks,
+            ggrr.delete_flag,
+            ggrr.create_by,
+            ggrr.create_time,
+            ggrr.update_by,
+            ggrr.update_time,
+            ggrr.receive_time,
+            dd.name,
+            ggrri.goods_id as iGoodsId,
+            ggrri.goods_name as iGoodsName,
+            ggrri.number as iNumber,
+            ggrri.goods_type_id as iGoodsTypeId
+        FROM
+	        g_goods_receiving_record as ggrr
+    </sql>
+    <select id="selectGGoodsReceivingRecordByGGRRIId" parameterType="String" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordOrItemGetInfo"/>
+        left join d_driver as dd
+        on dd.id = ggrr.driver_id
+        join g_goods_receiving_record_item as ggrri
+        on ggrri.record_id = ggrr.id
+        where ggrr.id = #{id}
+    </select>
+
+    <select id="selectGGoodsReceivingRecordInfo" parameterType="String" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectGGoodsReceivingRecordDrop" resultMap="GGoodsReceivingRecordResult">
+        select specification from g_goods_receiving_record where delete_flag = '1' group by specification
+    </select>
+
+    <select id="selectGGoodsReceivingRecordInfoList" resultMap="GGoodsReceivingRecordResult">
+       select id, goods_id, goods_name from g_goods_receiving_record where delete_flag = '1'
+    </select>
+
+    <select id="selectGGoodsReceivingRecordAmount" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordOrItem"/>
+        left JOIN g_goods AS gg ON gg.id = ggrr.goods_id
+        LEFT JOIN g_goods_type as gType ON gType.id = ggrr.goods_type_id
+        <where>
+            ggrr.delete_flag = '1' and ggrr.status = 4
+            <if test="goodsType != null  and goodsType != ''">
+                and gType.type = #{goodsType}
+            </if>
+            <if test="id != null  and id != ''"> and ggrr.id = #{id}</if>
+            <if test="startTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="finishTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') <= DATE_FORMAT(#{finishTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+
+            <if test="licensePlate != null  and licensePlate != ''"> and ggrr.license_plate = #{licensePlate}</if>
+            <if test="specification != null  and specification != ''"> and ggrr.specification = #{specification}</if>
+        </where>
+    </select>
+
+
+    <sql id="selectGGoodsReceivingRecordOrDdriver">
+        SELECT
+            ggrr.id,
+            ggrr.goods_type_id,
+            ggrr.goods_type_name,
+            ggrr.goods_id,
+            ggrr.goods_name,
+            ggrr.vehicle_id,
+            ggrr.license_plate,
+            ggrr.driver_id,
+            ggrr.route_id,
+            ggrr.route_name,
+            ggrr.specification,
+            ggrr.unit,
+            ggrr.number,
+            ggrr.remarks,
+            ggrr.type,
+            ggrr.status,
+            ggrr.review_time,
+            ggrr.review_user,
+            ggrr.review_remarks,
+            ggrr.delete_flag,
+            ggrr.create_by,
+            ggrr.create_time,
+            ggrr.update_by,
+            ggrr.update_time,
+            ggrr.receive_time,
+            dd.name,
+            goodsType.type as goodsType,
+            ggrrd.record_id,
+            ggrrd.receive_date as receiveDates
+        FROM
+	        g_goods_receiving_record as ggrr
+    </sql>
+
+    <select id="selectGGoodsReceivingRecordList" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        SELECT
+        ggrr.id,
+        ggrr.goods_type_id,
+        ggrr.goods_type_name,
+        ggrr.goods_id,
+        ggrr.goods_name,
+        ggrr.vehicle_id,
+        ggrr.license_plate,
+        ggrr.driver_id,
+        ggrr.route_id,
+        ggrr.route_name,
+        ggrr.specification,
+        ggrr.unit,
+        ggrr.number,
+        ggrr.remarks,
+        ggrr.type,
+        ggrr.status,
+        ggrr.review_time,
+        ggrr.review_user,
+        ggrr.review_remarks,
+        ggrr.delete_flag,
+        ggrr.create_by,
+        ggrr.create_time,
+        ggrr.update_by,
+        ggrr.update_time,
+        ggrr.receive_time,
+        dd.name,
+        goodsType.type as goodsType
+        FROM
+        g_goods_receiving_record as ggrr
+        left join d_driver as dd
+        on dd.id = ggrr.driver_id
+        left join g_goods_type as goodsType
+        on goodsType.id = ggrr.goods_type_id
+        <where>
+            ggrr.delete_flag = '1'
+            <if test="id != null  and id != ''"> and ggrr.id = #{id}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="goodsId != null  and goodsId != ''"> and ggrr.goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="driverId != null  and driverId != ''"> and ggrr.driver_id = #{driverId}</if>
+            <if test="routeId != null  and routeId != ''"> and route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''"> and route_name like concat('%', #{routeName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="number != null "> and number = #{number}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="status != null "> and ggrr.status = #{status}</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and review_remarks = #{reviewRemarks}</if>
+            <if test="createBy != null  and createBy != ''"> and ggrr.create_by = #{createBy}</if>
+            <if test="startTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') >= DATE_FORMAT(#{startTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="finishTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(ggrr.receive_time, '%Y-%m-%d') <= DATE_FORMAT(#{finishTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <select id="selectGGoodsReceivingRecordByGGRRId" parameterType="String" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordOrDdriver"/>
+        left join d_driver as dd
+        on dd.id = ggrr.driver_id
+        left join g_goods_type as goodsType
+        on goodsType.id = ggrr.goods_type_id
+        left join g_goods_receiving_record_date as ggrrd
+        on ggrrd.record_id = ggrr.id
+        where ggrr.id = #{id}
+    </select>
+
+
+    <select id="selectGGoodsReceivingRecordById" parameterType="String" resultMap="GGoodsReceivingRecordResult">
+        SELECT
+        ggrr.id,
+        ggrr.goods_type_id,
+        ggrr.goods_type_name,
+        ggrr.goods_id,
+        ggrr.goods_name,
+        ggrr.vehicle_id,
+        ggrr.license_plate,
+        ggrr.driver_id,
+        ggrr.route_id,
+        ggrr.route_name,
+        ggrr.specification,
+        ggrr.unit,
+        ggrr.number,
+        ggrr.remarks,
+        ggrr.type,
+        ggrr.status,
+        ggrr.review_time,
+        ggrr.review_user,
+        ggrr.review_remarks,
+        ggrr.delete_flag,
+        ggrr.create_by,
+        ggrr.create_time,
+        ggrr.update_by,
+        ggrr.update_time,
+        dd.name
+        FROM g_goods_receiving_record as ggrr
+        join d_driver as dd
+        on dd.id = ggrr.driver_id
+        where ggrr.id = #{id}
+    </select>
+
+    <select id="selectGGoodsReceivingRecordByGoodsTypeId" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordVo"/>
+        where goods_type_id = #{goodsTypeId}
+    </select>
+
+
+    <sql id="selectGGoodsReceivingRecordAndAmount">
+        SELECT
+            ggrr.id,
+            ggrr.goods_type_id,
+            ggrr.goods_type_name,
+            ggrr.goods_id,
+            ggrr.goods_name,
+            ggrr.vehicle_id,
+            ggrr.license_plate,
+            ggrr.driver_id,
+            ggrr.route_id,
+            ggrr.route_name,
+            ggrr.specification,
+            ggrr.unit,
+            ggrr.number,
+            ggrr.remarks,
+            ggrr.type,
+            ggrr.status,
+            ggrr.review_time,
+            ggrr.review_user,
+            ggrr.review_remarks,
+            ggrr.delete_flag,
+            ggrr.create_by,
+            ggrr.create_time,
+            ggrr.update_by,
+            ggrr.update_time,
+            gg.amount
+        FROM
+	        g_goods_receiving_record as ggrr
+    </sql>
+
+
+    <select id="selectGGoodsReceivingRecordByGoodsId" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordAndAmount"/>
+        join g_goods as gg
+        on gg.goods_type_id = ggrr.id
+        where goods_id = #{goodsId}
+    </select>
+
+    <sql id="selectGGoodsReceivingRecordAndAmountAndDate">
+        SELECT
+            ggrr.id,
+            ggrr.goods_type_id,
+            ggrr.goods_type_name,
+            ggrr.goods_id,
+            ggrr.goods_name,
+            ggrr.vehicle_id,
+            ggrr.license_plate,
+            ggrr.driver_id,
+            ggrr.route_id,
+            ggrr.route_name,
+            ggrr.specification,
+            ggrr.unit,
+            ggrr.number,
+            ggrr.remarks,
+            ggrr.type,
+            ggrr.status,
+            ggrr.review_time,
+            ggrr.review_user,
+            ggrr.review_remarks,
+            ggrr.delete_flag,
+            ggrr.create_by,
+            ggrr.create_time,
+            ggrr.update_by,
+            ggrr.update_time,
+            gg.amount,
+            d.receive_date as receiveDates
+        FROM
+	        g_goods_receiving_record as ggrr
+    </sql>
+
+    <select id="selectGGoodsReceivingRecordByGoodsIdOrDate" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGGoodsReceivingRecordAndAmountAndDate"/>
+        join g_goods as gg
+        on gg.goods_type_id = ggrr.id
+        join g_goods_receiving_record_date as d
+        on d.record_id = ggrr.id
+        where goods_id = #{goodsId}
+    </select>
+
+    <insert id="insertGGoodsReceivingRecord" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord">
+        insert into g_goods_receiving_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="goodsTypeId != null">goods_type_id,</if>
+            <if test="goodsTypeName != null">goods_type_name,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="routeId != null">route_id,</if>
+            <if test="routeName != null">route_name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="number != null">number,</if>
+            <if test="unit != null">unit,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="type != null">type,</if>
+            <if test="status != null">status,</if>
+            <if test="reviewTime != null">review_time,</if>
+            <if test="reviewUser != null">review_user,</if>
+            <if test="reviewRemarks != null">review_remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="receiveTime != null">receive_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="goodsTypeId != null">#{goodsTypeId},</if>
+            <if test="goodsTypeName != null">#{goodsTypeName},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="routeId != null">#{routeId},</if>
+            <if test="routeName != null">#{routeName},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="number != null">#{number},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="type != null">#{type},</if>
+            <if test="status != null">#{status},</if>
+            <if test="reviewTime != null">#{reviewTime},</if>
+            <if test="reviewUser != null">#{reviewUser},</if>
+            <if test="reviewRemarks != null">#{reviewRemarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="receiveTime != null">#{receiveTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGGoodsReceivingRecord" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord">
+        update g_goods_receiving_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsTypeId != null">goods_type_id = #{goodsTypeId},</if>
+            <if test="goodsTypeName != null">goods_type_name = #{goodsTypeName},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="routeId != null">route_id = #{routeId},</if>
+            <if test="routeName != null">route_name = #{routeName},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewUser != null">review_user = #{reviewUser},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="receiveTime != null">receive_time = #{receiveTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="checkCInsuranceVehicle" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord">
+        update g_goods_receiving_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="reviewRemarks != null">review_remarks = #{reviewRemarks},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsReceivingRecordById" parameterType="String">
+        delete from g_goods_receiving_record where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsReceivingRecordByIds" parameterType="String">
+        delete from g_goods_receiving_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+<!--    App -->
+
+    <!--    获取翻译信息-->
+    <sql id="selectGoodsReceivingRecordDetail">
+       select record.id, record.goods_type_id, record.goods_type_name, record.goods_id, record.goods_name, record.vehicle_id, record.license_plate, record.driver_id, record.route_id, record.route_name
+       , record.specification, record.number, record.unit,record.remarks, record.type, record.status, record.review_time, record.review_user, record.review_remarks
+       , record.delete_flag, record.create_by, record.create_time, record.update_by, record.update_time ,record.receive_time
+        ,sysStatus.dict_label as statusEnum
+        ,sysType.dict_label as typeEnum
+        ,goodType.type as goodsType
+        ,goods.amount as amount
+        from g_goods_receiving_record as record
+        LEFT JOIN sys_dict_data sysStatus on record.status = sysStatus.dict_value and sysStatus.dict_type = 'g_goods_receiving_record_status'
+        LEFT JOIN sys_dict_data sysType on record.type = sysType.dict_value and sysType.dict_type = 'g_goods_receiving_record_type'
+        LEFT JOIN g_goods_type goodType on record.goods_type_id = goodType.id
+        LEFT JOIN g_goods goods on goods.id = record.goods_id
+    </sql>
+
+    <select id="queryGGoodsReceivingRecordById" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGoodsReceivingRecordDetail"/>
+        <where>
+            record.delete_flag = '1'
+            <if test="id != null  and id != ''"> and record.id = #{id}</if>
+        </where>
+    </select>
+
+
+    <select id="queryGGoodsReceivingRecordList" parameterType="com.dlzx.pfserverparts.domain.GGoodsReceivingRecord" resultMap="GGoodsReceivingRecordResult">
+        <include refid="selectGoodsReceivingRecordDetail"/>
+        <if test="goodsId != null  and goodsId != ''">
+            LEFT JOIN g_goods_receiving_record_item item ON item.record_id = record.id
+        </if>
+        <where>
+            record.delete_flag = '1'
+            <if test="id != null  and id != ''"> and record.id = #{id}</if>
+            <if test="goodsTypeId != null  and goodsTypeId != ''"> and record.goods_type_id = #{goodsTypeId}</if>
+            <if test="goodsTypeName != null  and goodsTypeName != ''"> and record.goods_type_name like concat('%', #{goodsTypeName}, '%')</if>
+            <if test="goodsId != null  and goodsId != ''">
+              and (record.goods_id = #{goodsId} OR item.goods_id = #{goodsId})
+            </if>
+            <if test="goodsName != null  and goodsName != ''"> and record.goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="vehicleId != null  and vehicleId != ''"> and record.vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and record.license_plate = #{licensePlate}</if>
+            <if test="driverId != null  and driverId != ''"> and record.driver_id = #{driverId}</if>
+            <if test="routeId != null  and routeId != ''"> and record.route_id = #{routeId}</if>
+            <if test="routeName != null  and routeName != ''"> and record.route_name like concat('%', #{routeName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and record.specification = #{specification}</if>
+            <if test="number != null "> and record.number = #{number}</if>
+            <if test="remarks != null  and remarks != ''"> and record.remarks = #{remarks}</if>
+            <if test="type != null "> and record.type = #{type}</if>
+            <if test="status != null "> and record.status = #{status}</if>
+            <if test="reviewTime != null "> and record.review_time like concat(DATE_FORMAT(#{reviewTime},'%Y-%m-%d'), '%')</if>
+            <if test="reviewUser != null  and reviewUser != ''"> and record.review_user = #{reviewUser}</if>
+            <if test="reviewRemarks != null  and reviewRemarks != ''"> and record.review_remarks = #{reviewRemarks}</if>
+            <if test="createBy != null  and createBy != ''"> and record.create_by like concat('%', #{createBy}, '%')</if>
+            <if test="beginTimes != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(record.receive_time, '%Y-%m') = DATE_FORMAT(#{beginTimes}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="receiveTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(record.receive_time, '%Y-%m-%d') = DATE_FORMAT(#{receiveTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+        </where>
+        ORDER BY record.create_time desc
+    </select>
+
+
+
+</mapper>

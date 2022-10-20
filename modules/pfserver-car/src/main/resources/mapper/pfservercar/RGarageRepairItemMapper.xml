@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RGarageRepairItemMapper">
+    
+    <resultMap type="RGarageRepairItem" id="RGarageRepairItemResult">
+        <result property="id"    column="id"    />
+        <result property="garageId"    column="garage_id"    />
+        <result property="vehicleModel"    column="vehicle_model"    />
+        <result property="vehicleModelName"    column="vehicle_model_name"    />
+        <result property="name"    column="name"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="duration"    column="duration"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectRGarageRepairItemVo">
+        select id, garage_id, vehicle_model, vehicle_model_name, name, unit, unit_price, duration, delete_flag, create_by, create_time, update_by, update_time from r_garage_repair_item
+    </sql>
+
+    <select id="selectRGarageRepairItemList" parameterType="RGarageRepairItem" resultMap="RGarageRepairItemResult">
+        <include refid="selectRGarageRepairItemVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            and delete_flag = '1'and garage_id = #{garageId}
+        </where>
+    </select>
+    
+    <select id="selectRGarageRepairItemById" parameterType="String" resultMap="RGarageRepairItemResult">
+        <include refid="selectRGarageRepairItemVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectRGarageRepairItemByGarageId" resultMap="RGarageRepairItemResult">
+        <include refid="selectRGarageRepairItemVo"/>
+      <where>
+          garage_id =#{id} and vehicle_model_name =#{name} and delete_flag = '1'
+      </where>
+    </select>
+
+    <select id="selectRGarageRepairItemAll" resultMap="RGarageRepairItemResult">
+    <include refid="selectRGarageRepairItemVo"/>
+        where delete_flag = '1'
+    </select>
+
+    <select id="selectVehicleModelByGarage" parameterType="String" resultMap="RGarageRepairItemResult">
+        <include refid="selectRGarageRepairItemVo"/>
+        where
+        garage_id = #{id} and delete_flag = 1
+        GROUP BY vehicle_model
+    </select>
+        
+    <insert id="insertRGarageRepairItem" parameterType="RGarageRepairItem">
+        insert into r_garage_repair_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="garageId != null">garage_id,</if>
+            <if test="vehicleModel != null">vehicle_model,</if>
+            <if test="vehicleModelName != null">vehicle_model_name,</if>
+            <if test="name != null">name,</if>
+            <if test="unit != null">unit,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="duration != null">duration,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="garageId != null">#{garageId},</if>
+            <if test="vehicleModel != null">#{vehicleModel},</if>
+            <if test="vehicleModelName != null">#{vehicleModelName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRGarageRepairItem" parameterType="RGarageRepairItem">
+        update r_garage_repair_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="garageId != null">garage_id = #{garageId},</if>
+            <if test="vehicleModel != null">vehicle_model = #{vehicleModel},</if>
+            <if test="vehicleModelName != null">vehicle_model_name = #{vehicleModelName},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRGarageRepairItemById" parameterType="String">
+        delete from r_garage_repair_item where id = #{id}
+    </delete>
+
+    <delete id="deleteRGarageRepairItemByIds" parameterType="String">
+        delete from r_garage_repair_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

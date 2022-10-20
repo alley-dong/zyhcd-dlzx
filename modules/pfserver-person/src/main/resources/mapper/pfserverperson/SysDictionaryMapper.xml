@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.SysDictionaryMapper">
+    
+    <resultMap type="SysDictionary" id="SysDictionaryResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="level"    column="level"    />
+        <result property="type"    column="type"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysDictionaryVo">
+        select id, name, parent_id, remarks, level, type, delete_flag, create_by, create_time, update_by, update_time from sys_dictionary
+    </sql>
+
+    <select id="selectSysDictionaryList" parameterType="SysDictionary" resultMap="SysDictionaryResult">
+        <include refid="selectSysDictionaryVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectSysDictionaryListCar"  resultMap="SysDictionaryResult">
+        select id, name from sys_dictionary
+        <where>
+            and delete_flag = '1'
+            and type ='2'
+            and level ='2'
+        </where>
+    </select>
+
+    <select id="selectSysDictionaryListCarZhu"  resultMap="SysDictionaryResult">
+        select id, name from sys_dictionary
+        <where>
+            and delete_flag = '1'
+            and parent_id ='a'
+        </where>
+    </select>
+
+    <select id="selectSysDictionaryListCarGua"  resultMap="SysDictionaryResult">
+        select id, name from sys_dictionary
+        <where>
+            and delete_flag = '1'
+            and parent_id ='b'
+        </where>
+    </select>
+
+    <select id="selectSysDictionaryById" parameterType="String" resultMap="SysDictionaryResult">
+        <include refid="selectSysDictionaryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysDictionary" parameterType="SysDictionary">
+        insert into sys_dictionary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="level != null">level,</if>
+            <if test="type != null">type,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="level != null">#{level},</if>
+            <if test="type != null">#{type},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysDictionary" parameterType="SysDictionary">
+        update sys_dictionary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="level != null">level = #{level},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysDictionaryById" parameterType="String">
+        delete from sys_dictionary where id = #{id}
+    </delete>
+
+    <delete id="deleteSysDictionaryByIds" parameterType="String">
+        delete from sys_dictionary where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

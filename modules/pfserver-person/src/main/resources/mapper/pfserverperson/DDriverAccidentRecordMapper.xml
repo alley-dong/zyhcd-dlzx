@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverAccidentRecordMapper">
+    
+    <resultMap type="DDriverAccidentRecord" id="DDriverAccidentRecordResult">
+        <result property="id"    column="id"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="accidentTime"    column="accident_time"    />
+        <result property="place"    column="place"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDDriverAccidentRecordVo">
+        select id, driver_id, accident_time, place, remarks, delete_flag, create_by, create_time, update_by, update_time from d_driver_accident_record
+    </sql>
+
+    <select id="selectDDriverAccidentRecordList" parameterType="DDriverAccidentRecord" resultMap="DDriverAccidentRecordResult">
+        <include refid="selectDDriverAccidentRecordVo"/>
+        <where>  
+            <if test="accidentTime != null "> and accident_time = #{accidentTime}</if>
+            <if test="place != null  and place != ''"> and place = #{place}</if>
+            <if test="remarks != null  and remarks != ''"> and remarks = #{remarks}</if>
+            and delete_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectDDriverAccidentRecordByDriverId" parameterType="String" resultMap="DDriverAccidentRecordResult">
+    <include refid="selectDDriverAccidentRecordVo"/>
+        where driver_id = #{id} and delete_flag = '1'
+        order by create_time DESC
+    </select>
+    
+    <select id="selectDDriverAccidentRecordById" parameterType="String" resultMap="DDriverAccidentRecordResult">
+        <include refid="selectDDriverAccidentRecordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDDriverAccidentRecord" parameterType="DDriverAccidentRecord">
+        insert into d_driver_accident_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="accidentTime != null">accident_time,</if>
+            <if test="place != null">place,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="accidentTime != null">#{accidentTime},</if>
+            <if test="place != null">#{place},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDDriverAccidentRecord" parameterType="DDriverAccidentRecord">
+        update d_driver_accident_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="accidentTime != null">accident_time = #{accidentTime},</if>
+            <if test="place != null">place = #{place},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverAccidentRecordById" parameterType="String">
+        delete from d_driver_accident_record where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverAccidentRecordByIds" parameterType="String">
+        delete from d_driver_accident_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

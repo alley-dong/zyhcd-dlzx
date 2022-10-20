@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.RRepairDetailedMapper">
+    
+    <resultMap type="RRepairDetailed" id="RRepairDetailedResult">
+        <result property="id"    column="id"    />
+        <result property="isNew"    column="is_new"    />
+        <result property="garageId"    column="garage_id"    />
+        <result property="garageName"    column="garage_name"    />
+        <result property="vehicleModel"    column="vehicle_model"    />
+        <result property="vehicleModelName"    column="vehicle_model_name"    />
+        <result property="name"    column="name"    />
+        <result property="unit"    column="unit"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="duration"    column="duration"    />
+        <result property="number"    column="number"    />
+        <result property="amount"    column="amount"    />
+        <result property="remarks"    column="remarks"    />
+        <result property="monthNumber"    column="month_number"    />
+        <result property="yearNumber"    column="year_number"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="repairId" column="repair_id"/>
+        <result property="repairCode" column="repair_code"/>
+        <association property="repair"    column="id" javaType="RRepair" resultMap="repairResult" />
+    </resultMap>
+
+    <resultMap id="repairResult" type="RRepair">
+        <id     property="id"   column="id"     />
+        <result property="code" column="code"   />
+        <result property="mainLicensePlate" column="main_license_plate"   />
+        <result property="hangLicensePlate" column="hang_license_plate"   />
+        <result property="completeTime"   column="complete_time"      />
+        <result property="type" column="type"/>
+        <result property="repairType" column="repair_type" />
+    </resultMap>
+
+    <sql id="selectRRepairDetailedVo">
+        select id, is_new, garage_id, garage_name, vehicle_model, vehicle_model_name, name, unit, unit_price, duration, number, amount, remarks, month_number, year_number, delete_flag, create_by, create_time, update_by, update_time,repair_id,repair_code from r_repair_detailed
+    </sql>
+
+    <select id="selectRRepairDetailedList" parameterType="RRepairDetailed" resultMap="RRepairDetailedResult">
+        <include refid="selectRRepairDetailedVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectRRepairDetailedNotNewList" parameterType="String" resultMap="RRepairDetailedResult">
+    <include refid="selectRRepairDetailedVo"/>
+        where is_new = '2' and repair_id = #{repairId} and delete_flag = '1'
+    </select>
+
+    <select id="selectRRepairDetailedIsNewList" parameterType="String" resultMap="RRepairDetailedResult">
+    <include refid="selectRRepairDetailedVo"/>
+        where is_new = '1' and repair_id = #{repairId} and delete_flag = '1'
+    </select>
+    
+    <select id="selectRRepairDetailedById" parameterType="String" resultMap="RRepairDetailedResult">
+        <include refid="selectRRepairDetailedVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectRRepairDetailedAllByGarageId" parameterType="String" resultMap="RRepairDetailedResult">
+        <include refid="selectRRepairDetailedVo"/>
+        where repair_id = #{repairId} and delete_flag = '1'
+    </select>
+
+    <select id="selectRRepairDetailedAddListRecord" parameterType="RRepairDetailed" resultMap="RRepairDetailedResult">
+    SELECT
+	a.id,
+	a.is_new,
+	a.garage_name,
+	a.name,
+	a.unit,
+	a.unit_price,
+	a.duration,
+	a.number,
+	a.amount,
+	b.code,
+	b.main_license_plate,
+	b.hang_license_plate,
+	b.complete_time
+FROM
+	r_repair_detailed a,
+	r_repair b
+<where>
+    <if test="code != null and code != ''">and b.code like concat('%',#{code},'%')</if>
+    <if test="mainLicensePlate != null and mainLicensePlate != ''">and b.main_license_plate like concat('%',#{mainLicensePlate},'%')</if>
+    <if test="hangLicensePlate != null and hangLicensePlate != ''">and b.hang_license_plate like concat('%',#{hangLicensePlate},'%')</if>
+    <if test="name != null and name != ''">and a.name like concat('%',#{name},'%')</if>
+    <if test="garageName != null and garageName != ''">and a.garage_name like concat('%',#{garageName},'%')</if>
+    <if test="startTime != null">
+        and b.complete_time <![CDATA[ >= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d')
+    </if>
+    <if test="finshTime != null">
+        and b.complete_time <![CDATA[ <= ]]> DATE_FORMAT(#{finshTime},'%Y-%m-%d')
+    </if>
+    and a.is_new = '1'
+	AND b.garage_status = '3'
+	AND a.repair_id = b.id
+	AND a.delete_flag = '1'
+</where>
+        ORDER BY complete_time DESC
+    </select>
+
+    <select id="selectCostVehicleList" parameterType="RRepairDetailed" resultMap="RRepairDetailedResult">
+        SELECT
+	a.id,
+	a.is_new,
+	a.garage_name,
+	a.name,
+	a.unit,
+	a.unit_price,
+	a.duration,
+	a.number,
+	a.amount,
+    b.repair_type,
+	b.code,
+	b.main_license_plate,
+	b.hang_license_plate,
+	b.complete_time,
+	b.type
+FROM
+	r_repair_detailed a,
+	r_repair b
+	<where>
+        <if test="garageId != null and garageId != ''">and b.garage_id = #{garageId}</if>
+        <if test="code != null and code != ''">and b.code like concat('%',#{code},'%')</if>
+        <if test="mainLicensePlate != null and mainLicensePlate != ''">and b.main_license_plate like concat('%',#{mainLicensePlate},'%')</if>
+        <if test="hangLicensePlate != null and hangLicensePlate != ''">and b.hang_license_plate like concat('%',#{hangLicensePlate},'%')</if>
+        <if test="name != null and name != ''">and a.name like concat('%',#{name},'%')</if>
+        <if test="type != null and type != ''">and b.type = #{type}</if>
+        <if test="repairType != null and repairType != ''">and b.repair_type = #{repairType}</if>
+        <if test="garageName != null and garageName != ''">and a.garage_name like concat('%',#{garageName},'%')</if>
+        <if test="startTime != null and finshTime != null">
+            and DATE_FORMAT(b.complete_time,'%Y-%m-%d') <![CDATA[ >= ]]> DATE_FORMAT(#{startTime},'%Y-%m-%d')  and DATE_FORMAT(b.complete_time,'%Y-%m-%d') <![CDATA[ <= ]]> DATE_FORMAT(#{finshTime},'%Y-%m-%d')
+        </if>
+	AND a.repair_id = b.id
+	AND b.garage_status = '3'
+	AND a.delete_flag = '1'
+    </where>
+        ORDER BY b.complete_time DESC
+    </select>
+
+    <select id="selectMonthNumber" parameterType="RRepairDetailed" resultMap="RRepairDetailedResult">
+        SELECT
+        max( b.month_number ) AS mNumber,
+        max( b.year_number ) AS yNumber
+        FROM
+        r_repair a
+        LEFT JOIN r_repair_detailed b ON a.id = b.repair_id
+        <where>
+        a.repair_status = '3'
+        AND a.delete_flag = '1'
+        AND b.delete_flag = '1'
+            <if test="startTime != null">
+                AND b.create_time &gt;= #{startTime}</if>
+        <if test="finshTime != null">
+            AND b.create_time &lt;= #{finshTime}</if>
+            <if test="licensePlate != null and licensePlate != ''">
+                AND (a.main_license_plate = #{licensePlate}
+        OR a.hang_license_plate = #{licensePlate})</if>
+            <if test="vehicleModel != null and vehicleModel != ''">
+                AND b.vehicle_model = #{vehicleModel}</if>
+            <if test="name != null and name != ''">
+                AND b.name = #{name}</if>
+        </where>
+    </select>
+        
+    <insert id="insertRRepairDetailed" parameterType="RRepairDetailed">
+        insert into r_repair_detailed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="isNew != null">is_new,</if>
+            <if test="garageId != null">garage_id,</if>
+            <if test="garageName != null">garage_name,</if>
+            <if test="vehicleModel != null">vehicle_model,</if>
+            <if test="vehicleModelName != null">vehicle_model_name,</if>
+            <if test="name != null">name,</if>
+            <if test="unit != null">unit,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="duration != null">duration,</if>
+            <if test="number != null">number,</if>
+            <if test="amount != null">amount,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="monthNumber != null">month_number,</if>
+            <if test="yearNumber != null">year_number,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="repairId != null">repair_id,</if>
+            <if test="repairCode != null">repair_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="isNew != null">#{isNew},</if>
+            <if test="garageId != null">#{garageId},</if>
+            <if test="garageName != null">#{garageName},</if>
+            <if test="vehicleModel != null">#{vehicleModel},</if>
+            <if test="vehicleModelName != null">#{vehicleModelName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="number != null">#{number},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="monthNumber != null">#{monthNumber},</if>
+            <if test="yearNumber != null">#{yearNumber},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="repairId != null">#{repairId},</if>
+            <if test="repairCode != null">#{repairCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRRepairDetailed" parameterType="RRepairDetailed">
+        update r_repair_detailed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="isNew != null">is_new = #{isNew},</if>
+            <if test="garageId != null">garage_id = #{garageId},</if>
+            <if test="garageName != null">garage_name = #{garageName},</if>
+            <if test="vehicleModel != null">vehicle_model = #{vehicleModel},</if>
+            <if test="vehicleModelName != null">vehicle_model_name = #{vehicleModelName},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="monthNumber != null">month_number = #{monthNumber},</if>
+            <if test="yearNumber != null">year_number = #{yearNumber},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="repairId != null">repair_id = #{repairId},</if>
+            <if test="repairCode != null">repair_code = #{repairCode},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRRepairDetailedById" parameterType="String">
+        delete from r_repair_detailed where id = #{id}
+    </delete>
+
+    <delete id="deleteRRepairDetailedByIds" parameterType="String">
+        delete from r_repair_detailed where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!--ERP费用-->
+    <select id="queryERPCostVehicleList" parameterType="com.dlzx.pfservercar.domain.model.ERPCostModel" resultType="com.dlzx.pfservercar.domain.model.ERPCostModel">
+        SELECT
+        a.id,
+        a.is_new,
+        a.garage_name as garageName,
+        a.name as name,
+        a.unit as unit,
+        a.unit_price as unitPrice,
+        a.duration as duration,
+        a.number as number,
+        a.amount as amount,
+        b.code,
+        b.main_license_plate as mainLicensePlate,
+        b.hang_license_plate as hangLicensePlate,
+        b.complete_time as completeTime,
+        b.type
+        FROM
+        r_repair_detailed a,
+        r_repair b
+        <where>
+
+            <if test="beginTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(b.complete_time, '%Y-%m-%d') >= DATE_FORMAT(#{beginTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            <if test="endTime != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(b.complete_time, '%Y-%m-%d') <= DATE_FORMAT(#{endTime}, '%Y-%m-%d')
+			    ]]>
+            </if>
+            AND a.repair_id = b.id
+            AND b.garage_status = '3'
+            AND a.delete_flag = '1'
+        </where>
+        ORDER BY b.complete_time DESC
+    </select>
+</mapper>

@@ -1,0 +1,78 @@
+# Tomcat
+server:
+  port: 9300
+
+# Spring
+spring: 
+  application:
+    # 应用名称
+    name: order
+  profiles:
+    # 环境配置
+    active: dev
+---
+# 开发环境
+spring:
+  profiles: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 115.29.205.180:8848
+      config:
+        # 配置中心地址
+        server-addr: 115.29.205.180:8848
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-dataids: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+---
+# 测试环境
+spring:
+  profiles: test
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 192.168.1.103:8848
+        enabled: false
+      config:
+        # 配置中心地址
+        server-addr: 192.168.1.103:8848
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-dataids: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+---
+# 客户测试环境
+spring:
+  profiles: uat
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 10.113.130.4:8848
+      config:
+        # 配置中心地址
+        server-addr: 10.113.130.4:8848
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-dataids: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+---
+# 生产环境
+spring:
+  profiles: prod
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 10.60.200.63:8848
+      config:
+        # 配置中心地址
+        server-addr: 10.60.200.63:8848
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-dataids: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}

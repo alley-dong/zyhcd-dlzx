@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverparts.mapper.GGoodsCheckItemMapper">
+    
+    <resultMap type="GGoodsCheckItem" id="GGoodsCheckItemResult">
+        <result property="id"    column="id"    />
+        <result property="checkId"    column="check_id"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsCode"    column="goods_code"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="specification"    column="specification"    />
+        <result property="unit"    column="unit"    />
+        <result property="currentQuantity"    column="current_quantity"    />
+        <result property="checkQuantity"    column="check_quantity"    />
+        <result property="status"    column="status"    />
+        <result property="difference"    column="difference"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectGGoodsCheckItemVo">
+        select id, check_id, goods_id, goods_code, goods_name, specification, unit, current_quantity, check_quantity, status, difference, delete_flag, create_by, create_time, update_by, update_time from g_goods_check_item
+    </sql>
+
+    <select id="selectGGoodsCheckItemList" parameterType="GGoodsCheckItem" resultMap="GGoodsCheckItemResult">
+        <include refid="selectGGoodsCheckItemVo"/>
+        <where>
+            delete_flag = 1
+            <if test="checkId != null  and checkId != ''"> and check_id = #{checkId}</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="goodsCode != null  and goodsCode != ''"> and goods_code = #{goodsCode}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="specification != null  and specification != ''"> and specification = #{specification}</if>
+            <if test="unit != null  and unit != ''"> and unit = #{unit}</if>
+            <if test="currentQuantity != null "> and current_quantity = #{currentQuantity}</if>
+            <if test="checkQuantity != null "> and check_quantity = #{checkQuantity}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="difference != null "> and difference = #{difference}</if>
+        </where>
+    </select>
+    
+    <select id="selectGGoodsCheckItemById" parameterType="String" resultMap="GGoodsCheckItemResult">
+        <include refid="selectGGoodsCheckItemVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectGGoodsCheckItemByCheckId" parameterType="String" resultMap="GGoodsCheckItemResult">
+        <include refid="selectGGoodsCheckItemVo"/>
+        where check_id = #{checkId} and delete_flag = '1'
+    </select>
+        
+    <insert id="insertGGoodsCheckItem" parameterType="GGoodsCheckItem">
+        insert into g_goods_check_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="checkId != null">check_id,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsCode != null">goods_code,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="specification != null">specification,</if>
+            <if test="unit != null">unit,</if>
+            <if test="currentQuantity != null">current_quantity,</if>
+            <if test="checkQuantity != null">check_quantity,</if>
+            <if test="status != null">status,</if>
+            <if test="difference != null">difference,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="checkId != null">#{checkId},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsCode != null">#{goodsCode},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="specification != null">#{specification},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="currentQuantity != null">#{currentQuantity},</if>
+            <if test="checkQuantity != null">#{checkQuantity},</if>
+            <if test="status != null">#{status},</if>
+            <if test="difference != null">#{difference},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <!--    批量插入-->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into g_goods_check_item (
+        id,check_id,goods_id, goods_code, goods_name, specification, unit, current_quantity, delete_flag, create_by, create_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.checkId,jdbcType=VARCHAR},
+            #{item.goodsId,jdbcType=VARCHAR},
+            #{item.goodsCode,jdbcType=VARCHAR},
+            #{item.goodsName,jdbcType=VARCHAR},
+            #{item.specification,jdbcType=VARCHAR},
+            #{item.unit,jdbcType=VARCHAR},
+            #{item.currentQuantity,jdbcType=INTEGER},
+            1,
+            #{item.createBy,jdbcType=VARCHAR},
+            now()
+            )
+        </foreach>
+
+    </insert>
+
+    <update id="updateGGoodsCheckItem" parameterType="GGoodsCheckItem">
+        update g_goods_check_item
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="checkId != null">check_id = #{checkId},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsCode != null">goods_code = #{goodsCode},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="specification != null">specification = #{specification},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="currentQuantity != null">current_quantity = #{currentQuantity},</if>
+            <if test="checkQuantity != null">check_quantity = #{checkQuantity},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="difference != null">difference = #{difference},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGGoodsCheckItemById" parameterType="String">
+        delete from g_goods_check_item where id = #{id}
+    </delete>
+
+    <delete id="deleteGGoodsCheckItemByIds" parameterType="String">
+        delete from g_goods_check_item where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateList">
+        update
+        g_goods_check_item
+        set
+        current_quantity =
+        <foreach collection="list" item="item" index="index" separator=" " open="case" close="end">
+            when id = #{item.id} then #{item.currentQuantity}
+        </foreach>
+        where
+        id in
+        <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+            #{item.id}
+        </foreach>
+
+    </update>
+
+</mapper>

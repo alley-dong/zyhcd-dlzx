@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DVacationDayMapper">
+    
+    <resultMap type="DVacationDay" id="DVacationDayResult">
+        <result property="id"    column="id"    />
+        <result property="vacationDate"    column="vacation_date"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="status"    column="status"    />
+        <result property="driverTypeId"    column="driver_type_id"    />
+        <result property="basicSalary"    column="basic_salary"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="MONTH"    column="MONTH"    />
+        <result property="totalMouth"    column="totalMouth"    />
+        <result property="salary" column="salary"/>
+        <result property="Ddriver" column="Ddriver"/>
+    </resultMap>
+
+    <sql id="selectDVacationDayVo">
+        select id, vacation_date, driver_id, driver_name, status, driver_type_id, basic_salary, delete_flag, create_by, create_time, update_by, update_time from d_vacation_day
+    </sql>
+
+    <select id="selectDVacationDayCountList" resultMap="DVacationDayResult">
+        SELECT A.MONTH ,COUNT(A.MONTH) as totalMouth FROM  (
+        SELECT  DISTINCT(DRIVER_ID),DATE_FORMAT(VACATION_DATE,'%Y-%m') MONTH FROM d_vacation_day
+        where delete_flag='1'
+        GROUP BY DRIVER_ID,VACATION_DATE) AS A
+        <where>
+            <if test="monthTime != null and monthTime != '' ">
+                A.MONTH = #{monthTime}
+            </if>
+        </where>
+        GROUP BY A.MONTH
+    </select>
+
+    <select id="selectDVacationDayStatisticsList" parameterType="DVacationDay" resultMap="DVacationDayResult">
+        SELECT  d.DRIVER_ID,d.VACATION_DATE,d.status,sys.dict_label as statusEnum
+		FROM d_vacation_day d
+        LEFT JOIN sys_dict_data sys ON sys.dict_value = d.status AND sys.dict_type = 'd_vacation_day_status'
+        where d.delete_flag='1'
+        <![CDATA[
+			and	DATE_FORMAT(d.vacation_date, '%Y-%m') = DATE_FORMAT(#{vacationDate}, '%Y-%m')
+        ]]>
+    </select>
+
+    <select id="selectDVacationDayByDidList" parameterType="String" resultMap="DVacationDayResult">
+        SELECT VACATION_DATE,status
+		FROM D_VACATION_DAY
+		where driver_id = #{driverId}
+    </select>
+
+    <select id="selectDVacationDayList" parameterType="DVacationDay" resultMap="DVacationDayResult">
+        <include refid="selectDVacationDayVo"/>
+        <where>  
+            <if test="vacationDate != null "> and vacation_date like concat(DATE_FORMAT(#{vacationDate},'%Y-%m'), '%')</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="driverTypeId != null  and driverTypeId != ''"> and driver_type_id = #{driverTypeId}</if>
+            <if test="basicSalary != null "> and basic_salary = #{basicSalary}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectDVacationDayById" parameterType="String" resultMap="DVacationDayResult">
+        <include refid="selectDVacationDayVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDVacationDaySalaryByDriverId" parameterType="DVacationDay" resultMap="DVacationDayResult">
+        SELECT
+	d.driver_id,
+        basic_salary,
+	SUM( d.basic_salary ) as salary,
+        d.status
+FROM
+	d_vacation_day d
+WHERE
+	delete_flag = '1'
+        <if test="firstSalaryDate != null and nextSalaryDate != null">and d.vacation_date BETWEEN #{firstSalaryDate} AND #{nextSalaryDate}</if>
+GROUP BY
+	d.driver_id
+    </select>
+        
+    <insert id="insertDVacationDay" parameterType="DVacationDay">
+        insert into d_vacation_day
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="vacationDate != null">vacation_date,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="status != null">status,</if>
+            <if test="driverTypeId != null">driver_type_id,</if>
+            <if test="basicSalary != null">basic_salary,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="vacationDate != null">#{vacationDate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="driverTypeId != null">#{driverTypeId},</if>
+            <if test="basicSalary != null">#{basicSalary},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateDVacationDay" parameterType="DVacationDay">
+        update d_vacation_day
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="vacationDate != null">vacation_date = #{vacationDate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="driverTypeId != null">driver_type_id = #{driverTypeId},</if>
+            <if test="basicSalary != null">basic_salary = #{basicSalary},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDVacationDayById" parameterType="String">
+        delete from d_vacation_day where id = #{id}
+    </delete>
+
+    <delete id="deleteDVacationDayByIds" parameterType="String">
+        delete from d_vacation_day where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+    <!-- 批量新增   -->
+    <insert id="insertList" parameterType="java.util.List">
+        insert into d_vacation_day (
+        id, vacation_date, driver_id, driver_name, status, driver_type_id, basic_salary, delete_flag, create_by, create_time, update_by, update_time
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=VARCHAR},
+            #{item.vacationDate,jdbcType=DATE},
+            #{item.driverId,jdbcType=VARCHAR},
+            #{item.driverName,jdbcType=VARCHAR},
+            #{item.status,jdbcType=INTEGER},
+            #{item.driverTypeId,jdbcType=VARCHAR},
+            #{item.basicSalary,jdbcType=DECIMAL},
+            #{item.deleteFlag,jdbcType=INTEGER},
+            #{item.createBy,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+
+    </insert>
+
+</mapper>

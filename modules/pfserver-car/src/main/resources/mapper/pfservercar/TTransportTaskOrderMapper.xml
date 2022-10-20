@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfservercar.mapper.TTransportTaskOrderMapper">
+
+
+    <resultMap type="com.dlzx.pfservercar.domain.vm.TTransportTaskOrderVm" id="TTransportTaskOrderResult">
+        <result property="id"    column="id"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="shipmentStopId"    column="shipment_stop_id"    />
+        <result property="orderMovementGid"    column="order_movement_gid"    />
+        <result property="orderNumber"    column="order_number"    />
+        <result property="businessType"    column="business_type"    />
+        <result property="businessUnitName"    column="business_unit_name"    />
+        <result property="sourceLocationCode"    column="source_location_code"    />
+        <result property="sourceLocationName"    column="source_location_name"    />
+        <result property="sourceProvince"    column="source_province"    />
+        <result property="sourceCity"    column="source_city"    />
+        <result property="sourceDistrict"    column="source_district"    />
+        <result property="sourceAddress"    column="source_address"    />
+        <result property="sourceContacts"    column="source_contacts"    />
+        <result property="sourcePhoneNumber"    column="source_phone_number"    />
+        <result property="destLocationCode"    column="dest_location_code"    />
+        <result property="destLocationName"    column="dest_location_name"    />
+        <result property="destProvince"    column="dest_province"    />
+        <result property="destCity"    column="dest_city"    />
+        <result property="destDistrict"    column="dest_district"    />
+        <result property="destAddress"    column="dest_address"    />
+        <result property="destContacts"    column="dest_contacts"    />
+        <result property="destPhoneNumber"    column="dest_phone_number"    />
+        <result property="remark"    column="remark"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTTransportTaskOrderVo">
+        select id, task_id, shipment_stop_id, order_movement_gid, order_number, business_type, business_unit_name, source_location_code, source_location_name, source_province, source_city, source_district, source_address, source_contacts, source_phone_number, dest_location_code, dest_location_name, dest_province, dest_city, dest_district, dest_address, dest_contacts, dest_phone_number, remark, delete_flag, create_by, create_time, update_by, update_time from t_transport_task_order
+    </sql>
+
+    <select id="selectTTransportTaskOrderList" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOrderModel" resultMap="TTransportTaskOrderResult">
+        <include refid="selectTTransportTaskOrderVo"/>
+        <where>  
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="shipmentStopId != null  and shipmentStopId != ''"> and shipment_stop_id = #{shipmentStopId}</if>
+            <if test="orderMovementGid != null  and orderMovementGid != ''"> and order_movement_gid = #{orderMovementGid}</if>
+            <if test="orderNumber != null  and orderNumber != ''"> and order_number = #{orderNumber}</if>
+            <if test="businessType != null  and businessType != ''"> and business_type = #{businessType}</if>
+            <if test="businessUnitName != null  and businessUnitName != ''"> and business_unit_name like concat('%', #{businessUnitName}, '%')</if>
+            <if test="sourceLocationCode != null  and sourceLocationCode != ''"> and source_location_code = #{sourceLocationCode}</if>
+            <if test="sourceLocationName != null  and sourceLocationName != ''"> and source_location_name like concat('%', #{sourceLocationName}, '%')</if>
+            <if test="sourceProvince != null  and sourceProvince != ''"> and source_province = #{sourceProvince}</if>
+            <if test="sourceCity != null  and sourceCity != ''"> and source_city = #{sourceCity}</if>
+            <if test="sourceDistrict != null  and sourceDistrict != ''"> and source_district = #{sourceDistrict}</if>
+            <if test="sourceAddress != null  and sourceAddress != ''"> and source_address = #{sourceAddress}</if>
+            <if test="sourceContacts != null  and sourceContacts != ''"> and source_contacts = #{sourceContacts}</if>
+            <if test="sourcePhoneNumber != null  and sourcePhoneNumber != ''"> and source_phone_number = #{sourcePhoneNumber}</if>
+            <if test="destLocationCode != null  and destLocationCode != ''"> and dest_location_code = #{destLocationCode}</if>
+            <if test="destLocationName != null  and destLocationName != ''"> and dest_location_name like concat('%', #{destLocationName}, '%')</if>
+            <if test="destProvince != null  and destProvince != ''"> and dest_province = #{destProvince}</if>
+            <if test="destCity != null  and destCity != ''"> and dest_city = #{destCity}</if>
+            <if test="destDistrict != null  and destDistrict != ''"> and dest_district = #{destDistrict}</if>
+            <if test="destAddress != null  and destAddress != ''"> and dest_address = #{destAddress}</if>
+            <if test="destContacts != null  and destContacts != ''"> and dest_contacts = #{destContacts}</if>
+            <if test="destPhoneNumber != null  and destPhoneNumber != ''"> and dest_phone_number = #{destPhoneNumber}</if>
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+        </where>
+    </select>
+    
+    <select id="selectTTransportTaskOrderById" parameterType="String" resultMap="TTransportTaskOrderResult">
+        <include refid="selectTTransportTaskOrderVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTTransportTaskOrder" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOrderModel">
+        insert into t_transport_task_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="shipmentStopId != null">shipment_stop_id,</if>
+            <if test="orderMovementGid != null">order_movement_gid,</if>
+            <if test="orderNumber != null">order_number,</if>
+            <if test="businessType != null">business_type,</if>
+            <if test="businessUnitName != null">business_unit_name,</if>
+            <if test="sourceLocationCode != null">source_location_code,</if>
+            <if test="sourceLocationName != null">source_location_name,</if>
+            <if test="sourceProvince != null">source_province,</if>
+            <if test="sourceCity != null">source_city,</if>
+            <if test="sourceDistrict != null">source_district,</if>
+            <if test="sourceAddress != null">source_address,</if>
+            <if test="sourceContacts != null">source_contacts,</if>
+            <if test="sourcePhoneNumber != null">source_phone_number,</if>
+            <if test="destLocationCode != null">dest_location_code,</if>
+            <if test="destLocationName != null">dest_location_name,</if>
+            <if test="destProvince != null">dest_province,</if>
+            <if test="destCity != null">dest_city,</if>
+            <if test="destDistrict != null">dest_district,</if>
+            <if test="destAddress != null">dest_address,</if>
+            <if test="destContacts != null">dest_contacts,</if>
+            <if test="destPhoneNumber != null">dest_phone_number,</if>
+            <if test="remark != null">remark,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="shipmentStopId != null">#{shipmentStopId},</if>
+            <if test="orderMovementGid != null">#{orderMovementGid},</if>
+            <if test="orderNumber != null">#{orderNumber},</if>
+            <if test="businessType != null">#{businessType},</if>
+            <if test="businessUnitName != null">#{businessUnitName},</if>
+            <if test="sourceLocationCode != null">#{sourceLocationCode},</if>
+            <if test="sourceLocationName != null">#{sourceLocationName},</if>
+            <if test="sourceProvince != null">#{sourceProvince},</if>
+            <if test="sourceCity != null">#{sourceCity},</if>
+            <if test="sourceDistrict != null">#{sourceDistrict},</if>
+            <if test="sourceAddress != null">#{sourceAddress},</if>
+            <if test="sourceContacts != null">#{sourceContacts},</if>
+            <if test="sourcePhoneNumber != null">#{sourcePhoneNumber},</if>
+            <if test="destLocationCode != null">#{destLocationCode},</if>
+            <if test="destLocationName != null">#{destLocationName},</if>
+            <if test="destProvince != null">#{destProvince},</if>
+            <if test="destCity != null">#{destCity},</if>
+            <if test="destDistrict != null">#{destDistrict},</if>
+            <if test="destAddress != null">#{destAddress},</if>
+            <if test="destContacts != null">#{destContacts},</if>
+            <if test="destPhoneNumber != null">#{destPhoneNumber},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTTransportTaskOrder" parameterType="com.dlzx.pfservercar.domain.model.TTransportTaskOrderModel">
+        update t_transport_task_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="shipmentStopId != null">shipment_stop_id = #{shipmentStopId},</if>
+            <if test="orderMovementGid != null">order_movement_gid = #{orderMovementGid},</if>
+            <if test="orderNumber != null">order_number = #{orderNumber},</if>
+            <if test="businessType != null">business_type = #{businessType},</if>
+            <if test="businessUnitName != null">business_unit_name = #{businessUnitName},</if>
+            <if test="sourceLocationCode != null">source_location_code = #{sourceLocationCode},</if>
+            <if test="sourceLocationName != null">source_location_name = #{sourceLocationName},</if>
+            <if test="sourceProvince != null">source_province = #{sourceProvince},</if>
+            <if test="sourceCity != null">source_city = #{sourceCity},</if>
+            <if test="sourceDistrict != null">source_district = #{sourceDistrict},</if>
+            <if test="sourceAddress != null">source_address = #{sourceAddress},</if>
+            <if test="sourceContacts != null">source_contacts = #{sourceContacts},</if>
+            <if test="sourcePhoneNumber != null">source_phone_number = #{sourcePhoneNumber},</if>
+            <if test="destLocationCode != null">dest_location_code = #{destLocationCode},</if>
+            <if test="destLocationName != null">dest_location_name = #{destLocationName},</if>
+            <if test="destProvince != null">dest_province = #{destProvince},</if>
+            <if test="destCity != null">dest_city = #{destCity},</if>
+            <if test="destDistrict != null">dest_district = #{destDistrict},</if>
+            <if test="destAddress != null">dest_address = #{destAddress},</if>
+            <if test="destContacts != null">dest_contacts = #{destContacts},</if>
+            <if test="destPhoneNumber != null">dest_phone_number = #{destPhoneNumber},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTTransportTaskOrderById" parameterType="String">
+        delete from t_transport_task_order where id = #{id}
+    </delete>
+
+    <delete id="deleteTTransportTaskOrderByIds" parameterType="String">
+        delete from t_transport_task_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="insertOTMTransportTaskOrder">
+        insert into t_transport_task_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">id,</if>
+            <if test="SHIPMENT_GID != null">task_id,</if>
+            <if test="SHIPMENT_STOP_ID != null">shipment_stop_id,</if>
+            <if test="ORDER_MOVEMENT_GID != null">order_movement_gid,</if>
+            <if test="ORDER_MOVEMENT_XID != null">order_number,</if>
+            <if test="BUSINESS_TYPE != null">business_type,</if>
+            <if test="BUSINESS_UNIT_NAME != null">business_unit_name,</if>
+            <if test="SOURCE_LOCATION_CODE != null">source_location_code,</if>
+            <if test="SOURCE_LOCATION_NAME != null">source_location_name,</if>
+            <if test="SOURCE_PROVINCE != null">source_province,</if>
+            <if test="SOURCE_CITY != null">source_city,</if>
+            <if test="SOURCE_DISTRICT != null">source_district,</if>
+            <if test="SOURCE_ADDRESS != null">source_address,</if>
+            <if test="SOURCE_CONTACTS != null">source_contacts,</if>
+            <if test="SOURCE_PHONE_NUMBER != null">source_phone_number,</if>
+            <if test="DEST_LOCATION_CODE != null">dest_location_code,</if>
+            <if test="DEST_LOCATION_NAME != null">dest_location_name,</if>
+            <if test="DEST_PROVINCE != null">dest_province,</if>
+            <if test="DEST_CITY != null">dest_city,</if>
+            <if test="DEST_DISTRICT != null">dest_district,</if>
+            <if test="DEST_ADDRESS != null">dest_address,</if>
+            <if test="DEST_CONTACTS != null">dest_contacts,</if>
+            <if test="DEST_PHONE_NUMBER != null">dest_phone_number,</if>
+            <if test="REMARK != null">remark,</if>
+            delete_flag,
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="TEMPLATE_ID != null">#{TEMPLATE_ID},</if>
+            <if test="SHIPMENT_GID != null">#{SHIPMENT_GID},</if>
+            <if test="SHIPMENT_STOP_ID != null">#{SHIPMENT_STOP_ID},</if>
+            <if test="ORDER_MOVEMENT_GID != null">#{ORDER_MOVEMENT_GID},</if>
+            <if test="ORDER_MOVEMENT_XID != null">#{ORDER_MOVEMENT_XID},</if>
+            <if test="BUSINESS_TYPE != null">#{BUSINESS_TYPE},</if>
+            <if test="BUSINESS_UNIT_NAME != null">#{BUSINESS_UNIT_NAME},</if>
+            <if test="SOURCE_LOCATION_CODE != null">#{SOURCE_LOCATION_CODE},</if>
+            <if test="SOURCE_LOCATION_NAME != null">#{SOURCE_LOCATION_NAME},</if>
+            <if test="SOURCE_PROVINCE != null">#{SOURCE_PROVINCE},</if>
+            <if test="SOURCE_CITY != null">#{SOURCE_CITY},</if>
+            <if test="SOURCE_DISTRICT != null">#{SOURCE_DISTRICT},</if>
+            <if test="SOURCE_ADDRESS != null">#{SOURCE_ADDRESS},</if>
+            <if test="SOURCE_CONTACTS != null">#{SOURCE_CONTACTS},</if>
+            <if test="SOURCE_PHONE_NUMBER != null">#{SOURCE_PHONE_NUMBER},</if>
+            <if test="DEST_LOCATION_CODE != null">#{DEST_LOCATION_CODE},</if>
+            <if test="DEST_LOCATION_NAME != null">#{DEST_LOCATION_NAME},</if>
+            <if test="DEST_PROVINCE != null">#{DEST_PROVINCE},</if>
+            <if test="DEST_CITY != null">#{DEST_CITY},</if>
+            <if test="DEST_DISTRICT != null">#{DEST_DISTRICT},</if>
+            <if test="DEST_ADDRESS != null">#{DEST_ADDRESS},</if>
+            <if test="DEST_CONTACTS != null">#{DEST_CONTACTS},</if>
+            <if test="DEST_PHONE_NUMBER != null">#{DEST_PHONE_NUMBER},</if>
+            <if test="REMARK != null">#{REMARK},</if>
+            1,
+            now()
+        </trim>
+    </insert>
+
+<!--auto generated by MybatisCodeHelper on 2021-01-07-->
+    <select id="selectAllByOrderMovementGid" resultMap="TTransportTaskOrderResult">
+        <include refid="selectTTransportTaskOrderVo"/>
+        where order_movement_gid=#{orderMovementGid}
+    </select>
+
+</mapper>

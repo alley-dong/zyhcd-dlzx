@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.system.mapper.SysLogMapper">
+    
+    <resultMap type="SysLog" id="SysLogResult">
+        <result property="id"    column="id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="logBy"    column="log_by"    />
+        <result property="logType"    column="log_type"    />
+        <result property="message"    column="message"    />
+    </resultMap>
+
+    <sql id="selectSysLogVo">
+        select id, create_time, delete_flag, create_by, log_by, log_type, message from sys_log
+    </sql>
+
+    <select id="selectSysLogList" parameterType="SysLog" resultMap="SysLogResult">
+        <include refid="selectSysLogVo"/>
+        <where>  
+            <if test="deleteFlag != null "> and delete_flag = #{deleteFlag}</if>
+            <if test="logBy != null  and logBy != ''"> and log_by = #{logBy}</if>
+            <if test="logType != null  and logType != ''"> and log_type like concat('%', #{logType}, '%')</if>
+            <if test="message != null  and message != ''"> and message like concat('%', #{message}, '%')</if>
+            <if test="startTime != null and startTime != ''"><!-- 开始时间检索 -->
+                and date_format(create_time,'%y%m%d') &gt;= date_format(#{startTime},'%y%m%d')
+            </if>
+            <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+                and date_format(create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            </if>
+        </where>
+    </select>
+    
+    <select id="selectSysLogById" parameterType="Long" resultMap="SysLogResult">
+        <include refid="selectSysLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertSysLog" parameterType="SysLog" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createTime != null">create_time,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="logBy != null">log_by,</if>
+            <if test="logType != null">log_type,</if>
+            <if test="message != null">message,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createTime != null">#{createTime},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="logBy != null">#{logBy},</if>
+            <if test="logType != null">#{logType},</if>
+            <if test="message != null">#{message},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysLog" parameterType="SysLog">
+        update sys_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="logBy != null">log_by = #{logBy},</if>
+            <if test="logType != null">log_type = #{logType},</if>
+            <if test="message != null">message = #{message},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysLogById" parameterType="Long">
+        delete from sys_log where id = #{id}
+    </delete>
+
+    <delete id="deleteSysLogByIds" parameterType="String">
+        delete from sys_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

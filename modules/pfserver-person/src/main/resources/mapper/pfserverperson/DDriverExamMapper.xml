@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DDriverExamMapper">
+    
+    <resultMap type="DDriverExam" id="DDriverExamResult">
+        <result property="id"    column="id"    />
+        <result property="paperId"    column="paper_id"    />
+        <result property="paperName"    column="paper_name"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="status"    column="status"    />
+        <result property="radioScore"    column="radio_score"    />
+        <result property="checkboxScore"    column="checkbox_score"    />
+        <result property="judgmentScore"    column="judgment_score"    />
+        <result property="totalScore"    column="total_score"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDDriverExamVo">
+        select id, paper_id, paper_name, driver_id, status, radio_score, checkbox_score, judgment_score, total_score, create_by, create_time, update_by, update_time from d_driver_exam
+    </sql>
+
+    <select id="selectDDriverExamList" parameterType="DDriverExam" resultMap="DDriverExamResult">
+        <include refid="selectDDriverExamVo"/>
+        <where>  
+            <if test="paperId != null  and paperId != ''"> and paper_id = #{paperId}</if>
+            <if test="paperName != null  and paperName != ''"> and paper_name like concat('%', #{paperName}, '%')</if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="radioScore != null "> and radio_score = #{radioScore}</if>
+            <if test="checkboxScore != null "> and checkbox_score = #{checkboxScore}</if>
+            <if test="judgmentScore != null "> and judgment_score = #{judgmentScore}</if>
+            <if test="totalScore != null "> and total_score = #{totalScore}</if>
+            <if test="createBy != null  and createBy != ''"> and create_by = #{createBy}</if>
+            <if test="updateBy != null  and updateBy != ''"> and update_by = #{updateBy}</if>
+        </where>
+    </select>
+
+    <select id="selectDDriverExamByDriverId" parameterType="String" resultMap="DDriverExamResult">
+       <include refid="selectDDriverExamVo"/>
+    where driver_id = #{id} and create_time  &lt;= now() order BY create_time DESC limit 1
+    </select>
+    
+    <select id="selectDDriverExamById" parameterType="String" resultMap="DDriverExamResult">
+        <include refid="selectDDriverExamVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDDriverExam" parameterType="DDriverExam" resultMap="DDriverExamResult">
+        <include refid="selectDDriverExamVo"/>
+        <where>
+        <if test="paperId != null  and paperId != ''"> and paper_id = #{paperId}</if>
+        <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+        </where>
+    </select>
+
+    <select id="selectDDriverExamListByPaperId" parameterType="DDriverExam" resultMap="DDriverExamResult">
+        select driver_id ,paper_id , paper_name from d_driver_exam
+        <where>
+            <if test="paperId != null  and paperId != ''"> and paper_id = #{paperId}</if>
+        </where>
+    </select>
+
+    <insert id="insertDDriverExam" parameterType="DDriverExam">
+        insert into d_driver_exam
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="paperId != null">paper_id,</if>
+            <if test="paperName != null">paper_name,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="status != null">status,</if>
+            <if test="radioScore != null">radio_score,</if>
+            <if test="checkboxScore != null">checkbox_score,</if>
+            <if test="judgmentScore != null">judgment_score,</if>
+            <if test="totalScore != null">total_score,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="paperId != null">#{paperId},</if>
+            <if test="paperName != null">#{paperName},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="radioScore != null">#{radioScore},</if>
+            <if test="checkboxScore != null">#{checkboxScore},</if>
+            <if test="judgmentScore != null">#{judgmentScore},</if>
+            <if test="totalScore != null">#{totalScore},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDDriverExamList">
+        insert into d_driver_exam( id, paper_id, paper_name, driver_id, status,create_by ,create_time) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.paperId},#{item.paperName},#{item.driverId},#{item.status},#{item.createBy},#{item.createTime})
+        </foreach>
+    </insert>
+
+    <update id="updateDDriverExam" parameterType="DDriverExam">
+        update d_driver_exam
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="paperId != null">paper_id = #{paperId},</if>
+            <if test="paperName != null">paper_name = #{paperName},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="radioScore != null">radio_score = #{radioScore},</if>
+            <if test="checkboxScore != null">checkbox_score = #{checkboxScore},</if>
+            <if test="judgmentScore != null">judgment_score = #{judgmentScore},</if>
+            <if test="totalScore != null">total_score = #{totalScore},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDDriverExamById" parameterType="String">
+        delete from d_driver_exam where id = #{id}
+    </delete>
+
+    <delete id="deleteDDriverExamByIds" parameterType="String">
+        delete from d_driver_exam where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteDDriverExamByIdList" parameterType="String">
+        delete from d_driver_exam where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectDDriverExamByDriverIdNearQ" parameterType="String" resultMap="DDriverExamResult">
+       select id, paper_id, paper_name, driver_id, status, radio_score, checkbox_score, judgment_score, total_score, create_by, create_time, update_by, update_time from d_driver_exam
+        where driver_id = #{userId} and now() >=create_time   order BY create_time DESC limit 1
+    </select>
+
+</mapper>

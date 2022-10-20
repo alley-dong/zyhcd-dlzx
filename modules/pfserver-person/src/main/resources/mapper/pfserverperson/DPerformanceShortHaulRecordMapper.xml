@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DPerformanceShortHaulRecordMapper">
+    
+    <resultMap type="DPerformanceShortHaulRecord" id="DPerformanceShortHaulRecordResult">
+        <result property="id"    column="id"    />
+        <result property="performanceDate"    column="performance_date"    />
+        <result property="driverId"    column="driver_id"    />
+        <result property="driverName"    column="driver_name"    />
+        <result property="taskId"    column="task_id"    />
+        <result property="driverTypeId"    column="driver_type_id"    />
+        <result property="driverTypeName"    column="driver_type_name"    />
+        <result property="vehicleId"    column="vehicle_id"    />
+        <result property="licensePlate"    column="license_plate"    />
+        <result property="unitPrice"    column="unit_price"    />
+        <result property="number"    column="number"    />
+        <result property="amount"    column="amount"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="amo" column="amo"/>
+    </resultMap>
+
+    <sql id="selectDPerformanceShortHaulRecordVo">
+        select id, performance_date, driver_id, driver_name, task_id, driver_type_id, driver_type_name, vehicle_id, license_plate, unit_price, number, amount, delete_flag, create_by, create_time, update_by, update_time from d_performance_short_haul_record
+    </sql>
+
+    <select id="selectDPerformanceShortHaulRecordList" parameterType="DPerformanceShortHaulRecord" resultMap="DPerformanceShortHaulRecordResult">
+        <include refid="selectDPerformanceShortHaulRecordVo"/>
+        <where>  
+            <if test="performanceFromDate != null ">
+                <![CDATA[
+				    and	DATE_FORMAT(performance_date, '%Y-%m') = DATE_FORMAT(#{performanceFromDate}, '%Y-%m')
+			    ]]>
+            </if>
+            <if test="driverId != null  and driverId != ''"> and driver_id = #{driverId}</if>
+            <if test="driverName != null  and driverName != ''"> and driver_name like concat('%', #{driverName}, '%')</if>
+            <if test="taskId != null  and taskId != ''"> and task_id = #{taskId}</if>
+            <if test="driverTypeId != null  and driverTypeId != ''"> and driver_type_id = #{driverTypeId}</if>
+            <if test="driverTypeName != null  and driverTypeName != ''"> and driver_type_name like concat('%', #{driverTypeName}, '%')</if>
+            <if test="vehicleId != null  and vehicleId != ''"> and vehicle_id = #{vehicleId}</if>
+            <if test="licensePlate != null  and licensePlate != ''"> and license_plate = #{licensePlate}</if>
+            <if test="unitPrice != null "> and unit_price = #{unitPrice}</if>
+            <if test="number != null "> and number = #{number}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+             and delete_flag = '1'
+        </where>
+    </select>
+    
+    <select id="selectDPerformanceShortHaulRecordById" parameterType="String" resultMap="DPerformanceShortHaulRecordResult">
+        <include refid="selectDPerformanceShortHaulRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectDPerShortSalary" parameterType="DPerformanceShortHaulRecord" resultMap="DPerformanceShortHaulRecordResult">
+        select driver_id,sum(amount) AS amo FROM d_performance_short_haul_record
+        <where>
+            <if test="shortStartTime != null and shortEndTime != null"><![CDATA[
+				    and	DATE_FORMAT(performance_date, '%Y-%m') = DATE_FORMAT(#{shortEndTime}, '%Y-%m')
+			    ]]></if>
+            and delete_flag = '1'
+        </where>
+        GROUP BY driver_id
+    </select>
+        
+    <insert id="insertDPerformanceShortHaulRecord" parameterType="DPerformanceShortHaulRecord">
+        insert into d_performance_short_haul_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="performanceDate != null">performance_date,</if>
+            <if test="driverId != null">driver_id,</if>
+            <if test="driverName != null">driver_name,</if>
+            <if test="taskId != null">task_id,</if>
+            <if test="driverTypeId != null">driver_type_id,</if>
+            <if test="driverTypeName != null">driver_type_name,</if>
+            <if test="vehicleId != null">vehicle_id,</if>
+            <if test="licensePlate != null">license_plate,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="number != null">number,</if>
+            <if test="amount != null">amount,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="performanceDate != null">#{performanceDate},</if>
+            <if test="driverId != null">#{driverId},</if>
+            <if test="driverName != null">#{driverName},</if>
+            <if test="taskId != null">#{taskId},</if>
+            <if test="driverTypeId != null">#{driverTypeId},</if>
+            <if test="driverTypeName != null">#{driverTypeName},</if>
+            <if test="vehicleId != null">#{vehicleId},</if>
+            <if test="licensePlate != null">#{licensePlate},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="number != null">#{number},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDPerformanceShortHaulRecordList">
+        insert into d_performance_short_haul_record( id, performanceDate, driver_id, driver_name, task_id, driver_type_id, driver_type_name, vehicle_id, license_plate, unit_price, delete_flag ,create_by) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.id},#{item.performanceDate},#{item.driverId},#{item.driverName},#{item.taskId},#{item.driverTypeId},#{item.driverTypeName},#{item.vehicleId},#{item.licensePlate},#{item.unitPrice},#{item.deleteFlag},#{item.createBy})
+        </foreach>
+    </insert>
+
+    <update id="updateDPerformanceShortHaulRecord" parameterType="DPerformanceShortHaulRecord">
+        update d_performance_short_haul_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="performanceDate != null">performance_date = #{performanceDate},</if>
+            <if test="driverId != null">driver_id = #{driverId},</if>
+            <if test="driverName != null">driver_name = #{driverName},</if>
+            <if test="taskId != null">task_id = #{taskId},</if>
+            <if test="driverTypeId != null">driver_type_id = #{driverTypeId},</if>
+            <if test="driverTypeName != null">driver_type_name = #{driverTypeName},</if>
+            <if test="vehicleId != null">vehicle_id = #{vehicleId},</if>
+            <if test="licensePlate != null">license_plate = #{licensePlate},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="number != null">number = #{number},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDPerformanceShortHaulRecordById" parameterType="String">
+        delete from d_performance_short_haul_record where id = #{id}
+    </delete>
+
+    <delete id="deleteDPerformanceShortHaulRecordByIds" parameterType="String">
+        delete from d_performance_short_haul_record where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

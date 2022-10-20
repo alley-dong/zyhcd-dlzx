@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dlzx.pfserverperson.mapper.DNoticeMapper">
+    
+    <resultMap type="DNotice" id="DNoticeResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="title"    column="title"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="content"    column="content"    />
+        <result property="deadline"    column="deadline"    />
+        <result property="deleteFlag"    column="delete_flag"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectDNoticeVo">
+        select id, status, title, group_id, content, deadline,delete_flag, create_by, create_time, update_by, update_time from d_notice
+    </sql>
+
+    <select id="selectDNoticeList" parameterType="DNotice" resultMap="DNoticeResult">
+        <include refid="selectDNoticeVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title like concat('%', #{title}, '%')</if>
+            <if test="groupId != null  and groupId != ''"> and group_id = #{groupId}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            and delete_flag = '1'
+        </where>
+        ORDER BY create_time DESC
+    </select>
+    
+    <select id="selectDNoticeById" parameterType="String" resultMap="DNoticeResult">
+        <include refid="selectDNoticeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertDNotice" parameterType="DNotice">
+        insert into d_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="status != null">status,</if>
+            <if test="title != null">title,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="content != null">content,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="status != null">#{status},</if>
+            <if test="title != null">#{title},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <insert id="insertDNoticeBC" parameterType="DNotice">
+        insert into d_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="status != null">status,</if>
+            <if test="title != null">title,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="content != null">content,</if>
+            <if test="deadline != null">deadline,</if>
+            <if test="deleteFlag != null">delete_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="status != null">#{status},</if>
+            <if test="title != null">#{title},</if>
+            <if test="groupId != null">#{groupId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="deadline != null">#{deadline},</if>
+            <if test="deleteFlag != null">#{deleteFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+    <update id="updateDNotice" parameterType="DNotice">
+        update d_notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null">status = #{status},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="groupId != null">group_id = #{groupId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="deleteFlag != null">delete_flag = #{deleteFlag},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteDNoticeById" parameterType="String">
+        delete from d_notice where id = #{id}
+    </delete>
+
+    <delete id="deleteDNoticeByIds" parameterType="String">
+        delete from d_notice where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
